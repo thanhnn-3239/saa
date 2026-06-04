@@ -1,36 +1,98 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# SAA Kudos
 
-## Getting Started
+Internal employee recognition app for Sun Asterisk. Users send kudos, earn badges via Secret Boxes, and view a live leaderboard and profiles.
 
-First, run the development server:
+**Stack:** Next.js 16 (App Router) · Supabase (DB + Auth + Storage + Realtime) · TailwindCSS v4 · Vercel · pnpm
+
+---
+
+## Prerequisites
+
+- Node 24 + pnpm
+- [Supabase CLI](https://supabase.com/docs/guides/cli) (`brew install supabase/tap/supabase` or equivalent)
+- Docker (for local Supabase)
+
+---
+
+## Local dev setup
+
+### 1. Install dependencies
 
 ```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+pnpm install
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+### 2. Start Supabase locally
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+```bash
+pnpm db:start        # starts local Supabase stack (Docker required)
+pnpm db:status       # prints local URL + anon key
+```
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+### 3. Configure environment
 
-## Learn More
+Copy `.env.example` to `.env.local` and fill in the values printed by `pnpm db:status`:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+cp .env.example .env.local
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Variable | Where to get it |
+|---|---|
+| `NEXT_PUBLIC_SUPABASE_URL` | `pnpm db:status` → API URL |
+| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `pnpm db:status` → anon key |
+| `SUPABASE_SECRET_KEY` | `pnpm db:status` → service_role key |
+| `GOOGLE_CLIENT_ID` | Google Cloud Console (see below) |
+| `GOOGLE_CLIENT_SECRET` | Google Cloud Console (see below) |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+### 4. Configure Google OAuth
 
-## Deploy on Vercel
+1. Go to [Google Cloud Console](https://console.cloud.google.com/) → APIs & Services → Credentials.
+2. Create an **OAuth 2.0 Client ID** (type: Web application).
+3. Add an **Authorized redirect URI**: `<NEXT_PUBLIC_SUPABASE_URL>/auth/v1/callback`
+   - Local example: `http://127.0.0.1:54321/auth/v1/callback`
+4. Copy the Client ID and Secret into `.env.local`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+The Supabase CLI reads `GOOGLE_CLIENT_ID` / `GOOGLE_CLIENT_SECRET` from your environment and substitutes them into `supabase/config.toml` for local dev. No manual `config.toml` edits needed.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+> Note: the `hd` (hosted domain) hint restricts the Google picker to `sun-asterisk.com` accounts, but the actual domain enforcement is server-side in `app/auth/callback/route.ts`.
+
+### 5. Apply database migrations
+
+```bash
+pnpm db:reset        # applies all migrations + seeds
+```
+
+### 6. Start the dev server
+
+```bash
+pnpm dev
+```
+
+Open [http://localhost:3000](http://localhost:3000). You will be redirected to `/login`.
+
+---
+
+## Running tests
+
+```bash
+pnpm test            # Vitest + React Testing Library (140 tests)
+```
+
+---
+
+## Key architecture notes
+
+- **Auth:** Supabase Auth Google provider (PKCE flow). Only `@sun-asterisk.com` emails are allowed. Enforced server-side in `app/auth/callback/route.ts` after `exchangeCodeForSession`.
+- **Access control:** `proxy.ts` (Next.js 16 proxy, replaces `middleware.ts`) calls `lib/supabase/proxy-session.ts` on every request — unauthenticated users are sent to `/login`; authenticated users are redirected away from `/login`.
+- **Database:** PostgreSQL via Supabase. RLS on every table. Correctness-critical operations (random badge rewards, atomic kudo writes) run in `SECURITY DEFINER` Postgres functions.
+- **Internationalization:** next-intl 4.13, cookie-based (`NEXT_LOCALE`), no URL routing. Default locale `vi`, also `en`. See `docs/i18n.md`.
+- See `docs/` for schema design and tech stack decisions.
+
+---
+
+## Production deployment
+
+- Vercel hosts Next.js. Set the same env vars in the Vercel project settings.
+- Supabase Cloud hosts the backend. Configure the Google OAuth provider in the Supabase Cloud dashboard (not `config.toml`).
+- Push migrations: `supabase db push --linked`.

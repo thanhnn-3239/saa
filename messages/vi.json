@@ -1,0 +1,16 @@
+{
+  "Login": {
+    "welcomeLine1": "Bắt đầu hành trình của bạn cùng SAA 2025.",
+    "welcomeLine2": "Đăng nhập để khám phá!",
+    "loginButton": "Đăng nhập bằng Google",
+    "footer": "Bản quyền thuộc về Sun* © 2025",
+    "langSelectAria": "Chọn ngôn ngữ",
+    "closeError": "Đóng thông báo lỗi",
+    "error": {
+      "domain": "Tài khoản không thuộc miền @sun-asterisk.com. Vui lòng dùng tài khoản Sun*.",
+      "oauth": "Lỗi xác thực Google. Vui lòng thử lại.",
+      "access_denied": "Bạn đã từ chối đăng nhập. Vui lòng thử lại.",
+      "generic": "Đăng nhập thất bại. Vui lòng thử lại."
+    }
+  }
+}
