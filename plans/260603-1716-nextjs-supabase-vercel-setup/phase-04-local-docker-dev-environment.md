@@ -22,8 +22,8 @@ Two commands start dev: `supabase start` (host) + `docker compose up` (app).
 ## Outcome (implemented + verified 2026-06-04)
 - **Base image:** `node:24-alpine` + `libc6-compat` (lighter than slim; sharp loads under musl).
 - **Networking:** `network_mode: host` (Linux) — verified container reaches Supabase at `127.0.0.1:54321` (HTTP 200) and serves `:3000`.
-- **Trimmed local Supabase** (set in `supabase/config.toml`): only **6** services run —
-  `db, kong/api(rest), auth, realtime, storage`. Disabled: `studio, edge_runtime, analytics, vector, inbucket, db.pooler`.
+- **Trimmed local Supabase** (set in `supabase/config.toml`): `db, kong/api(rest), auth, realtime, storage, studio` (+pg-meta).
+  Disabled: `edge_runtime, analytics, vector, inbucket, db.pooler`. Studio kept for DB GUI/review.
   Re-enable any by flipping `enabled = true` in `config.toml` + `supabase stop && supabase start`.
 - **Two-command dev flow:** `pnpm db:start` (6 Supabase containers via CLI) → `pnpm dev:docker` (app container).
 - Note: trimming removed Studio GUI (use `psql` or re-enable) and imgproxy (re-enable if Storage image transforms are needed).

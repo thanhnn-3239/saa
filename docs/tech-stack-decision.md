@@ -25,7 +25,7 @@ Supabase model. A traditional standalone backend (Node/Nest/etc.) would add ops 
 - **TailwindCSS v4** — styling.
 
 ## Environment model
-- **Local dev:** Supabase CLI runs a trimmed backend stack — 6 services (`db, kong/api, auth, realtime, storage`); the rest disabled in `config.toml`. Docker Compose (`node:24-alpine`, `network_mode: host`) runs the Next.js dev container.
+- **Local dev:** Supabase CLI runs a trimmed backend stack — `db, kong/api, auth, realtime, storage, studio` (+pg-meta); `edge_runtime, analytics, vector, inbucket, db.pooler` disabled in `config.toml`. Docker Compose (`node:24-alpine`, `network_mode: host`) runs the Next.js dev container.
 - **Production:** Vercel hosts Next.js; Supabase Cloud hosts the backend; migrations pushed via CLI/CI.
 - **Package manager:** pnpm.
 

@@ -30,7 +30,7 @@ the Docker dev environment, and the Vercel + Supabase Cloud deploy pipeline.
 | Decision | Choice |
 |----------|--------|
 | Local dev architecture | Supabase CLI runs a **trimmed** backend stack; Compose runs Next.js dev container. Linux uses `network_mode: host` to reach the CLI stack at `127.0.0.1:54321` |
-| Local Supabase services | Enabled: `db, kong/api(rest), auth, realtime, storage` (6 containers). Disabled in `config.toml`: `studio, edge_runtime, analytics, vector, inbucket, db.pooler` — re-enable per need |
+| Local Supabase services | Enabled: `db, kong/api(rest), auth, realtime, storage, studio` (+pg-meta). Disabled in `config.toml`: `edge_runtime, analytics, vector, inbucket, db.pooler` — re-enable per need |
 | Production backend | Supabase Cloud (managed), linked via CLI; migrations pushed from CI |
 | Package manager | **pnpm** (drop `package-lock.json`, generate `pnpm-lock.yaml`) |
 | Feature scope | Foundation only — no auth UI |
