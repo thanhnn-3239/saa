@@ -46,6 +46,9 @@ next-env.d.ts
 
 /resources/*
 
+# playwright mcp (screenshots / traces from visual validation)
+/.playwright-mcp/
+
 # tooling artifacts (Takumi/Sixth kit)
 /.sixth/
 /release-manifest.json

@@ -1,0 +1,16 @@
+{
+  "Login": {
+    "welcomeLine1": "Begin your journey with SAA 2025.",
+    "welcomeLine2": "Sign in to explore!",
+    "loginButton": "Sign in with Google",
+    "footer": "Copyright © 2025 Sun*",
+    "langSelectAria": "Select language",
+    "closeError": "Close error message",
+    "error": {
+      "domain": "This account is not on the @sun-asterisk.com domain. Please use your Sun* account.",
+      "oauth": "Google authentication error. Please try again.",
+      "access_denied": "You declined sign-in. Please try again.",
+      "generic": "Sign-in failed. Please try again."
+    }
+  }
+}
