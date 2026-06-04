@@ -1,0 +1,23 @@
+# Local dev: runs ONLY the Next.js dev server in a container.
+# The Supabase backend is started separately with `pnpm db:start` (Supabase CLI).
+#
+# Linux uses `network_mode: host` so the container shares the host network:
+#   - the app is served on the host's :3000
+#   - 127.0.0.1:54321 inside the container reaches the Supabase CLI stack on the host
+# (On macOS/Windows, remove network_mode, add `ports: ["3000:3000"]` and
+#  `extra_hosts: ["host.docker.internal:host-gateway"]`, and point the server-side
+#  Supabase URL at host.docker.internal.)
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile.dev
+    network_mode: host
+    env_file:
+      - .env.local
+    environment:
+      WATCHPACK_POLLING: "true"
+    volumes:
+      - .:/app
+      - /app/node_modules
+      - /app/.next

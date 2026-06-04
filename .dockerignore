@@ -1,0 +1,12 @@
+node_modules
+.next
+.git
+.env.local
+*.log
+Dockerfile*
+docker-compose*
+README.md
+plans
+docs
+supabase/.branches
+supabase/.temp
