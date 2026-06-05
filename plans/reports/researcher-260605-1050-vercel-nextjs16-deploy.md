@@ -117,10 +117,10 @@ https://<your-project>.vercel.app/**            # production (exact)
 https://*-<your-org>.vercel.app/**              # preview (wildcard)
 ```
 
-Example for this project (assuming org slug `ssa` or similar):
+Example for this project (assuming org slug `saa` or similar):
 ```
-https://ssa.vercel.app/**
-https://*-ssa-team.vercel.app/**
+https://saa.vercel.app/**
+https://*-saa-team.vercel.app/**
 ```
 
 Find exact org slug from any Vercel preview URL after first deploy.
@@ -133,7 +133,7 @@ Vercel injects `VERCEL_URL` (not `NEXT_PUBLIC_`) containing the current deployme
 const redirectTo = process.env.NEXT_PUBLIC_SITE_URL          // prod: set manually
   ?? `https://${process.env.VERCEL_URL}`                     // preview: auto
 ```
-Add `NEXT_PUBLIC_SITE_URL=https://ssa.vercel.app` for production env only.
+Add `NEXT_PUBLIC_SITE_URL=https://saa.vercel.app` for production env only.
 
 **Production URL is stable** — the assigned `*.vercel.app` domain is permanent once set in project settings. Custom domain even more so.
 
@@ -143,7 +143,7 @@ Google OAuth does NOT support wildcards in Authorized Redirect URIs. Workarounds
 2. Point all preview OAuth through a stable production callback, then redirect internally (common pattern).
 3. Use a separate Google OAuth client for dev/preview with `http://localhost:3000` + one stable preview domain.
 
-**Recommended:** For development/preview, create a dedicated Google OAuth client. Keep production client strict with only `https://ssa.vercel.app/auth/callback`.
+**Recommended:** For development/preview, create a dedicated Google OAuth client. Keep production client strict with only `https://saa.vercel.app/auth/callback`.
 
 Sources: [Supabase redirect URLs docs](https://supabase.com/docs/guides/auth/redirect-urls), [Supabase GitHub discussion #2760](https://github.com/orgs/supabase/discussions/2760), [Vercel Community #6345](https://community.vercel.com/t/google-oauth-redirect-url-with-vercel-preview-urls-supabase/6345)
 
