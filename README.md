@@ -76,8 +76,14 @@ Open [http://localhost:3000](http://localhost:3000). You will be redirected to `
 ## Running tests
 
 ```bash
-pnpm test            # Vitest + React Testing Library (191 tests)
+pnpm test            # Unit/component — Vitest + React Testing Library (191 tests)
+pnpm test:e2e        # End-to-end — Playwright (boots the app, runs in a browser)
+pnpm test:e2e:docker # Same E2E, in a container — no local browser setup needed
 ```
+
+E2E tests live in `e2e/` and Playwright starts the app itself (no backend
+needed for the current smoke test). Full guide — native vs Docker, debugging,
+and the planned auth strategy: **[docs/e2e-testing.md](docs/e2e-testing.md)**.
 
 ## CI
 

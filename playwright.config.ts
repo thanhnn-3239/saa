@@ -22,7 +22,8 @@ export default defineConfig({
   retries: process.env.CI ? 2 : 0,
   // Opt out of parallel workers on CI for deterministic runs.
   workers: process.env.CI ? 1 : undefined,
-  reporter: process.env.CI ? "github" : "list",
+  // Always keep the readable list output; add GitHub annotations on CI.
+  reporter: process.env.CI ? [["list"], ["github"]] : "list",
   use: {
     baseURL,
     trace: "on-first-retry",
