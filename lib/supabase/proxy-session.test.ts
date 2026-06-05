@@ -131,7 +131,8 @@ describe("updateSession", () => {
       expect(response.status).toBe(200);
     });
 
-    it("redirects unauthenticated users from / to /login", async () => {
+    it("allows unauthenticated users on / (public homepage)", async () => {
+      // / is in PUBLIC_PATHS — guests see the marketing homepage without logging in.
       mockCreateServerClient.mockReturnValue({
         auth: {
           getClaims: vi.fn().mockResolvedValue({
@@ -143,8 +144,7 @@ describe("updateSession", () => {
       const request = createMockRequest("/");
       const response = await updateSession(request);
 
-      expect(response.status).toBe(307);
-      expect(response.headers.get("location")).toContain("/login");
+      expect(response.status).toBe(200);
     });
 
     it("redirects unauthenticated users from protected routes to /login", async () => {
@@ -252,7 +252,8 @@ describe("updateSession", () => {
   });
 
   describe("edge cases", () => {
-    it("handles missing claims data gracefully (unauthed)", async () => {
+    it("handles missing claims data gracefully — allows public path /", async () => {
+      // null claims → unauthenticated; / is in PUBLIC_PATHS so no redirect.
       mockCreateServerClient.mockReturnValue({
         auth: {
           getClaims: vi.fn().mockResolvedValue({
@@ -264,13 +265,12 @@ describe("updateSession", () => {
       const request = createMockRequest("/");
       const response = await updateSession(request);
 
-      expect(response.status).toBe(307);
-      expect(response.headers.get("location")).toContain("/login");
+      expect(response.status).toBe(200);
     });
 
-    it("treats empty claims object (no sub) as unauthenticated", async () => {
-      // Empty claims object lacks the `sub` claim, so it's treated as unauthenticated
-      // and the user is redirected to /login
+    it("treats empty claims object (no sub) as unauthenticated — allows public path /", async () => {
+      // Empty claims object lacks the `sub` claim → unauthenticated.
+      // / is in PUBLIC_PATHS so guests land on the homepage without redirect.
       mockCreateServerClient.mockReturnValue({
         auth: {
           getClaims: vi.fn().mockResolvedValue({
@@ -282,9 +282,7 @@ describe("updateSession", () => {
       const request = createMockRequest("/");
       const response = await updateSession(request);
 
-      // Empty claims (no `sub`) should redirect to /login
-      expect(response.status).toBe(307);
-      expect(response.headers.get("location")).toContain("/login");
+      expect(response.status).toBe(200);
     });
 
     it("preserves cookies on redirect", async () => {
@@ -330,7 +328,8 @@ describe("updateSession", () => {
       expect(response.headers.get("location")).toContain("/login");
     });
 
-    it("handles root path /", async () => {
+    it("handles root path / — unauthenticated guest gets 200 (public homepage)", async () => {
+      // / is in PUBLIC_PATHS; guests must never be redirected to /login from /.
       mockCreateServerClient.mockReturnValue({
         auth: {
           getClaims: vi.fn().mockResolvedValue({
@@ -342,7 +341,7 @@ describe("updateSession", () => {
       const request = createMockRequest("/");
       const response = await updateSession(request);
 
-      expect(response.status).toBe(307);
+      expect(response.status).toBe(200);
     });
   });
 });
