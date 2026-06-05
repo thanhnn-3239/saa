@@ -14,6 +14,7 @@ export default defineConfig({
       "lib/**/*.{test,spec}.{ts,tsx}",
       "i18n/**/*.{test,spec}.{ts,tsx}",
       "messages/**/*.{test,spec}.{ts,tsx}",
+      "tests/**/*.{test,spec}.{ts,tsx}",
     ],
     exclude: ["**/node_modules/**", ".claude/**", ".next/**", "dist/**"],
   },

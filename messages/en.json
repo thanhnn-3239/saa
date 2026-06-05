@@ -12,5 +12,101 @@
       "access_denied": "You declined sign-in. Please try again.",
       "generic": "Sign-in failed. Please try again."
     }
+  },
+  "Home": {
+    "nav": {
+      "aboutSaa": "About SAA 2025",
+      "awardInformation": "Award Information",
+      "kudos": "Sun* Kudos",
+      "standards": "General Standards",
+      "langSelectAria": "Select language"
+    },
+    "countdown": {
+      "comingSoon": "Coming soon",
+      "days": "DAYS",
+      "hours": "HOURS",
+      "minutes": "MINUTES"
+    },
+    "eventInfo": {
+      "dateLabel": "Date: ",
+      "dateValue": "26/12/2025",
+      "venueLabel": "Venue:",
+      "venueValue": "Âu Cơ Art Center",
+      "livestream": "Broadcast live via Livestream"
+    },
+    "about": {
+      "sectionCta": "ABOUT AWARDS",
+      "heroParagraph1": "Facing the rapid transformation of the AI era and increasingly high customer demands, Sun* has chosen a capability diversification strategy — not only striving to be elite in our respective fields, but aiming higher, where every Sunner is a \"problem-solver\" who can tackle every challenge in projects, for clients, and for society.\nInspired by diverse capabilities, agile development and the spirit of going deeper to break through in the AI era, \"Root Further\" was chosen as the official theme of the Sun* Annual Awards Ceremony 2025.\nBeyond its surface meaning, \"Root Further\" is our journey of continuously reaching farther, anchoring deeper, touching the hidden \"geological layers\" to survive, rise, and nurture the ever-burning passion of Sun* people to create value.",
+      "quote": "\"A tree with deep roots fears no storm\"",
+      "heroParagraph2": "Against storms, only trees with strong enough roots can stand firm. An organization with individuals confident in their diverse capabilities, ready to create and embrace challenges, and in control of change — this is an organization that not only weathers disruptions, but harnesses every advantage and conquers the challenges of the times. More than just a name for a new chapter in the organization's journey, \"Root Further\" is a call to each of us to dare to believe in ourselves, dare to go deep, unlock all potential, dare to break limits, dare to become the most versatile and outstanding version of ourselves. Because in the AI era, diverse capabilities and leveraging the power of the times are the prerequisites for longevity."
+    },
+    "awards": {
+      "sectionTitle": "Awards System",
+      "sectionCta": "Sun* annual awards 2025",
+      "topTalentTitle": "Top Talent",
+      "topTalentDesc": "Honoring the top outstanding individual across all dimensions",
+      "topProjectTitle": "Top Project",
+      "topProjectDesc": "Honoring the most outstanding project of the year",
+      "topProjectLeaderTitle": "Top Project Leader",
+      "topProjectLeaderDesc": "Honoring the most outstanding project leader",
+      "bestManagerTitle": "Best Manager",
+      "bestManagerDesc": "Honoring the most inspiring and effective manager",
+      "signature2025CreatorTitle": "Signature 2025 - Creator",
+      "signature2025CreatorDesc": "Honoring the individual who made the most distinctive creative mark in 2025",
+      "mvpTitle": "MVP",
+      "mvpDesc": "Honoring the individual with the highest contribution value",
+      "detailsCta": "Details"
+    },
+    "kudos": {
+      "sectionLabel": "Recognition movement",
+      "title": "Sun* Kudos",
+      "sectionCta": "ABOUT KUDOS",
+      "detailsCta": "Details",
+      "highlight": "WHAT'S NEW IN SAA 2025",
+      "description": "A peer recognition and appreciation activity — happening for the first time for all Sunners. The activity will be launched in November 2025, encouraging Sun* people to share recognition and appreciation for colleagues on the system announced by the organizing committee. This will be material for the Heads Council to refer to during the selection process."
+    },
+    "footer": {
+      "copyright": "Copyright © 2025 Sun*",
+      "aboutSaa": "About SAA 2025",
+      "awardInformation": "Award Information",
+      "kudos": "Sun* Kudos",
+      "standards": "General Standards"
+    },
+    "comingSoonPage": {
+      "title": "This page is coming soon",
+      "backHome": "Back to home"
+    },
+    "fab": {
+      "openAriaLabel": "Open action menu",
+      "closeAriaLabel": "Close action menu",
+      "theleLabel": "Thể lệ",
+      "writeKudosLabel": "Write KUDOS"
+    },
+    "thele": {
+      "panelTitle": "Thể lệ",
+      "receiverSectionTitle": "KUDOS RECIPIENT: HERO BADGE FOR POSITIVE INFLUENCE",
+      "receiverDesc": "Based on the number of teammates who send you Kudos, you will receive the corresponding Hero Badge, displayed directly next to your profile name.",
+      "newHeroCondition": "1–4 people sent you Kudos",
+      "newHeroDesc": "The journey of spreading goodness begins — the first words of appreciation and recognition have found their way to you.",
+      "risingHeroCondition": "5–9 people sent you Kudos",
+      "risingHeroDesc": "Your image is growing in the hearts of your teammates through your kindness and dedication.",
+      "superHeroCondition": "10–20 people sent you Kudos",
+      "superHeroDesc": "You have become a trusted and beloved icon — someone always ready to help and remembered by many teammates.",
+      "legendHeroCondition": "More than 20 people sent you Kudos",
+      "legendHeroDesc": "You have become a legend — someone who left an unforgettable mark on the team through heart and action.",
+      "senderSectionTitle": "KUDOS SENDER: COLLECT ALL 6 ICONS, GET A MYSTERY GIFT",
+      "senderDesc": "Every Kudos you send will be published on the system and receive ❤️ reactions from the Sunner community. For every 5 ❤️ reactions, you unlock 1 Secret Box, with a chance to receive one of SAA's 6 exclusive icons.",
+      "iconRevival": "REVIVAL",
+      "iconTouchOfLight": "TOUCH OF LIGHT",
+      "iconStayGold": "STAY GOLD",
+      "iconFlowToHorizon": "FLOW TO HORIZON",
+      "iconBeyondTheBoundary": "BEYOND THE BOUNDARY",
+      "iconRootFurther": "ROOT FURTHER",
+      "senderCollectionReward": "Sunners who collect all 6 icons will receive a mystery gift from SAA 2025.",
+      "nationalKudosTitle": "KUDOS QUỐC DÂN",
+      "nationalKudosDesc": "The 5 Kudos that receive the most ❤️ reactions across all of Sun* will officially become Kudos Quốc Dân and receive a special gift from SAA 2025: Root Further.",
+      "closeButton": "Close",
+      "writeKudosButton": "Write KUDOS"
+    }
   }
 }

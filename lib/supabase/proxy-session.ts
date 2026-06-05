@@ -2,8 +2,19 @@ import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { isAllowedEmail } from "@/lib/auth/allowed-domain";
 
-/** Paths reachable without an authenticated session. */
-const PUBLIC_PATHS = new Set(["/login", "/auth/callback"]);
+/**
+ * Paths reachable without an authenticated session.
+ * Guest-visible marketing and auth routes only.
+ * /profile is NOT listed — it is user-specific and must redirect guests to /login.
+ */
+const PUBLIC_PATHS = new Set([
+  "/",
+  "/login",
+  "/auth/callback",
+  "/awards-information",
+  "/sun-kudos",
+  "/tieu-chuan-chung",
+]);
 
 /**
  * Builds a redirect that carries over the freshly-refreshed auth cookies, so
