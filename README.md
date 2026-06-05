@@ -41,7 +41,7 @@ cp .env.example .env.local
 |---|---|
 | `NEXT_PUBLIC_SUPABASE_URL` | `pnpm db:status` → API URL |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` | `pnpm db:status` → anon key |
-| `SUPABASE_SECRET_KEY` | `pnpm db:status` → service_role key |
+| `SUPABASE_SECRET_KEY` | _Optional — not used by current code._ Leave blank unless adding a server-side admin op. |
 | `GOOGLE_CLIENT_ID` | Google Cloud Console (see below) |
 | `GOOGLE_CLIENT_SECRET` | Google Cloud Console (see below) |
 
@@ -93,6 +93,14 @@ pnpm test            # Vitest + React Testing Library (140 tests)
 
 ## Production deployment
 
-- Vercel hosts Next.js. Set the same env vars in the Vercel project settings.
-- Supabase Cloud hosts the backend. Configure the Google OAuth provider in the Supabase Cloud dashboard (not `config.toml`).
-- Push migrations: `supabase db push --linked`.
+Vercel Git Integration deploys the front end; a GitHub Action pushes DB migrations to Supabase Cloud.
+**Full runbook + env-var matrix: [docs/deployment.md](docs/deployment.md).**
+
+In short:
+- **Vercel** hosts Next.js (auto-deploy on merge to `main`). Set **only** `NEXT_PUBLIC_SUPABASE_URL`
+  and `NEXT_PUBLIC_SUPABASE_ANON_KEY` (the `sb_publishable_…` key) for Production + Preview.
+  Do **not** put `SUPABASE_SECRET_KEY` or `GOOGLE_CLIENT_*` in Vercel.
+- **Supabase Cloud** hosts the backend; the Google OAuth provider is configured in its dashboard
+  (not `config.toml`). See [docs/google-oauth-setup.md](docs/google-oauth-setup.md).
+- **Migrations** push via the `Supabase migrations` GitHub Action on merge to `main`, or manually with
+  `supabase db push` after `supabase link`.
