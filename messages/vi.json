@@ -12,5 +12,101 @@
       "access_denied": "Bạn đã từ chối đăng nhập. Vui lòng thử lại.",
       "generic": "Đăng nhập thất bại. Vui lòng thử lại."
     }
+  },
+  "Home": {
+    "nav": {
+      "aboutSaa": "About SAA 2025",
+      "awardInformation": "Award Information",
+      "kudos": "Sun* Kudos",
+      "standards": "Tiêu chuẩn chung",
+      "langSelectAria": "Chọn ngôn ngữ"
+    },
+    "countdown": {
+      "comingSoon": "Coming soon",
+      "days": "DAYS",
+      "hours": "HOURS",
+      "minutes": "MINUTES"
+    },
+    "eventInfo": {
+      "dateLabel": "Thời gian: ",
+      "dateValue": "26/12/2025",
+      "venueLabel": "Địa điểm:",
+      "venueValue": "Âu Cơ Art Center",
+      "livestream": "Tường thuật trực tiếp qua sóng Livestream"
+    },
+    "about": {
+      "sectionCta": "ABOUT AWARDS",
+      "heroParagraph1": "Đứng trước bối cảnh thay đổi như vũ bão của thời đại AI và yêu cầu ngày càng cao từ khách hàng, Sun* lựa chọn chiến lược đa dạng hóa năng lực để không chỉ nỗ lực trở thành tinh anh trong lĩnh vực của mình, mà còn hướng đến một cái đích cao hơn, nơi mọi Sunner đều là \"problem-solver\" - chuyên gia trong việc giải quyết mọi vấn đề, tìm lời giải cho mọi bài toán của dự án, khách hàng và xã hội. Lấy cảm hứng từ sự đa dạng năng lực, khả năng phát triển linh hoạt cùng tinh thần đào sâu để bứt phá trong kỷ nguyên AI, \"Root Further\" đã được chọn để trở thành chủ đề chính thức của Lễ trao giải Sun* Annual Awards 2025. Vượt ra khỏi nét nghĩa bề mặt, \"Root Further\" chính là hành trình chúng ta không ngừng vươn xa hơn, cắm rễ mạnh hơn, chạm đến những tầng \"địa chất\" ẩn sâu để tiếp tục tồn tại, vươn lên và nuôi dưỡng đam mê kiến tạo giá trị luôn cháy bỏng của người Sun*.",
+      "quote": "\"A tree with deep roots fears no storm\" (Cây sâu bén rễ, bão giông chẳng nề - Ngạn ngữ Anh)",
+      "heroParagraph2": "Trước giông bão, chỉ những tán cây có bộ rễ đủ mạnh mới có thể trụ vững. Một tổ chức với những cá nhân tự tin vào năng lực đa dạng, sẵn sàng kiến tạo và đón nhận thử thách, làm chủ sự thay đổi là tổ chức không chỉ vững vàng trước biến động, mà còn khai thác được mọi lợi thế, chinh phục các thách thức của thời cuộc. Không đơn thuần là tên gọi của chương mới trên hành trình phát triển tổ chức, \"Root Further\" còn như một lời cổ vũ, động viên mỗi chúng ta hãy dám tin vào bản thân, dám đào sâu, khai mở mọi tiềm năng, dám phá bỏ giới hạn, dám trở thành phiên bản đa nhiệm và xuất sắc nhất của mình. Bởi trong thời đại AI, đa dạng năng lực và tận dụng sức mạnh thời cuộc chính là điều kiện tiên quyết để trường tồn."
+    },
+    "awards": {
+      "sectionTitle": "Hệ thống giải thưởng",
+      "sectionCta": "Sun* annual awards 2025",
+      "topTalentTitle": "Top Talent",
+      "topTalentDesc": "Vinh danh top cá nhân xuất sắc trên mọi phương diện",
+      "topProjectTitle": "Top Project",
+      "topProjectDesc": "Vinh danh dự án xuất sắc nhất trong năm",
+      "topProjectLeaderTitle": "Top Project Leader",
+      "topProjectLeaderDesc": "Vinh danh nhà lãnh đạo dự án xuất sắc",
+      "bestManagerTitle": "Best Manager",
+      "bestManagerDesc": "Vinh danh quản lý truyền cảm hứng và hiệu quả nhất",
+      "signature2025CreatorTitle": "Signature 2025 - Creator",
+      "signature2025CreatorDesc": "Vinh danh cá nhân sáng tạo dấu ấn nổi bật năm 2025",
+      "mvpTitle": "MVP",
+      "mvpDesc": "Vinh danh cá nhân có giá trị đóng góp cao nhất",
+      "detailsCta": "Chi tiết"
+    },
+    "kudos": {
+      "sectionLabel": "Phong trào ghi nhận",
+      "title": "Sun* Kudos",
+      "sectionCta": "ABOUT KUDOS",
+      "detailsCta": "Chi tiết",
+      "highlight": "ĐIỂM MỚI CỦA SAA 2025",
+      "description": "Hoạt động ghi nhận và cảm ơn đồng nghiệp - lần đầu tiên được diễn ra dành cho tất cả Sunner. Hoạt động sẽ được triển khai vào tháng 11/2025, khuyến khích người Sun* chia sẻ những lời ghi nhận, cảm ơn đồng nghiệp trên hệ thống do BTC công bố. Đây sẽ là chất liệu để Hội đồng Heads tham khảo trong quá trình lựa chọn người đạt giải."
+    },
+    "footer": {
+      "copyright": "Bản quyền thuộc về Sun* © 2025",
+      "aboutSaa": "About SAA 2025",
+      "awardInformation": "Award Information",
+      "kudos": "Sun* Kudos",
+      "standards": "Tiêu chuẩn chung"
+    },
+    "comingSoonPage": {
+      "title": "Trang này sắp ra mắt",
+      "backHome": "Quay lại trang chủ"
+    },
+    "fab": {
+      "openAriaLabel": "Mở menu hành động",
+      "closeAriaLabel": "Đóng menu hành động",
+      "theleLabel": "Thể lệ",
+      "writeKudosLabel": "Viết KUDOS"
+    },
+    "thele": {
+      "panelTitle": "Thể lệ",
+      "receiverSectionTitle": "NGƯỜI NHẬN KUDOS: HUY HIỆU HERO CHO NHỮNG ẢNH HƯỞNG TÍCH CỰC",
+      "receiverDesc": "Dựa trên số lượng đồng đội gửi trao Kudos, bạn sẽ sở hữu Huy hiệu Hero tương ứng, được hiển thị trực tiếp cạnh tên profile",
+      "newHeroCondition": "Có 1-4 người gửi Kudos cho bạn",
+      "newHeroDesc": "Hành trình lan tỏa điều tốt đẹp bắt đầu – những lời cảm ơn và ghi nhận đầu tiên đã tìm đến bạn.",
+      "risingHeroCondition": "Có 5-9 người gửi Kudos cho bạn",
+      "risingHeroDesc": "Hình ảnh bạn đang lớn dần trong trái tim đồng đội bằng sự tử tế và cống hiến của mình.",
+      "superHeroCondition": "Có 10–20 người gửi Kudos cho bạn",
+      "superHeroDesc": "Bạn đã trở thành biểu tượng được tin tưởng và yêu quý, người luôn sẵn sàng hỗ trợ và được nhiều đồng đội nhớ đến.",
+      "legendHeroCondition": "Có hơn 20 người gửi Kudos cho bạn",
+      "legendHeroDesc": "Bạn đã trở thành huyền thoại – người để lại dấu ấn khó quên trong tập thể bằng trái tim và hành động của mình.",
+      "senderSectionTitle": "NGƯỜI GỬI KUDOS: SƯU TẬP TRỌN BỘ 6 ICON, NHẬN NGAY PHẦN QUÀ BÍ ẨN",
+      "senderDesc": "Mỗi lời Kudos bạn gửi sẽ được đăng tải trên hệ thống và nhận về những lượt ❤️ từ cộng đồng Sunner. Cứ mỗi 5 lượt ❤️, bạn sẽ được mở 1 Secret Box, với cơ hội nhận về một trong 6 icon độc quyền của SAA.",
+      "iconRevival": "REVIVAL",
+      "iconTouchOfLight": "TOUCH OF LIGHT",
+      "iconStayGold": "STAY GOLD",
+      "iconFlowToHorizon": "FLOW TO HORIZON",
+      "iconBeyondTheBoundary": "BEYOND THE BOUNDARY",
+      "iconRootFurther": "ROOT FURTHER",
+      "senderCollectionReward": "Những Sunner thu thập trọn bộ 6 icon sẽ nhận về một phần quà bí ẩn từ SAA 2025.",
+      "nationalKudosTitle": "KUDOS QUỐC DÂN",
+      "nationalKudosDesc": "5 Kudos nhận về nhiều ❤️ nhất toàn Sun* sẽ chính thức trở thành Kudos Quốc Dân và được trao phần quà đặc biệt từ SAA 2025: Root Further.",
+      "closeButton": "Đóng",
+      "writeKudosButton": "Viết KUDOS"
+    }
   }
 }
