@@ -12,7 +12,21 @@ const eslintConfig = defineConfig([
     "out/**",
     "build/**",
     "next-env.d.ts",
+    // Tooling / non-app sources — not part of the application lint surface:
+    ".claude/**", // Takumi/Sixth agent-kit scripts (.cjs, require()-style)
+    "**/.venv/**", // Python virtualenvs (e.g. .claude/skills/.venv)
+    "coverage/**",
   ]),
+  {
+    // Test files & setup: relax rules that legitimately appear in test mocks
+    // (typed-`any` stubs, `require()` for module mocking, throwaway locals).
+    files: ["**/*.test.{ts,tsx}", "vitest.setup.ts"],
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+      "@typescript-eslint/no-require-imports": "off",
+      "@typescript-eslint/no-unused-vars": "off",
+    },
+  },
 ]);
 
 export default eslintConfig;
