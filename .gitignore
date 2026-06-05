@@ -41,8 +41,16 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
-# claude
+# claude — ignore local tooling state, but keep the committed session hook + settings
 /.claude/*
+!/.claude/settings.json
+!/.claude/hooks/
+
+# playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
 
 /resources/*
 
