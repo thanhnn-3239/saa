@@ -1,6 +1,10 @@
 # Phase 05 — Vercel + Supabase Cloud Deploy
 
-**Priority:** High · **Status:** pending · **Depends on:** 03
+> **⚠️ SUPERSEDED (2026-06-05)** by `plans/260605-1046-deploy-prod-vercel-supabase/`.
+> That plan extends this runbook to cover the shipped OAuth + i18n work and the June-2025
+> Supabase API-key rename. Use the newer plan for the actual deploy; this file is historical.
+
+**Priority:** High · **Status:** superseded · **Depends on:** 03
 
 Wire production: a managed **Supabase Cloud** project as the backend, the local migrations pushed to
 it, and the Next.js app deployed to **Vercel** with environment variables set per environment.
