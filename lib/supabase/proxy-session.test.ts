@@ -1,6 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
 import { updateSession } from "./proxy-session";
-import { NextRequest, NextResponse } from "next/server";
+import { NextRequest } from "next/server";
 
 // Mock Supabase server client
 vi.mock("@supabase/ssr", () => ({
@@ -9,7 +9,7 @@ vi.mock("@supabase/ssr", () => ({
 
 import { createServerClient } from "@supabase/ssr";
 
-const mockCreateServerClient = createServerClient as any;
+const mockCreateServerClient = createServerClient as unknown as Mock;
 
 /**
  * Helper to create a mock NextRequest with cookie handling

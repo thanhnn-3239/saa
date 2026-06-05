@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach, afterEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, afterEach, type Mock } from "vitest";
 import { signInWithGoogle } from "./oauth-actions";
 import { ALLOWED_DOMAIN } from "./allowed-domain";
 
@@ -9,14 +9,14 @@ vi.mock("@/lib/supabase/client", () => ({
 
 import { createClient } from "@/lib/supabase/client";
 
-const mockCreateClient = createClient as any;
+const mockCreateClient = createClient as unknown as Mock;
 
 describe("signInWithGoogle", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // Mock window.location.origin
-    delete (window as any).location;
-    (window as any).location = { origin: "http://localhost:3000" };
+    delete (window as { location?: unknown }).location;
+    (window as { location: unknown }).location = { origin: "http://localhost:3000" };
   });
 
   afterEach(() => {
@@ -81,7 +81,7 @@ describe("signInWithGoogle", () => {
         },
       });
 
-      (window as any).location.origin = "https://example.com:8080";
+      (window as { location: { origin: string } }).location.origin = "https://example.com:8080";
       await signInWithGoogle("/");
 
       const callArgs = mockSignInWithOAuth.mock.calls[0][0];

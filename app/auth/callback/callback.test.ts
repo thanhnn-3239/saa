@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
 import { GET } from "./route";
 import { NextRequest } from "next/server";
 
@@ -9,7 +9,7 @@ vi.mock("@/lib/supabase/server", () => ({
 
 import { createClient } from "@/lib/supabase/server";
 
-const mockCreateClient = createClient as any;
+const mockCreateClient = createClient as unknown as Mock;
 
 /**
  * Helper to create a mock NextRequest for /auth/callback

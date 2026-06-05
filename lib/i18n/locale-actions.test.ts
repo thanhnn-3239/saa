@@ -1,6 +1,6 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
 import { setLocale } from "./locale-actions";
-import { LOCALE_COOKIE } from "./config";
+import { LOCALE_COOKIE, type Locale } from "./config";
 
 // Mock next/headers cookies
 vi.mock("next/headers", () => ({
@@ -9,10 +9,10 @@ vi.mock("next/headers", () => ({
 
 import { cookies } from "next/headers";
 
-const mockCookies = cookies as any;
+const mockCookies = cookies as unknown as Mock;
 
 describe("locale-actions", () => {
-  let mockCookieStore: any;
+  let mockCookieStore: { set: Mock };
 
   beforeEach(() => {
     vi.clearAllMocks();
@@ -58,19 +58,19 @@ describe("locale-actions", () => {
     });
 
     it("ignores invalid locale and does not set cookie", async () => {
-      await setLocale("fr" as any);
+      await setLocale("fr" as unknown as Locale);
 
       expect(mockCookieStore.set).not.toHaveBeenCalled();
     });
 
     it("ignores invalid locale 'de' and does not set cookie", async () => {
-      await setLocale("de" as any);
+      await setLocale("de" as unknown as Locale);
 
       expect(mockCookieStore.set).not.toHaveBeenCalled();
     });
 
     it("ignores invalid locale 'invalid' and does not set cookie", async () => {
-      await setLocale("invalid" as any);
+      await setLocale("invalid" as unknown as Locale);
 
       expect(mockCookieStore.set).not.toHaveBeenCalled();
     });

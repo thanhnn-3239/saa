@@ -11,7 +11,7 @@ describe("message files parity", () => {
    * Recursively extract all keys from a nested object.
    * Returns a Set of dot-notation paths (e.g., "Login.error.domain").
    */
-  function getAllKeys(obj: any, prefix = ""): Set<string> {
+  function getAllKeys(obj: Record<string, unknown>, prefix = ""): Set<string> {
     const keys = new Set<string>();
 
     for (const [key, value] of Object.entries(obj)) {
@@ -19,7 +19,7 @@ describe("message files parity", () => {
 
       if (typeof value === "object" && value !== null && !Array.isArray(value)) {
         // Recurse into nested objects
-        getAllKeys(value, fullKey).forEach((k) => keys.add(k));
+        getAllKeys(value as Record<string, unknown>, fullKey).forEach((k) => keys.add(k));
       } else {
         // Leaf node
         keys.add(fullKey);
