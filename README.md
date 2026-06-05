@@ -76,8 +76,24 @@ Open [http://localhost:3000](http://localhost:3000). You will be redirected to `
 ## Running tests
 
 ```bash
-pnpm test            # Vitest + React Testing Library (140 tests)
+pnpm test            # Vitest + React Testing Library (191 tests)
 ```
+
+## CI
+
+Every pull request (and every push to `main`) runs the **CI** workflow
+(`.github/workflows/ci.yml`), which executes the full quality gate — all steps
+are blocking:
+
+```bash
+pnpm install --frozen-lockfile
+pnpm lint            # ESLint (next/core-web-vitals + TypeScript)
+pnpm exec tsc --noEmit  # type-check
+pnpm test            # Vitest
+pnpm build           # production build
+```
+
+Run the same checks locally before pushing to keep CI green.
 
 ---
 

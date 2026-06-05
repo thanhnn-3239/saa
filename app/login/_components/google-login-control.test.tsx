@@ -1,4 +1,4 @@
-import { describe, it, expect, vi, beforeEach } from "vitest";
+import { describe, it, expect, vi, beforeEach, type Mock } from "vitest";
 import { screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { renderWithIntl } from "@/test/render-with-intl";
@@ -11,13 +11,13 @@ vi.mock("@/lib/auth/oauth-actions", () => ({
 
 import { signInWithGoogle } from "@/lib/auth/oauth-actions";
 
-const mockSignInWithGoogle = signInWithGoogle as any;
+const mockSignInWithGoogle = signInWithGoogle as unknown as Mock;
 
 describe("GoogleLoginControl", () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // Reset window.location.assign mock
-    (window.location as any).assign = vi.fn();
+    (window.location as unknown as { assign: Mock }).assign = vi.fn();
   });
 
   describe("rendering", () => {
@@ -112,7 +112,7 @@ describe("GoogleLoginControl", () => {
 
       await user.click(button);
 
-      expect((window.location as any).assign).toHaveBeenCalledWith(
+      expect((window.location as unknown as { assign: Mock }).assign).toHaveBeenCalledWith(
         "/login?error=oauth"
       );
     });
@@ -126,7 +126,7 @@ describe("GoogleLoginControl", () => {
 
       await user.click(button);
 
-      expect((window.location as any).assign).toHaveBeenCalledWith(
+      expect((window.location as unknown as { assign: Mock }).assign).toHaveBeenCalledWith(
         "/login?error=oauth"
       );
       expect(button).not.toBeDisabled();
@@ -141,7 +141,7 @@ describe("GoogleLoginControl", () => {
 
       await user.click(button);
 
-      expect((window.location as any).assign).toHaveBeenCalledWith(
+      expect((window.location as unknown as { assign: Mock }).assign).toHaveBeenCalledWith(
         "/login?error=oauth"
       );
     });
@@ -291,7 +291,7 @@ describe("GoogleLoginControl", () => {
 
       await user.click(button);
 
-      expect((window.location as any).assign).toHaveBeenCalledWith(
+      expect((window.location as unknown as { assign: Mock }).assign).toHaveBeenCalledWith(
         "/login?error=oauth"
       );
     });
@@ -305,7 +305,7 @@ describe("GoogleLoginControl", () => {
 
       await user.click(button);
 
-      const assignCall = (window.location as any).assign.mock.calls[0][0];
+      const assignCall = (window.location as unknown as { assign: Mock }).assign.mock.calls[0][0];
       expect(assignCall).toMatch(/^\/login\?error=oauth$/);
     });
   });
@@ -319,7 +319,7 @@ describe("GoogleLoginControl", () => {
       });
       mockSignInWithGoogle.mockReturnValue(signInPromise);
 
-      const { rerender } = renderWithIntl(<GoogleLoginControl />);
+      renderWithIntl(<GoogleLoginControl />);
       const firstButton = screen.getByRole("button");
 
       await user.click(firstButton);

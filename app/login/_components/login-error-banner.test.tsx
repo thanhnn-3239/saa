@@ -74,7 +74,7 @@ describe("LoginErrorBanner", () => {
 
     it("hides banner when close button is clicked", async () => {
       const user = userEvent.setup();
-      const { container } = renderWithIntl(<LoginErrorBanner code="domain" />);
+      renderWithIntl(<LoginErrorBanner code="domain" />);
 
       const closeButton = screen.getByRole("button");
       expect(screen.getByRole("alert")).toBeInTheDocument();
@@ -183,7 +183,7 @@ describe("LoginErrorBanner", () => {
 
   describe("multiple instances", () => {
     it("handles multiple banner instances independently", () => {
-      const { container } = renderWithIntl(
+      renderWithIntl(
         <>
           <LoginErrorBanner code="domain" />
           <LoginErrorBanner code="oauth" />
