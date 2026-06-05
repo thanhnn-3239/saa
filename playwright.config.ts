@@ -32,6 +32,23 @@ export default defineConfig({
       name: "chromium",
       use: { ...devices["Desktop Chrome"] },
     },
+    // --- Authenticated tests (to wire up once the login feature lands) ---
+    // Decision: Approach A — programmatic login + storageState (no prod code
+    // changes, exercises the real Supabase session/cookie path).
+    //
+    // 1. Add a setup project that runs `e2e/auth.setup.ts` once:
+    //      { name: "setup", testMatch: /.*\.setup\.ts/ }
+    //    In it, against LOCAL Supabase (`supabase start`), use the service_role
+    //    key to `admin.createUser` a confirmed @sun-asterisk.com test user, then
+    //    sign in via the @supabase/ssr browser client so it writes the
+    //    `sb-*-auth-token` cookie the proxy reads, and
+    //    `page.context().storageState({ path: "playwright/.auth/user.json" })`.
+    // 2. Add an authenticated project that depends on "setup" and reuses it:
+    //      { name: "chromium-auth", dependencies: ["setup"],
+    //        use: { ...devices["Desktop Chrome"],
+    //               storageState: "playwright/.auth/user.json" } }
+    //    Tests there start already logged in and skip the OAuth UI entirely.
+    // `playwright/.auth/` is already git-ignored.
   ],
   // Build + start the production server, like real users hit it. Falls back to
   // an already-running dev server locally so iterating is fast.
