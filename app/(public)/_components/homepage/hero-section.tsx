@@ -11,23 +11,11 @@ export async function HeroSection() {
   return (
     // mm:2167:9030
     <section
-      className="relative w-full"
-      style={{
-        minHeight: "100vh",
-        background: "transparent",
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        justifyContent: "center",
-        padding: "96px 0",
-      }}
+      className="relative w-full min-h-screen flex flex-col items-center justify-center py-24 bg-transparent"
     >
       {/* Keyvisual background — z-index:0, content gets z-index:1 */}
       {/* mm:2167:9027 */}
-      <div
-        className="absolute inset-0"
-        style={{ pointerEvents: "none", zIndex: 0 }}
-      >
+      <div className="absolute inset-0 pointer-events-none z-0">
         {/* mm:2167:9028 */}
         <Image
           src="/homepage-saa/Keyvisual_BG.png"
@@ -38,22 +26,13 @@ export async function HeroSection() {
         />
         {/* Dark overlay */}
         {/* mm:2167:9029 */}
-        <div
-          className="absolute inset-0"
-          style={{ background: "rgba(10,16,20,0.55)" }}
-        />
+        <div className="absolute inset-0 bg-[rgba(10,16,20,0.55)]" />
       </div>
 
       {/* Centered content container */}
-      <div
-        className="mx-auto w-full px-4 sm:px-8 lg:px-[144px]"
-        style={{ maxWidth: "1512px", position: "relative", zIndex: 1 }}
-      >
+      <div className="mx-auto w-full px-4 sm:px-8 lg:px-[144px] relative z-[1] max-w-[1512px]">
         {/* mm:2167:9031 */}
-        <div
-          className="flex flex-col"
-          style={{ gap: "40px" }}
-        >
+        <div className="flex flex-col gap-10">
           {/* ROOT FURTHER logo */}
           {/* mm:2167:9032 */}
           <div>
@@ -63,93 +42,47 @@ export async function HeroSection() {
               alt="Root Further"
               width={451}
               height={200}
-              className="max-w-full h-auto"
-              style={{ objectFit: "contain" }}
+              className="max-w-full h-auto object-contain"
               priority
             />
           </div>
 
           {/* Countdown + event info */}
           {/* mm:2167:9034 */}
-          <div className="flex flex-col" style={{ gap: "16px" }}>
+          <div className="flex flex-col gap-4">
             {/* mm:2167:9035 — live countdown (client component) */}
             <CountdownLive />
 
             {/* Event info */}
             {/* mm:2167:9053 */}
-            <div className="flex flex-col" style={{ gap: "8px" }}>
+            <div className="flex flex-col gap-2">
               {/* mm:2167:9054 */}
-              <div className="flex flex-row flex-wrap" style={{ gap: "60px", alignItems: "center" }}>
+              <div className="flex flex-row flex-wrap items-center gap-[60px]">
                 {/* mm:2167:9055 — date */}
-                <div className="flex flex-row items-baseline" style={{ gap: "4px" }}>
+                <div className="flex flex-row items-baseline gap-1">
                   {/* mm:2167:9056 */}
-                  <span
-                    style={{
-                      fontFamily: "Montserrat, sans-serif",
-                      fontWeight: 700,
-                      fontSize: "16px",
-                      lineHeight: "24px",
-                      color: "#fff",
-                      letterSpacing: "0.15px",
-                    }}
-                  >
+                  <span className="font-montserrat font-bold text-base leading-6 text-white tracking-[0.15px]">
                     {t("eventInfo.dateLabel")}
                   </span>
                   {/* mm:2167:9057 */}
-                  <span
-                    style={{
-                      fontFamily: "Montserrat, sans-serif",
-                      fontWeight: 700,
-                      fontSize: "24px",
-                      lineHeight: "32px",
-                      color: "#FFEA9E",
-                      letterSpacing: 0,
-                    }}
-                  >
+                  <span className="font-montserrat font-bold text-2xl leading-8 text-saa-gold-accent tracking-[0]">
                     {t("eventInfo.dateValue")}
                   </span>
                 </div>
                 {/* mm:2167:9058 — venue */}
-                <div className="flex flex-row items-baseline" style={{ gap: "4px" }}>
+                <div className="flex flex-row items-baseline gap-1">
                   {/* mm:2167:9060 */}
-                  <span
-                    style={{
-                      fontFamily: "Montserrat, sans-serif",
-                      fontWeight: 700,
-                      fontSize: "16px",
-                      lineHeight: "24px",
-                      color: "#fff",
-                      letterSpacing: "0.15px",
-                    }}
-                  >
+                  <span className="font-montserrat font-bold text-base leading-6 text-white tracking-[0.15px]">
                     {t("eventInfo.venueLabel")}
                   </span>
                   {/* mm:2167:9059 */}
-                  <span
-                    style={{
-                      fontFamily: "Montserrat, sans-serif",
-                      fontWeight: 700,
-                      fontSize: "24px",
-                      lineHeight: "32px",
-                      color: "#FFEA9E",
-                      letterSpacing: 0,
-                    }}
-                  >
+                  <span className="font-montserrat font-bold text-2xl leading-8 text-saa-gold-accent tracking-[0]">
                     {t("eventInfo.venueValue")}
                   </span>
                 </div>
               </div>
               {/* mm:2167:9061 — livestream note */}
-              <span
-                style={{
-                  fontFamily: "Montserrat, sans-serif",
-                  fontWeight: 700,
-                  fontSize: "16px",
-                  lineHeight: "24px",
-                  color: "#fff",
-                  letterSpacing: "0.5px",
-                }}
-              >
+              <span className="font-montserrat font-bold text-base leading-6 text-white tracking-[0.5px]">
                 {t("eventInfo.livestream")}
               </span>
             </div>
@@ -157,30 +90,13 @@ export async function HeroSection() {
 
           {/* CTA buttons */}
           {/* mm:2167:9062 */}
-          <div className="flex flex-row flex-wrap" style={{ gap: "40px" }}>
+          <div className="flex flex-row flex-wrap gap-10">
             {/* mm:2167:9063 — About Awards (primary gold) → awards-information */}
             <Link
               href={ROUTES.awardsInfo}
-              className="inline-flex items-center gap-2 transition-opacity hover:opacity-90"
-              style={{
-                padding: "16px 24px",
-                borderRadius: "8px",
-                backgroundColor: "#FFEA9E",
-                textDecoration: "none",
-                flexShrink: 0,
-              }}
+              className="inline-flex items-center gap-2 transition-opacity hover:opacity-90 p-4 px-6 rounded-saa-button bg-saa-gold-accent no-underline shrink-0"
             >
-              <span
-                style={{
-                  fontFamily: "Montserrat, sans-serif",
-                  fontWeight: 700,
-                  fontSize: "16px",
-                  lineHeight: "24px",
-                  color: "#00101A",
-                  letterSpacing: "0.15px",
-                  whiteSpace: "nowrap",
-                }}
-              >
+              <span className="font-montserrat font-bold text-base leading-6 text-saa-navy-darkest tracking-[0.15px] whitespace-nowrap">
                 {t("about.sectionCta")}
               </span>
               {/* mm:I2167:9063;186:1766 — arrow icon */}
@@ -190,7 +106,7 @@ export async function HeroSection() {
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                style={{ color: "#00101A", flexShrink: 0 }}
+                className="text-saa-navy-darkest shrink-0"
                 aria-hidden="true"
               >
                 <path
@@ -206,27 +122,9 @@ export async function HeroSection() {
             {/* mm:2167:9064 — About Kudos (secondary outlined) → sun-kudos */}
             <Link
               href={ROUTES.kudos}
-              className="inline-flex items-center gap-2 transition-opacity hover:opacity-90"
-              style={{
-                padding: "16px 24px",
-                borderRadius: "8px",
-                border: "1px solid #998C5F",
-                background: "rgba(255, 234, 158, 0.10)",
-                textDecoration: "none",
-                flexShrink: 0,
-              }}
+              className="inline-flex items-center gap-2 transition-opacity hover:opacity-90 p-4 px-6 rounded-saa-button border border-saa-gold-border bg-saa-gold-glass no-underline shrink-0"
             >
-              <span
-                style={{
-                  fontFamily: "Montserrat, sans-serif",
-                  fontWeight: 700,
-                  fontSize: "16px",
-                  lineHeight: "24px",
-                  color: "#fff",
-                  letterSpacing: "0.15px",
-                  whiteSpace: "nowrap",
-                }}
-              >
+              <span className="font-montserrat font-bold text-base leading-6 text-white tracking-[0.15px] whitespace-nowrap">
                 {t("kudos.sectionCta")}
               </span>
               {/* mm:I2167:9064;186:2761 — arrow icon */}
@@ -236,7 +134,7 @@ export async function HeroSection() {
                 viewBox="0 0 24 24"
                 fill="none"
                 xmlns="http://www.w3.org/2000/svg"
-                style={{ color: "#fff", flexShrink: 0 }}
+                className="text-white shrink-0"
                 aria-hidden="true"
               >
                 <path

@@ -29,11 +29,12 @@ export function LoginButton({ onClick, loading = false, disabled = false }: Logi
       type="button"
       onClick={isDisabled ? undefined : onClick}
       disabled={isDisabled}
-      className="w-full max-w-xs sm:w-auto sm:max-w-none flex items-center justify-start border-none focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+      className="w-full max-w-xs sm:w-auto sm:max-w-none flex items-center justify-start py-4 px-4 sm:px-6 border-none focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
       style={{
-        /* On desktop: auto width (fits text); on mobile: full width via className */
+        /* On desktop: auto width (fits text); on mobile: full width via className.
+           Horizontal padding is responsive (px-4 mobile / sm:px-6) so the label + icon
+           fit inside the width-capped mobile button. */
         height: "60px",
-        padding: "16px 24px",
         gap: "8px",
         borderRadius: "8px",
         backgroundColor: isDisabled ? "rgba(255, 234, 158, 0.5)" : "rgba(255, 234, 158, 1)",
@@ -59,19 +60,21 @@ export function LoginButton({ onClick, loading = false, disabled = false }: Logi
       }}
     >
       {/* Text area — Frame 483. Width is flex so text doesn't clip. */}
-      <span className="flex flex-1 items-center" style={{ gap: "4px", height: "28px" }}>
+      <span className="flex flex-1 items-center min-w-0" style={{ gap: "4px", height: "28px" }}>
         {loading ? (
           <Spinner />
         ) : (
           <span
+            /* Responsive label: 16px on mobile so the label + Google icon fit inside the
+               width-capped button; full 22px (design) from the sm breakpoint up.
+               `truncate` is a guard — if a longer locale string ever exceeds the box it
+               ellipsizes instead of shoving the icon outside the button (the original bug). */
+            className="text-base leading-7 sm:text-[22px] truncate"
             style={{
               fontFamily: "Montserrat, sans-serif",
               fontWeight: 700,
-              fontSize: "22px",
-              lineHeight: "28px",
               letterSpacing: "0px",
               color: "rgba(0, 16, 26, 1)",
-              whiteSpace: "nowrap",
             }}
           >
             {t("loginButton")}

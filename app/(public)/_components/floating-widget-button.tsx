@@ -60,46 +60,15 @@ export function FloatingWidgetButton() {
       {/* Speed-dial root — fixed bottom-right */}
       <div
         data-fab-root
-        className="fixed z-50"
-        style={{ bottom: "40px", right: "19px" }}
+        className="fixed z-50 bottom-10 right-[19px]"
       >
         {/* Action buttons — shown when expanded */}
         {expanded && (
-          <div
-            style={{
-              display: "flex",
-              flexDirection: "column",
-              gap: "20px",
-              alignItems: "flex-end",
-              marginBottom: "20px",
-            }}
-          >
+          <div className="flex flex-col gap-5 items-end mb-5">
             {/* "Thể lệ" action button */}
             <button
               onClick={handleThele}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                padding: "16px",
-                borderRadius: "4px",
-                backgroundColor: "rgba(255, 234, 158, 1)",
-                color: "rgba(0, 16, 26, 1)",
-                fontFamily: "Montserrat, sans-serif",
-                fontWeight: 700,
-                fontSize: "24px",
-                lineHeight: "32px",
-                border: "none",
-                cursor: "pointer",
-                whiteSpace: "nowrap",
-                transition: "opacity 200ms ease",
-              }}
-              onMouseEnter={(e) =>
-                ((e.currentTarget as HTMLButtonElement).style.opacity = "0.85")
-              }
-              onMouseLeave={(e) =>
-                ((e.currentTarget as HTMLButtonElement).style.opacity = "1")
-              }
+              className="flex items-center gap-2 p-4 rounded bg-saa-gold-accent text-saa-navy-darkest font-montserrat font-bold text-2xl leading-8 border-none cursor-pointer whitespace-nowrap transition-opacity duration-200 ease-[ease] hover:opacity-85"
             >
               <Image
                 src="/homepage-saa/kudos/LOGO.svg"
@@ -113,29 +82,7 @@ export function FloatingWidgetButton() {
             {/* "Viết KUDOS" action button */}
             <button
               onClick={handleWriteKudos}
-              style={{
-                display: "flex",
-                alignItems: "center",
-                gap: "8px",
-                padding: "16px",
-                borderRadius: "4px",
-                backgroundColor: "rgba(255, 234, 158, 1)",
-                color: "rgba(0, 16, 26, 1)",
-                fontFamily: "Montserrat, sans-serif",
-                fontWeight: 700,
-                fontSize: "24px",
-                lineHeight: "32px",
-                border: "none",
-                cursor: "pointer",
-                whiteSpace: "nowrap",
-                transition: "opacity 200ms ease",
-              }}
-              onMouseEnter={(e) =>
-                ((e.currentTarget as HTMLButtonElement).style.opacity = "0.85")
-              }
-              onMouseLeave={(e) =>
-                ((e.currentTarget as HTMLButtonElement).style.opacity = "1")
-              }
+              className="flex items-center gap-2 p-4 rounded bg-saa-gold-accent text-saa-navy-darkest font-montserrat font-bold text-2xl leading-8 border-none cursor-pointer whitespace-nowrap transition-opacity duration-200 ease-[ease] hover:opacity-85"
             >
               <Image
                 src="/homepage-saa/kudos/Pen.svg"
@@ -156,33 +103,14 @@ export function FloatingWidgetButton() {
             onClick={handleToggle}
             aria-label={t("closeAriaLabel")}
             aria-expanded={true}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "56px",
-              height: "56px",
-              borderRadius: "100px",
-              backgroundColor: "rgba(212, 39, 29, 1)",
-              border: "none",
-              cursor: "pointer",
-              padding: "16px",
-              marginLeft: "auto",
-              transition: "opacity 200ms ease",
-            }}
-            onMouseEnter={(e) =>
-              ((e.currentTarget as HTMLButtonElement).style.opacity = "0.85")
-            }
-            onMouseLeave={(e) =>
-              ((e.currentTarget as HTMLButtonElement).style.opacity = "1")
-            }
+            className="flex items-center justify-center w-14 h-14 rounded-full bg-[rgba(212,39,29,1)] border-none cursor-pointer p-4 ml-auto transition-opacity duration-200 ease-[ease] hover:opacity-85"
           >
             <Image
               src="/homepage-saa/kudos/Close.svg"
               alt=""
               width={24}
               height={24}
-              style={{ filter: "brightness(0) invert(1)" }}
+              className="[filter:brightness(0)_invert(1)]"
             />
           </button>
         ) : (
@@ -192,45 +120,18 @@ export function FloatingWidgetButton() {
             onClick={handleToggle}
             aria-label={t("openAriaLabel")}
             aria-expanded={false}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              gap: "8px",
-              padding: "16px",
-              borderRadius: "100px",
-              backgroundColor: "rgba(255, 234, 158, 1)",
-              boxShadow: "0 4px 4px 0 rgba(0, 0, 0, 0.25), 0 0 6px 0 #FAE287",
-              border: "none",
-              cursor: "pointer",
-              width: "106px",
-              height: "64px",
-              transition: "opacity 200ms ease",
-            }}
-            onMouseEnter={(e) =>
-              ((e.currentTarget as HTMLButtonElement).style.opacity = "0.9")
-            }
-            onMouseLeave={(e) =>
-              ((e.currentTarget as HTMLButtonElement).style.opacity = "1")
-            }
+            className="flex items-center gap-2 p-4 rounded-full bg-saa-gold-accent shadow-saa-glow border-none cursor-pointer w-[106px] h-16 transition-opacity duration-200 ease-[ease] hover:opacity-90"
           >
             {/* Pen icon + slash + SAA bolt logo */}
-            <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+            <div className="flex items-center gap-2">
               <Image
                 src="/homepage-saa/kudos/Pen.svg"
                 alt=""
                 width={24}
                 height={24}
-                style={{ objectFit: "contain" }}
+                className="object-contain"
               />
-              <span
-                style={{
-                  fontFamily: "Montserrat, sans-serif",
-                  fontWeight: 700,
-                  fontSize: "24px",
-                  lineHeight: "32px",
-                  color: "rgba(0, 16, 26, 1)",
-                }}
-              >
+              <span className="font-montserrat font-bold text-2xl leading-8 text-saa-navy-darkest">
                 /
               </span>
             </div>
@@ -239,7 +140,7 @@ export function FloatingWidgetButton() {
               alt="SAA"
               width={20}
               height={18}
-              style={{ objectFit: "contain" }}
+              className="object-contain"
             />
           </button>
         )}

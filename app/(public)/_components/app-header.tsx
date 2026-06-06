@@ -21,48 +21,30 @@ export function AppHeader({ languageSwitcher, authControls, navLabels }: AppHead
   return (
     // mm:2167:9091
     <header
-      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 sm:px-8 lg:px-36"
-      style={{
-        height: "80px",
-        backgroundColor: "rgba(16, 20, 23, 0.80)",
-        backdropFilter: "blur(8px)",
-        gap: "16px",
-      }}
+      className="fixed top-0 left-0 right-0 z-50 flex items-center justify-between px-4 sm:px-8 lg:px-36 h-20 gap-4 bg-[rgba(16,20,23,0.80)] [backdrop-filter:blur(8px)]"
     >
       {/* Left: logo + nav */}
       {/* mm:I2167:9091;186:2166 */}
-      <div className="flex items-center" style={{ gap: "64px", flexShrink: 0 }}>
+      <div className="flex items-center gap-16 shrink-0">
         {/* mm:I2167:9091;178:1033 — Logo → home */}
-        <Link href={ROUTES.home} style={{ display: "flex", flexShrink: 0 }}>
+        <Link href={ROUTES.home} className="flex shrink-0">
           {/* mm:I2167:9091;178:1033;178:1030 */}
           <Image
             src="/homepage-saa/Logo.png"
             alt="Sun* Annual Awards"
             width={52}
             height={48}
-            style={{ objectFit: "contain" }}
+            className="object-contain"
             priority
           />
         </Link>
 
         {/* mm:I2167:9091;178:653 — Nav links (hidden on mobile, shown from md) */}
-        <nav className="hidden md:flex items-center" style={{ gap: "24px" }}>
+        <nav className="hidden md:flex items-center gap-6">
           {/* mm:I2167:9091;186:1579 — About SAA 2025 (active / selected state) */}
           <Link
             href={ROUTES.home}
-            className="flex items-center px-4 py-4 text-sm font-bold transition-colors hover:opacity-80"
-            style={{
-              fontFamily: "Montserrat, sans-serif",
-              fontWeight: 700,
-              fontSize: "14px",
-              lineHeight: "20px",
-              color: "#FFEA9E",
-              letterSpacing: "0.1px",
-              textDecoration: "none",
-              borderBottom: "1px solid #FFEA9E",
-              textShadow: "0 4px 4px rgba(0,0,0,0.25), 0 0 6px #FAE287",
-              whiteSpace: "nowrap",
-            }}
+            className="flex items-center px-4 py-4 font-montserrat font-bold text-sm leading-5 text-saa-gold-accent tracking-[0.1px] no-underline border-b border-saa-gold-accent transition-colors hover:opacity-80 whitespace-nowrap [text-shadow:0_4px_4px_rgba(0,0,0,0.25),0_0_6px_#FAE287]"
           >
             {navLabels.aboutSaa}
           </Link>
@@ -70,18 +52,7 @@ export function AppHeader({ languageSwitcher, authControls, navLabels }: AppHead
           {/* mm:I2167:9091;186:1587 — Awards Information */}
           <Link
             href={ROUTES.awardsInfo}
-            className="flex items-center px-4 py-4 transition-colors hover:opacity-80"
-            style={{
-              fontFamily: "Montserrat, sans-serif",
-              fontWeight: 700,
-              fontSize: "14px",
-              lineHeight: "20px",
-              color: "#fff",
-              letterSpacing: "0.1px",
-              textDecoration: "none",
-              borderRadius: "4px",
-              whiteSpace: "nowrap",
-            }}
+            className="flex items-center px-4 py-4 font-montserrat font-bold text-sm leading-5 text-white tracking-[0.1px] no-underline rounded transition-colors hover:opacity-80 whitespace-nowrap"
           >
             {navLabels.awardInformation}
           </Link>
@@ -89,18 +60,7 @@ export function AppHeader({ languageSwitcher, authControls, navLabels }: AppHead
           {/* mm:I2167:9091;186:1593 — Sun* Kudos */}
           <Link
             href={ROUTES.kudos}
-            className="flex items-center px-4 py-4 transition-colors hover:opacity-80"
-            style={{
-              fontFamily: "Montserrat, sans-serif",
-              fontWeight: 700,
-              fontSize: "14px",
-              lineHeight: "20px",
-              color: "#fff",
-              letterSpacing: "0.1px",
-              textDecoration: "none",
-              borderRadius: "4px",
-              whiteSpace: "nowrap",
-            }}
+            className="flex items-center px-4 py-4 font-montserrat font-bold text-sm leading-5 text-white tracking-[0.1px] no-underline rounded transition-colors hover:opacity-80 whitespace-nowrap"
           >
             {navLabels.kudos}
           </Link>
@@ -109,7 +69,7 @@ export function AppHeader({ languageSwitcher, authControls, navLabels }: AppHead
 
       {/* Right: language switcher + auth controls */}
       {/* mm:I2167:9091;186:1601 */}
-      <div className="flex items-center" style={{ gap: "8px", flexShrink: 0 }}>
+      <div className="flex items-center gap-2 shrink-0">
         {/* mm:I2167:9091;186:1696 — Language switcher (replaces static "VN" placeholder) */}
         {languageSwitcher}
 

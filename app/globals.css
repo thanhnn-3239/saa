@@ -38,15 +38,33 @@
   --color-saa-navy-elevated: #1a2a35;
   --color-saa-navy-border: #2e3940;
 
-  /* Gold accent */
+  /* Header / footer base surface */
+  --color-saa-ink: #101417;
+
+  /* Gold — shipped values (reconciled) */
+  --color-saa-gold-accent: #FFEA9E;   /* primary CTA / accent — most used */
+  --color-saa-gold-bright: #FAE287;   /* glow / bright accents */
+  --color-saa-gold-vivid:  #FFD221;   /* vivid highlight */
+  --color-saa-gold-border: #998C5F;   /* muted gold border */
+  /* @deprecated: not the shipped gold; remove after #c9a84c usages migrate */
   --color-saa-gold: #c9a84c;
   --color-saa-gold-light: #e5c96e;
   --color-saa-gold-dark: #a07830;
+
+  /* Error / destructive */
+  --color-saa-error: #F50100;
 
   /* Text on dark */
   --color-saa-text-primary: rgba(255, 255, 255, 1);
   --color-saa-text-secondary: rgba(255, 255, 255, 0.7);
   --color-saa-text-muted: rgba(255, 255, 255, 0.45);
+
+  /* ---- SAA explicit alpha tokens (byte-identical rgba — NOT Tailwind /N) ---- */
+  --color-saa-gold-glass: rgba(255, 234, 158, 0.10);  /* gold @10% fill — 4× */
+  --color-saa-scrim-black: rgba(0, 0, 0, 0.25);       /* black @25% scrim — 4× */
+
+  /* ---- SAA shadow ---- */
+  --shadow-saa-glow: 0 4px 4px 0 rgba(0, 0, 0, 0.25), 0 0 6px 0 #FAE287;
 
   /* ---- SAA spacing/sizing helpers ---- */
   --radius-saa-card: 12px;
