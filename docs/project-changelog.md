@@ -14,6 +14,9 @@ Significant changes, features, and fixes in reverse-chronological order.
 - **Account menu redesign**: `components/header/account-menu.tsx` updated to MoMorph design — plain user-icon trigger, dark dropdown with Profile / role-gated Admin Dashboard / Logout (label was "Sign out"). All labels use `next-intl` keys under `Home.account.*` namespace (added to `messages/{vi,en}.json`).
 - **Vitest scope**: `vitest.config.ts` now includes `components/**` test files. 275 tests pass.
 
+### Fixed
+- **Login Google button overflow (mobile)**: on narrow viewports (~341px) the 22px nowrap label exceeded the width-capped button, pushing the Google icon ~45px outside the button. `app/login/_components/login-button.tsx` now uses a responsive label (`text-base` on mobile, `sm:text-[22px]` for the design size), tighter mobile padding (`px-4 sm:px-6`), `min-w-0` + `truncate` guard so the icon stays inside. Desktop (22px, auto-width) unchanged. Severity: low (cosmetic, login screen).
+
 ---
 
 ## 2026-06-05
