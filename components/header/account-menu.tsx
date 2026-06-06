@@ -1,10 +1,13 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, type CSSProperties } from "react";
 import Link from "next/link";
 import { useTranslations } from "next-intl";
 import { signOut } from "@/lib/auth/sign-out-action";
 import { ROUTES } from "@/lib/navigation/routes";
+
+/** Highlightable rows in the dropdown. */
+type MenuKey = "profile" | "admin" | "logout";
 
 interface AccountMenuProps {
   /**
@@ -24,12 +27,17 @@ interface AccountMenuProps {
  * - Menu items are <a>/<button> so they receive focus in tab order.
  * - Focus returns to trigger on Escape close.
  *
+ * Highlight: one row is "selected" (cream glow, per the Dropdown-profile design).
+ * Defaults to Profile when opened, and follows mouse hover / keyboard focus so the
+ * highlight moves to whichever row the user is on. Leaving the menu restores Profile.
+ *
  * Admin Dashboard item is ONLY shown when role === "admin" (ID-5/ID-37
  * deferred — hidden until a real role system exists).
  */
 export function AccountMenu({ role }: AccountMenuProps) {
   const t = useTranslations("Home");
   const [open, setOpen] = useState(false);
+  const [active, setActive] = useState<MenuKey>("profile");
   const triggerRef = useRef<HTMLButtonElement>(null);
   const isAdmin = role === "admin";
 
@@ -46,13 +54,45 @@ export function AccountMenu({ role }: AccountMenuProps) {
     return () => document.removeEventListener("keydown", onKey);
   }, [open]);
 
+  // Shared row style. The active row gets the cream glow (design's selected state);
+  // inactive rows are transparent. `extra` carries element-specific overrides.
+  function rowStyle(key: MenuKey, extra?: CSSProperties): CSSProperties {
+    const isActive = active === key;
+    return {
+      display: "flex",
+      alignItems: "center",
+      justifyContent: "space-between",
+      gap: 4,
+      padding: 16,
+      height: 56,
+      borderRadius: 4,
+      fontFamily: "Montserrat, sans-serif",
+      fontSize: 16,
+      fontWeight: 700,
+      color: "#FFF",
+      letterSpacing: "0.15px",
+      textDecoration: "none",
+      cursor: "pointer",
+      background: isActive ? "rgba(255, 234, 158, 0.10)" : "transparent",
+      textShadow: isActive ? "0 4px 4px rgba(0,0,0,0.25), 0 0 6px #FAE287" : "none",
+      ...extra,
+    };
+  }
+
+  const itemClass =
+    "transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white/50";
+
   return (
     <div className="relative">
       {/* Trigger — plain 40×40 user-icon button per Homepage A1.8 */}
       <button
         ref={triggerRef}
         type="button"
-        onClick={() => setOpen((v) => !v)}
+        onClick={() => {
+          // Opening: reset the highlight to the Profile default.
+          if (!open) setActive("profile");
+          setOpen((v) => !v);
+        }}
         aria-haspopup="menu"
         aria-expanded={open}
         aria-label={t("account.menuAria")}
@@ -81,10 +121,12 @@ export function AccountMenu({ role }: AccountMenuProps) {
         />
       )}
 
-      {/* Dropdown menu — Dropdown-profile frame design */}
+      {/* Dropdown menu — Dropdown-profile frame design.
+          onMouseLeave restores the Profile default highlight. */}
       {open && (
         <ul
           role="menu"
+          onMouseLeave={() => setActive("profile")}
           className="absolute right-0 top-full z-20 mt-2"
           style={{
             background: "#00070C",
@@ -94,31 +136,16 @@ export function AccountMenu({ role }: AccountMenuProps) {
             minWidth: 131,
           }}
         >
-          {/* Profile — active/glow background, person icon on the right */}
+          {/* Profile — person icon on the right */}
           <li role="none">
             <Link
               href={ROUTES.profile}
               role="menuitem"
               onClick={() => setOpen(false)}
-              className="transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white/50"
-              style={{
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "space-between",
-                gap: 4,
-                padding: 16,
-                borderRadius: 4,
-                background: "rgba(255, 234, 158, 0.10)",
-                height: 56,
-                fontFamily: "Montserrat, sans-serif",
-                fontSize: 16,
-                fontWeight: 700,
-                color: "#FFF",
-                textShadow: "0 4px 4px rgba(0,0,0,0.25), 0 0 6px #FAE287",
-                letterSpacing: "0.15px",
-                textDecoration: "none",
-                cursor: "pointer",
-              }}
+              onMouseEnter={() => setActive("profile")}
+              onFocus={() => setActive("profile")}
+              className={itemClass}
+              style={rowStyle("profile")}
             >
               <span>{t("account.profile")}</span>
               <PersonIcon />
@@ -135,24 +162,12 @@ export function AccountMenu({ role }: AccountMenuProps) {
                 href="/admin"
                 role="menuitem"
                 onClick={() => setOpen(false)}
-                className="bg-transparent transition-colors hover:bg-white/10 focus:outline-none focus-visible:bg-white/10"
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  gap: 4,
-                  padding: 16,
-                  borderRadius: 4,
-                  height: 56,
-                  fontFamily: "Montserrat, sans-serif",
-                  fontSize: 16,
-                  fontWeight: 700,
-                  color: "#FFF",
-                  letterSpacing: "0.15px",
-                  textDecoration: "none",
-                  cursor: "pointer",
-                }}
+                onMouseEnter={() => setActive("admin")}
+                onFocus={() => setActive("admin")}
+                className={itemClass}
+                style={rowStyle("admin")}
               >
-                {t("account.adminDashboard")}
+                <span>{t("account.adminDashboard")}</span>
               </Link>
             </li>
           )}
@@ -166,25 +181,14 @@ export function AccountMenu({ role }: AccountMenuProps) {
               <button
                 type="submit"
                 role="menuitem"
-                className="bg-transparent transition-colors hover:bg-white/10 focus:outline-none focus-visible:bg-white/10"
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  gap: 4,
-                  padding: 16,
-                  borderRadius: 4,
+                onMouseEnter={() => setActive("logout")}
+                onFocus={() => setActive("logout")}
+                className={itemClass}
+                style={rowStyle("logout", {
                   width: "100%",
-                  height: 56,
                   border: "none",
-                  fontFamily: "Montserrat, sans-serif",
-                  fontSize: 16,
-                  fontWeight: 700,
-                  color: "#FFF",
-                  letterSpacing: "0.15px",
-                  cursor: "pointer",
                   textAlign: "left",
-                }}
+                })}
               >
                 <span>{t("account.logout")}</span>
                 <ChevronRightIcon />
