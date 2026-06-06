@@ -4,7 +4,16 @@ Significant changes, features, and fixes in reverse-chronological order.
 
 ---
 
-## [Unreleased] — 2026-06-05
+## [Unreleased] — 2026-06-06
+
+### Changed
+- **Login-required policy (BREAKING)**: all routes now require authentication. `/`, `/awards-information`, `/sun-kudos`, `/tieu-chuan-chung`, and `/profile` redirect unauthenticated users to `/login`. Only `/login` and `/auth/callback` remain public. Enforced in `lib/supabase/proxy-session.ts` (`PUBLIC_PATHS`); `lib/auth/get-session-user.ts` adds `isAllowedEmail` domain guard as defense-in-depth.
+- **Account menu redesign**: `components/header/account-menu.tsx` updated to MoMorph design — plain user-icon trigger, dark dropdown with Profile / role-gated Admin Dashboard / Logout (label was "Sign out"). All labels use `next-intl` keys under `Home.account.*` namespace (added to `messages/{vi,en}.json`).
+- **Vitest scope**: `vitest.config.ts` now includes `components/**` test files. 275 tests pass.
+
+---
+
+## 2026-06-05
 
 ### Added
 - **Public marketing homepage** (`/`): hero section with live event countdown, awards grid (6 static categories), Sun* Kudos promo, floating widget, footer.
@@ -14,8 +23,9 @@ Significant changes, features, and fixes in reverse-chronological order.
 - New libs: `lib/event/*` (countdown), `lib/awards/categories.ts`, `lib/navigation/routes.ts`, `lib/auth/{get-session-user,sign-out-action}.ts`.
 
 ### Changed
-- **Public access policy**: `/`, `/awards-information`, `/sun-kudos`, `/tieu-chuan-chung` now accessible without login (via `lib/supabase/proxy-session.ts`). `/profile` remains auth-gated.
 - Header notification bell and account menu render only when authenticated.
+
+> **Note:** The public-access policy for marketing pages documented here was reversed in the 2026-06-06 entry above — all routes are now login-required.
 
 ### Deferred
 - Real notifications, user roles, Admin Dashboard, widget menu options, full target pages for public stubs.

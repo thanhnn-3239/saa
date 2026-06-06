@@ -21,6 +21,12 @@
       "standards": "General Standards",
       "langSelectAria": "Select language"
     },
+    "account": {
+      "menuAria": "Account menu",
+      "profile": "Profile",
+      "adminDashboard": "Admin Dashboard",
+      "logout": "Logout"
+    },
     "countdown": {
       "comingSoon": "Coming soon",
       "days": "DAYS",

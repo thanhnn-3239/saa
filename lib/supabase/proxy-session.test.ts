@@ -131,8 +131,8 @@ describe("updateSession", () => {
       expect(response.status).toBe(200);
     });
 
-    it("allows unauthenticated users on / (public homepage)", async () => {
-      // / is in PUBLIC_PATHS — guests see the marketing homepage without logging in.
+    it("redirects unauthenticated users from / to /login (login-required)", async () => {
+      // / is NOT in PUBLIC_PATHS — app is now login-required. Unauthenticated guests are redirected.
       mockCreateServerClient.mockReturnValue({
         auth: {
           getClaims: vi.fn().mockResolvedValue({
@@ -144,7 +144,8 @@ describe("updateSession", () => {
       const request = createMockRequest("/");
       const response = await updateSession(request);
 
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(307);
+      expect(response.headers.get("location")).toContain("/login");
     });
 
     it("redirects unauthenticated users from protected routes to /login", async () => {
@@ -178,6 +179,27 @@ describe("updateSession", () => {
       expect(response.status).toBe(307);
       expect(response.headers.get("location")).toContain("/login");
     });
+
+    it.each([
+      "/awards-information",
+      "/sun-kudos",
+      "/tieu-chuan-chung",
+      "/profile",
+    ])(
+      "redirects unauthenticated users from formerly-public route %s to /login",
+      async (pathname) => {
+        // These paths were in the OLD PUBLIC_PATHS; the app is now login-required.
+        mockCreateServerClient.mockReturnValue({
+          auth: { getClaims: vi.fn().mockResolvedValue({ data: null }) },
+        });
+
+        const request = createMockRequest(pathname);
+        const response = await updateSession(request);
+
+        expect(response.status).toBe(307);
+        expect(response.headers.get("location")).toContain("/login");
+      },
+    );
   });
 
   describe("domain guard (defense-in-depth)", () => {
@@ -252,8 +274,8 @@ describe("updateSession", () => {
   });
 
   describe("edge cases", () => {
-    it("handles missing claims data gracefully — allows public path /", async () => {
-      // null claims → unauthenticated; / is in PUBLIC_PATHS so no redirect.
+    it("handles missing claims data gracefully — redirects from / to /login", async () => {
+      // null claims → unauthenticated; / is NOT in PUBLIC_PATHS (login-required) so redirect.
       mockCreateServerClient.mockReturnValue({
         auth: {
           getClaims: vi.fn().mockResolvedValue({
@@ -265,12 +287,13 @@ describe("updateSession", () => {
       const request = createMockRequest("/");
       const response = await updateSession(request);
 
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(307);
+      expect(response.headers.get("location")).toContain("/login");
     });
 
-    it("treats empty claims object (no sub) as unauthenticated — allows public path /", async () => {
+    it("treats empty claims object (no sub) as unauthenticated — redirects from / to /login", async () => {
       // Empty claims object lacks the `sub` claim → unauthenticated.
-      // / is in PUBLIC_PATHS so guests land on the homepage without redirect.
+      // / is NOT in PUBLIC_PATHS (login-required) so redirect to /login.
       mockCreateServerClient.mockReturnValue({
         auth: {
           getClaims: vi.fn().mockResolvedValue({
@@ -282,7 +305,8 @@ describe("updateSession", () => {
       const request = createMockRequest("/");
       const response = await updateSession(request);
 
-      expect(response.status).toBe(200);
+      expect(response.status).toBe(307);
+      expect(response.headers.get("location")).toContain("/login");
     });
 
     it("preserves cookies on redirect", async () => {
@@ -326,22 +350,6 @@ describe("updateSession", () => {
 
       expect(response.status).toBe(307);
       expect(response.headers.get("location")).toContain("/login");
-    });
-
-    it("handles root path / — unauthenticated guest gets 200 (public homepage)", async () => {
-      // / is in PUBLIC_PATHS; guests must never be redirected to /login from /.
-      mockCreateServerClient.mockReturnValue({
-        auth: {
-          getClaims: vi.fn().mockResolvedValue({
-            data: null,
-          }),
-        },
-      });
-
-      const request = createMockRequest("/");
-      const response = await updateSession(request);
-
-      expect(response.status).toBe(200);
     });
   });
 });

@@ -2,12 +2,11 @@
 
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
+import { useTranslations } from "next-intl";
 import { signOut } from "@/lib/auth/sign-out-action";
 import { ROUTES } from "@/lib/navigation/routes";
 
 interface AccountMenuProps {
-  /** Display name or email shown in the trigger button. */
-  email: string;
   /**
    * User role from JWT custom claims. When "admin", an Admin Dashboard item
    * is shown. Undefined (default) hides it — no role system exists yet.
@@ -28,12 +27,13 @@ interface AccountMenuProps {
  * Admin Dashboard item is ONLY shown when role === "admin" (ID-5/ID-37
  * deferred — hidden until a real role system exists).
  */
-export function AccountMenu({ email, role }: AccountMenuProps) {
+export function AccountMenu({ role }: AccountMenuProps) {
+  const t = useTranslations("Home");
   const [open, setOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
   const isAdmin = role === "admin";
 
-  // Close on Escape key.
+  // Close on Escape key, return focus to trigger.
   useEffect(() => {
     if (!open) return;
     function onKey(e: KeyboardEvent) {
@@ -46,36 +46,30 @@ export function AccountMenu({ email, role }: AccountMenuProps) {
     return () => document.removeEventListener("keydown", onKey);
   }, [open]);
 
-  // Derive a short display label from the email (part before @).
-  const displayName = email.split("@")[0] ?? email;
-
   return (
     <div className="relative">
-      {/* Trigger */}
+      {/* Trigger — plain 40×40 user-icon button per Homepage A1.8 */}
       <button
         ref={triggerRef}
         type="button"
         onClick={() => setOpen((v) => !v)}
         aria-haspopup="menu"
         aria-expanded={open}
-        aria-label={`Account menu for ${displayName}`}
-        className="flex items-center gap-2 rounded-full px-3 py-1.5 transition-colors hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
+        aria-label={t("account.menuAria")}
+        style={{
+          width: 40,
+          height: 40,
+          padding: 10,
+          border: "1px solid #998C5F",
+          borderRadius: 4,
+          background: "transparent",
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          cursor: "pointer",
+        }}
       >
-        {/* Avatar circle */}
-        <span
-          className="flex h-8 w-8 items-center justify-center rounded-full text-xs font-bold uppercase"
-          style={{ backgroundColor: "#c9a84c", color: "#00101a" }}
-          aria-hidden="true"
-        >
-          {displayName.charAt(0)}
-        </span>
-        <span
-          className="hidden max-w-[120px] truncate text-sm font-semibold text-white sm:block"
-          style={{ fontFamily: "Montserrat, sans-serif" }}
-        >
-          {displayName}
-        </span>
-        <ChevronIcon open={open} />
+        <PersonIcon />
       </button>
 
       {/* Outside-click backdrop */}
@@ -87,27 +81,47 @@ export function AccountMenu({ email, role }: AccountMenuProps) {
         />
       )}
 
-      {/* Dropdown menu */}
+      {/* Dropdown menu — Dropdown-profile frame design */}
       {open && (
         <ul
           role="menu"
-          className="absolute right-0 top-full z-20 mt-2 w-48 overflow-hidden rounded-xl shadow-2xl"
+          className="absolute right-0 top-full z-20 mt-2"
           style={{
-            backgroundColor: "#1a2a35",
-            border: "1px solid rgba(46, 57, 64, 1)",
+            background: "#00070C",
+            border: "1px solid #998C5F",
+            borderRadius: 8,
+            padding: 6,
+            minWidth: 131,
           }}
         >
-          {/* Profile link */}
+          {/* Profile — active/glow background, person icon on the right */}
           <li role="none">
             <Link
               href={ROUTES.profile}
               role="menuitem"
               onClick={() => setOpen(false)}
-              className="flex items-center gap-3 px-4 py-3 text-sm text-white transition-colors hover:bg-white/10 focus:outline-none focus-visible:bg-white/10"
-              style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 600 }}
+              className="transition-colors focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-white/50"
+              style={{
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "space-between",
+                gap: 4,
+                padding: 16,
+                borderRadius: 4,
+                background: "rgba(255, 234, 158, 0.10)",
+                height: 56,
+                fontFamily: "Montserrat, sans-serif",
+                fontSize: 16,
+                fontWeight: 700,
+                color: "#FFF",
+                textShadow: "0 4px 4px rgba(0,0,0,0.25), 0 0 6px #FAE287",
+                letterSpacing: "0.15px",
+                textDecoration: "none",
+                cursor: "pointer",
+              }}
             >
+              <span>{t("account.profile")}</span>
               <PersonIcon />
-              Profile
             </Link>
           </li>
 
@@ -121,32 +135,59 @@ export function AccountMenu({ email, role }: AccountMenuProps) {
                 href="/admin"
                 role="menuitem"
                 onClick={() => setOpen(false)}
-                className="flex items-center gap-3 px-4 py-3 text-sm text-white transition-colors hover:bg-white/10 focus:outline-none focus-visible:bg-white/10"
-                style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 600 }}
+                className="bg-transparent transition-colors hover:bg-white/10 focus:outline-none focus-visible:bg-white/10"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  gap: 4,
+                  padding: 16,
+                  borderRadius: 4,
+                  height: 56,
+                  fontFamily: "Montserrat, sans-serif",
+                  fontSize: 16,
+                  fontWeight: 700,
+                  color: "#FFF",
+                  letterSpacing: "0.15px",
+                  textDecoration: "none",
+                  cursor: "pointer",
+                }}
               >
-                <DashboardIcon />
-                Admin Dashboard
+                {t("account.adminDashboard")}
               </Link>
             </li>
           )}
 
-          {/* Divider */}
-          <li role="none">
-            <div aria-hidden="true" style={{ height: "1px", backgroundColor: "rgba(46, 57, 64, 1)" }} />
-          </li>
-
-          {/* Sign out */}
+          {/* Logout — label + chevron-right icon on the right.
+              NOTE: do NOT close the menu in onClick — setOpen(false) would unmount
+              this <form> before its server action dispatches, cancelling the logout.
+              The signOut action redirects to /login, which closes the menu naturally. */}
           <li role="none">
             <form action={signOut}>
               <button
                 type="submit"
                 role="menuitem"
-                onClick={() => setOpen(false)}
-                className="flex w-full items-center gap-3 px-4 py-3 text-sm text-white/70 transition-colors hover:bg-white/10 hover:text-white focus:outline-none focus-visible:bg-white/10"
-                style={{ fontFamily: "Montserrat, sans-serif", fontWeight: 600 }}
+                className="bg-transparent transition-colors hover:bg-white/10 focus:outline-none focus-visible:bg-white/10"
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "space-between",
+                  gap: 4,
+                  padding: 16,
+                  borderRadius: 4,
+                  width: "100%",
+                  height: 56,
+                  border: "none",
+                  fontFamily: "Montserrat, sans-serif",
+                  fontSize: 16,
+                  fontWeight: 700,
+                  color: "#FFF",
+                  letterSpacing: "0.15px",
+                  cursor: "pointer",
+                  textAlign: "left",
+                }}
               >
-                <SignOutIcon />
-                Sign out
+                <span>{t("account.logout")}</span>
+                <ChevronRightIcon />
               </button>
             </form>
           </li>
@@ -156,7 +197,30 @@ export function AccountMenu({ email, role }: AccountMenuProps) {
   );
 }
 
-function ChevronIcon({ open }: { open: boolean }) {
+/**
+ * Person icon — used in both the trigger (20px) and the Profile menu item right-side.
+ * Matches MM_MEDIA_User Profile from the design.
+ */
+function PersonIcon({ size = 20 }: { size?: number }) {
+  return (
+    <svg
+      width={size}
+      height={size}
+      viewBox="0 0 24 24"
+      fill="none"
+      aria-hidden="true"
+      style={{ flexShrink: 0 }}
+    >
+      <path
+        d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"
+        fill="white"
+      />
+    </svg>
+  );
+}
+
+/** Chevron-right (›) icon — shown on the RIGHT of the Logout menu item. */
+function ChevronRightIcon() {
   return (
     <svg
       width="16"
@@ -164,48 +228,9 @@ function ChevronIcon({ open }: { open: boolean }) {
       viewBox="0 0 24 24"
       fill="none"
       aria-hidden="true"
-      style={{
-        transition: "transform 200ms ease",
-        transform: open ? "rotate(180deg)" : "rotate(0deg)",
-      }}
+      style={{ flexShrink: 0 }}
     >
-      <path d="M7 10L12 15L17 10H7Z" fill="white" />
-    </svg>
-  );
-}
-
-function PersonIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M12 12c2.7 0 4.8-2.1 4.8-4.8S14.7 2.4 12 2.4 7.2 4.5 7.2 7.2 9.3 12 12 12zm0 2.4c-3.2 0-9.6 1.6-9.6 4.8v2.4h19.2v-2.4c0-3.2-6.4-4.8-9.6-4.8z"
-        fill="currentColor"
-        className="text-white/70"
-      />
-    </svg>
-  );
-}
-
-function DashboardIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M3 13h8V3H3v10zm0 8h8v-6H3v6zm10 0h8V11h-8v10zm0-18v6h8V3h-8z"
-        fill="currentColor"
-        className="text-white/70"
-      />
-    </svg>
-  );
-}
-
-function SignOutIcon() {
-  return (
-    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-      <path
-        d="M17 7l-1.41 1.41L18.17 11H8v2h10.17l-2.58 2.58L17 17l5-5-5-5zM4 5h8V3H4c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h8v-2H4V5z"
-        fill="currentColor"
-        className="text-white/70"
-      />
+      <path d="M9 6L15 12L9 18" stroke="white" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" />
     </svg>
   );
 }
