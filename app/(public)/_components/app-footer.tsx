@@ -10,42 +10,29 @@ export async function AppFooter() {
   return (
     // mm:5001:14800
     <footer
-      className="w-full flex flex-wrap items-center justify-between gap-4 px-4 sm:px-8 lg:px-[90px] py-10"
-      style={{
-        borderTop: "1px solid #2E3940",
-      }}
+      className="w-full flex flex-wrap items-center justify-between gap-4 px-4 sm:px-8 lg:px-[90px] py-10 border-t border-saa-navy-border"
     >
       {/* Left: logo + nav links */}
       {/* mm:I5001:14800;342:1407 */}
       <div className="flex flex-wrap items-center gap-8 lg:gap-[80px]">
         {/* mm:I5001:14800;342:1408 — Logo → home */}
-        <Link href={ROUTES.home} style={{ flexShrink: 0 }}>
+        <Link href={ROUTES.home} className="shrink-0">
           {/* mm:I5001:14800;342:1408;178:1030 */}
           <Image
             src="/homepage-saa/Logo.png"
             alt="Sun* Annual Awards"
             width={69}
             height={64}
-            style={{ objectFit: "contain" }}
+            className="object-contain"
           />
         </Link>
 
         {/* mm:I5001:14800;342:1409 — Nav links */}
-        <nav className="hidden sm:flex items-center flex-wrap" style={{ gap: "24px" }}>
+        <nav className="hidden sm:flex items-center flex-wrap gap-6">
           {/* mm:I5001:14800;342:1410 — About SAA 2025 */}
           <Link
             href={ROUTES.home}
-            className="transition-opacity hover:opacity-80"
-            style={{
-              fontFamily: "Montserrat, sans-serif",
-              fontWeight: 700,
-              fontSize: "16px",
-              lineHeight: "24px",
-              color: "#fff",
-              letterSpacing: "0.15px",
-              textDecoration: "none",
-              whiteSpace: "nowrap",
-            }}
+            className="font-montserrat font-bold text-base leading-6 text-white tracking-[0.15px] no-underline whitespace-nowrap transition-opacity hover:opacity-80"
           >
             {t("aboutSaa")}
           </Link>
@@ -53,21 +40,7 @@ export async function AppFooter() {
           {/* mm:I5001:14800;342:1411 — Award Information (highlighted) */}
           <Link
             href={ROUTES.awardsInfo}
-            className="transition-opacity hover:opacity-80"
-            style={{
-              fontFamily: "Montserrat, sans-serif",
-              fontWeight: 700,
-              fontSize: "16px",
-              lineHeight: "24px",
-              color: "#fff",
-              letterSpacing: "0.15px",
-              textDecoration: "none",
-              backgroundColor: "rgba(255, 234, 158, 0.10)",
-              padding: "16px",
-              borderRadius: "0",
-              textShadow: "0 4px 4px rgba(0,0,0,0.25), 0 0 6px #FAE287",
-              whiteSpace: "nowrap",
-            }}
+            className="font-montserrat font-bold text-base leading-6 text-white tracking-[0.15px] no-underline bg-saa-gold-glass p-4 whitespace-nowrap transition-opacity hover:opacity-80 [text-shadow:0_4px_4px_rgba(0,0,0,0.25),0_0_6px_#FAE287]"
           >
             {t("awardInformation")}
           </Link>
@@ -75,17 +48,7 @@ export async function AppFooter() {
           {/* mm:I5001:14800;342:1412 — Sun* Kudos */}
           <Link
             href={ROUTES.kudos}
-            className="transition-opacity hover:opacity-80"
-            style={{
-              fontFamily: "Montserrat, sans-serif",
-              fontWeight: 700,
-              fontSize: "16px",
-              lineHeight: "24px",
-              color: "#fff",
-              letterSpacing: "0.15px",
-              textDecoration: "none",
-              whiteSpace: "nowrap",
-            }}
+            className="font-montserrat font-bold text-base leading-6 text-white tracking-[0.15px] no-underline whitespace-nowrap transition-opacity hover:opacity-80"
           >
             {t("kudos")}
           </Link>
@@ -93,17 +56,7 @@ export async function AppFooter() {
           {/* mm:I5001:14800;1161:9487 — Tiêu chuẩn chung */}
           <Link
             href={ROUTES.standards}
-            className="transition-opacity hover:opacity-80"
-            style={{
-              fontFamily: "Montserrat, sans-serif",
-              fontWeight: 700,
-              fontSize: "16px",
-              lineHeight: "24px",
-              color: "#fff",
-              letterSpacing: "0.15px",
-              textDecoration: "none",
-              whiteSpace: "nowrap",
-            }}
+            className="font-montserrat font-bold text-base leading-6 text-white tracking-[0.15px] no-underline whitespace-nowrap transition-opacity hover:opacity-80"
           >
             {t("standards")}
           </Link>
@@ -112,18 +65,7 @@ export async function AppFooter() {
 
       {/* Right: copyright */}
       {/* mm:I5001:14800;342:1413 */}
-      <span
-        style={{
-          fontFamily: "Montserrat Alternates, Montserrat, sans-serif",
-          fontWeight: 700,
-          fontSize: "16px",
-          lineHeight: "24px",
-          color: "#fff",
-          letterSpacing: 0,
-          whiteSpace: "nowrap",
-          flexShrink: 0,
-        }}
-      >
+      <span className="font-montserrat font-bold text-base leading-6 text-white tracking-[0] whitespace-nowrap shrink-0">
         {t("copyright")}
       </span>
     </footer>

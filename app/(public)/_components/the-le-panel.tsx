@@ -89,76 +89,31 @@ export function TheLePanel({ open, onClose, onWriteKudos }: TheLePanelProps) {
         role="dialog"
         aria-modal="true"
         aria-label={t("panelTitle")}
-        className="fixed top-0 right-0 z-50 h-full overflow-y-auto"
-        style={{
-          width: "553px",
-          maxWidth: "100vw",
-          backgroundColor: "rgba(0, 7, 12, 1)",
-          padding: "24px 40px 40px 40px",
-          display: "flex",
-          flexDirection: "column",
-          justifyContent: "space-between",
-          gap: "40px",
-        }}
+        className="fixed top-0 right-0 z-50 h-full overflow-y-auto flex flex-col justify-between gap-[40px] px-10 pt-6 pb-10 w-[553px] max-w-[100vw] bg-[rgba(0,7,12,1)]"
       >
         {/* Content */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "column",
-            gap: "24px",
-            flex: 1,
-          }}
-        >
+        <div className="flex flex-col gap-6 flex-1">
           {/* Title */}
-          <h2
-            style={{
-              fontFamily: "Montserrat, sans-serif",
-              fontWeight: 700,
-              fontSize: "45px",
-              lineHeight: "52px",
-              color: "rgba(255, 234, 158, 1)",
-              margin: 0,
-            }}
-          >
+          <h2 className="font-montserrat font-bold text-[45px] leading-[52px] text-saa-gold-accent m-0">
             {t("panelTitle")}
           </h2>
 
           {/* Content sections */}
-          <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+          <div className="flex flex-col gap-4">
             {/* === SECTION 1: Người nhận Kudos === */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
+            <div className="flex flex-col gap-4">
               {/* Section heading */}
-              <p
-                style={{
-                  fontFamily: "Montserrat, sans-serif",
-                  fontWeight: 700,
-                  fontSize: "22px",
-                  lineHeight: "28px",
-                  color: "rgba(255, 234, 158, 1)",
-                  margin: 0,
-                }}
-              >
+              <p className="font-montserrat font-bold text-[22px] leading-7 text-saa-gold-accent m-0">
                 {t("receiverSectionTitle")}
               </p>
 
               {/* Sub-description */}
-              <p
-                style={{
-                  fontFamily: "Montserrat, sans-serif",
-                  fontWeight: 700,
-                  fontSize: "16px",
-                  lineHeight: "24px",
-                  letterSpacing: "0.5px",
-                  color: "rgba(255, 255, 255, 1)",
-                  margin: 0,
-                }}
-              >
+              <p className="font-montserrat font-bold text-base leading-6 tracking-[0.5px] text-white m-0">
                 {t("receiverDesc")}
               </p>
 
               {/* Hero tiers */}
-              <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+              <div className="flex flex-col gap-2">
                 {HERO_TIERS.map((tier) => (
                   <HeroTierRow key={tier.key} tier={tier} t={t} />
                 ))}
@@ -166,112 +121,41 @@ export function TheLePanel({ open, onClose, onWriteKudos }: TheLePanelProps) {
             </div>
 
             {/* === SECTION 2: Người gửi Kudos === */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
-              <p
-                style={{
-                  fontFamily: "Montserrat, sans-serif",
-                  fontWeight: 700,
-                  fontSize: "22px",
-                  lineHeight: "28px",
-                  color: "rgba(255, 234, 158, 1)",
-                  margin: 0,
-                }}
-              >
+            <div className="flex flex-col gap-4">
+              <p className="font-montserrat font-bold text-[22px] leading-7 text-saa-gold-accent m-0">
                 {t("senderSectionTitle")}
               </p>
 
-              <p
-                style={{
-                  fontFamily: "Montserrat, sans-serif",
-                  fontWeight: 700,
-                  fontSize: "16px",
-                  lineHeight: "24px",
-                  letterSpacing: "0.5px",
-                  color: "rgba(255, 255, 255, 1)",
-                  margin: 0,
-                }}
-              >
+              <p className="font-montserrat font-bold text-base leading-6 tracking-[0.5px] text-white m-0">
                 {t("senderDesc")}
               </p>
 
               {/* 3×2 icon grid */}
-              <div
-                style={{
-                  padding: "0 24px",
-                  display: "flex",
-                  flexDirection: "column",
-                  gap: "16px",
-                }}
-              >
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(3, 80px)",
-                    gap: "16px",
-                    justifyContent: "space-between",
-                    width: "100%",
-                  }}
-                >
+              <div className="flex flex-col gap-4 px-6">
+                <div className="grid grid-cols-[repeat(3,80px)] gap-4 w-full justify-between">
                   {KUDOS_ICONS.slice(0, 3).map((icon) => (
                     <KudosIconItem key={icon.key} icon={icon} t={t} />
                   ))}
                 </div>
-                <div
-                  style={{
-                    display: "grid",
-                    gridTemplateColumns: "repeat(3, 80px)",
-                    gap: "16px",
-                    justifyContent: "space-between",
-                    width: "100%",
-                  }}
-                >
+                <div className="grid grid-cols-[repeat(3,80px)] gap-4 w-full justify-between">
                   {KUDOS_ICONS.slice(3, 6).map((icon) => (
                     <KudosIconItem key={icon.key} icon={icon} t={t} />
                   ))}
                 </div>
               </div>
 
-              <p
-                style={{
-                  fontFamily: "Montserrat, sans-serif",
-                  fontWeight: 700,
-                  fontSize: "16px",
-                  lineHeight: "24px",
-                  letterSpacing: "0.5px",
-                  color: "rgba(255, 255, 255, 1)",
-                  margin: 0,
-                }}
-              >
+              <p className="font-montserrat font-bold text-base leading-6 tracking-[0.5px] text-white m-0">
                 {t("senderCollectionReward")}
               </p>
             </div>
 
             {/* === SECTION 3: Kudos Quốc Dân === */}
-            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-              <p
-                style={{
-                  fontFamily: "Montserrat, sans-serif",
-                  fontWeight: 700,
-                  fontSize: "24px",
-                  lineHeight: "32px",
-                  color: "rgba(255, 234, 158, 1)",
-                  margin: 0,
-                }}
-              >
+            <div className="flex flex-col gap-2">
+              <p className="font-montserrat font-bold text-2xl leading-8 text-saa-gold-accent m-0">
                 {t("nationalKudosTitle")}
               </p>
 
-              <p
-                style={{
-                  fontFamily: "Montserrat, sans-serif",
-                  fontWeight: 700,
-                  fontSize: "16px",
-                  lineHeight: "24px",
-                  letterSpacing: "0.5px",
-                  color: "rgba(255, 255, 255, 1)",
-                  margin: 0,
-                }}
-              >
+              <p className="font-montserrat font-bold text-base leading-6 tracking-[0.5px] text-white m-0">
                 {t("nationalKudosDesc")}
               </p>
             </div>
@@ -279,46 +163,12 @@ export function TheLePanel({ open, onClose, onWriteKudos }: TheLePanelProps) {
         </div>
 
         {/* Footer buttons */}
-        <div
-          style={{
-            display: "flex",
-            flexDirection: "row",
-            gap: "16px",
-            alignItems: "center",
-            flexShrink: 0,
-          }}
-        >
-          {/* Close button — outline style */}
+        <div className="flex flex-row gap-4 items-center shrink-0">
+          {/* Close button — outline style. hover:bg changes background via arbitrary hover. */}
           <button
             ref={closeButtonRef}
             onClick={onClose}
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "8px",
-              padding: "16px",
-              border: "1px solid rgba(153, 140, 95, 1)",
-              borderRadius: "4px",
-              background: "rgba(255, 234, 158, 0.10)",
-              color: "rgba(255, 255, 255, 1)",
-              fontFamily: "Montserrat, sans-serif",
-              fontWeight: 700,
-              fontSize: "16px",
-              lineHeight: "24px",
-              letterSpacing: "0.5px",
-              cursor: "pointer",
-              whiteSpace: "nowrap",
-              transition: "background 200ms ease",
-            }}
-            onMouseEnter={(e) =>
-              ((e.currentTarget as HTMLButtonElement).style.background =
-                "rgba(255, 234, 158, 0.20)")
-            }
-            onMouseLeave={(e) =>
-              ((e.currentTarget as HTMLButtonElement).style.background =
-                "rgba(255, 234, 158, 0.10)")
-            }
+            className="flex items-center justify-center gap-2 p-4 border border-saa-gold-border rounded bg-saa-gold-glass text-white font-montserrat font-bold text-base leading-6 tracking-[0.5px] cursor-pointer whitespace-nowrap transition-colors duration-200 ease-[ease] hover:bg-[rgba(255,234,158,0.20)]"
           >
             {/* Close icon */}
             <Image
@@ -326,7 +176,7 @@ export function TheLePanel({ open, onClose, onWriteKudos }: TheLePanelProps) {
               alt=""
               width={24}
               height={24}
-              style={{ filter: "brightness(0) invert(1)" }}
+              className="[filter:brightness(0)_invert(1)]"
             />
             {t("closeButton")}
           </button>
@@ -334,32 +184,7 @@ export function TheLePanel({ open, onClose, onWriteKudos }: TheLePanelProps) {
           {/* Write Kudos button — filled gold */}
           <button
             onClick={onWriteKudos}
-            style={{
-              flex: 1,
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              gap: "8px",
-              padding: "16px",
-              borderRadius: "4px",
-              backgroundColor: "rgba(255, 234, 158, 1)",
-              color: "rgba(0, 16, 26, 1)",
-              fontFamily: "Montserrat, sans-serif",
-              fontWeight: 700,
-              fontSize: "16px",
-              lineHeight: "24px",
-              letterSpacing: "0.5px",
-              cursor: "pointer",
-              border: "none",
-              whiteSpace: "nowrap",
-              transition: "opacity 200ms ease",
-            }}
-            onMouseEnter={(e) =>
-              ((e.currentTarget as HTMLButtonElement).style.opacity = "0.85")
-            }
-            onMouseLeave={(e) =>
-              ((e.currentTarget as HTMLButtonElement).style.opacity = "1")
-            }
+            className="flex-1 flex items-center justify-center gap-2 p-4 rounded bg-saa-gold-accent text-saa-navy-darkest font-montserrat font-bold text-base leading-6 tracking-[0.5px] cursor-pointer border-none whitespace-nowrap transition-opacity duration-200 ease-[ease] hover:opacity-85"
           >
             <Image
               src="/homepage-saa/kudos/Pen.svg"
@@ -387,67 +212,27 @@ interface HeroTierRowProps {
 
 function HeroTierRow({ tier, t }: HeroTierRowProps) {
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        gap: "4px",
-        width: "100%",
-      }}
-    >
-      <div
-        style={{
-          display: "flex",
-          flexDirection: "row",
-          alignItems: "center",
-          gap: "12px",
-        }}
-      >
+    <div className="flex flex-col gap-1 w-full">
+      <div className="flex flex-row items-center gap-3">
         {/* Hero badge image (pill graphic from Figma) */}
-        <div
-          style={{
-            border: "0.579px solid rgba(255, 234, 158, 1)",
-            borderRadius: "55.579px",
-            overflow: "hidden",
-            flexShrink: 0,
-          }}
-        >
+        <div className="border-[0.579px] border-saa-gold-accent rounded-[55.579px] overflow-hidden shrink-0">
           <Image
             src={tier.imageSrc}
             alt={t(tier.conditionKey)}
             width={126}
             height={22}
-            style={{ display: "block" }}
+            className="block"
           />
         </div>
 
         {/* Condition text */}
-        <span
-          style={{
-            fontFamily: "Montserrat, sans-serif",
-            fontWeight: 700,
-            fontSize: "16px",
-            lineHeight: "24px",
-            letterSpacing: "0.5px",
-            color: "rgba(255, 255, 255, 1)",
-          }}
-        >
+        <span className="font-montserrat font-bold text-base leading-6 tracking-[0.5px] text-white">
           {t(tier.conditionKey)}
         </span>
       </div>
 
       {/* Description */}
-      <p
-        style={{
-          fontFamily: "Montserrat, sans-serif",
-          fontWeight: 700,
-          fontSize: "14px",
-          lineHeight: "20px",
-          letterSpacing: "0.1px",
-          color: "rgba(255, 255, 255, 1)",
-          margin: 0,
-        }}
-      >
+      <p className="font-montserrat font-bold text-sm leading-5 tracking-[0.1px] text-white m-0">
         {t(tier.descriptionKey)}
       </p>
     </div>
@@ -461,48 +246,20 @@ interface KudosIconItemProps {
 
 function KudosIconItem({ icon, t }: KudosIconItemProps) {
   return (
-    <div
-      style={{
-        display: "flex",
-        flexDirection: "column",
-        alignItems: "center",
-        gap: "8px",
-        width: "80px",
-      }}
-    >
+    <div className="flex flex-col items-center gap-2 w-[80px]">
       {/* Circular icon */}
-      <div
-        style={{
-          width: "64px",
-          height: "64px",
-          borderRadius: "100px",
-          border: "2px solid rgba(255, 255, 255, 1)",
-          overflow: "hidden",
-          flexShrink: 0,
-        }}
-      >
+      <div className="w-16 h-16 rounded-full border-2 border-white overflow-hidden shrink-0">
         <Image
           src={icon.imageSrc}
           alt={t(icon.labelKey)}
           width={64}
           height={64}
-          style={{ objectFit: "cover", width: "100%", height: "100%" }}
+          className="object-cover w-full h-full"
         />
       </div>
 
       {/* Label */}
-      <span
-        style={{
-          fontFamily: "Montserrat, sans-serif",
-          fontWeight: 700,
-          fontSize: "11px",
-          lineHeight: "16px",
-          letterSpacing: "0.5px",
-          color: "rgba(255, 255, 255, 1)",
-          textAlign: "center",
-          width: "100%",
-        }}
-      >
+      <span className="font-montserrat font-bold text-[11px] leading-4 tracking-[0.5px] text-white text-center w-full">
         {t(icon.labelKey)}
       </span>
     </div>

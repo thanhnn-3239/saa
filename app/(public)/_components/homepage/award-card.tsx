@@ -26,28 +26,17 @@ export function AwardCard({
     // mm:2167:9075
     <Link
       href={href}
-      className="flex flex-col gap-6 w-full group"
-      style={{ textDecoration: "none" }}
+      className="flex flex-col gap-6 w-full group no-underline"
     >
       {/* Picture with gold glow border */}
       {/* mm:I2167:9075;214:1019 */}
-      <div
-        className="relative w-full overflow-hidden"
-        style={{
-          aspectRatio: "1/1",
-          borderRadius: "24px",
-          border: "0.955px solid #FFEA9E",
-          boxShadow: "0 4px 4px 0 rgba(0, 0, 0, 0.25), 0 0 6px 0 #FAE287",
-          mixBlendMode: "screen",
-        }}
-      >
+      <div className="relative w-full overflow-hidden rounded-3xl border-[0.955px] border-saa-gold-accent shadow-saa-glow mix-blend-screen aspect-square">
         {/* mm:I2167:9075;214:1019;81:2442 — card background */}
         <Image
           src="/homepage-saa/Award_BG.png"
           alt=""
           fill
-          className="object-cover"
-          style={{ borderRadius: "24px" }}
+          className="object-cover rounded-3xl"
         />
         {/* Award name overlay image (centre of card) */}
         {/* mm:I2167:9075;214:1019;214:666 */}
@@ -66,48 +55,16 @@ export function AwardCard({
       {/* mm:I2167:9075;214:1020 */}
       <div className="flex flex-col gap-1">
         {/* mm:I2167:9075;214:1021 — title */}
-        <span
-          style={{
-            fontFamily: "Montserrat, sans-serif",
-            fontWeight: 400,
-            fontSize: "24px",
-            lineHeight: "32px",
-            color: "#FFEA9E",
-            letterSpacing: 0,
-          }}
-        >
+        <span className="font-montserrat font-normal text-2xl leading-8 text-saa-gold-accent tracking-[0]">
           {title}
         </span>
         {/* mm:I2167:9075;214:1022 — description */}
-        <p
-          className="line-clamp-2"
-          style={{
-            fontFamily: "Montserrat, sans-serif",
-            fontWeight: 400,
-            fontSize: "16px",
-            lineHeight: "24px",
-            color: "#fff",
-            letterSpacing: "0.5px",
-            margin: 0,
-          }}
-        >
+        <p className="line-clamp-2 font-montserrat font-normal text-base leading-6 text-white tracking-[0.5px] m-0">
           {description}
         </p>
         {/* mm:I2167:9075;214:1023 — details CTA */}
-        <div
-          className="flex items-center gap-1 transition-opacity group-hover:opacity-80"
-          style={{ paddingTop: "16px" }}
-        >
-          <span
-            style={{
-              fontFamily: "Montserrat, sans-serif",
-              fontWeight: 700,
-              fontSize: "16px",
-              lineHeight: "24px",
-              color: "#fff",
-              letterSpacing: "0.15px",
-            }}
-          >
+        <div className="flex items-center gap-1 transition-opacity group-hover:opacity-80 pt-4">
+          <span className="font-montserrat font-bold text-base leading-6 text-white tracking-[0.15px]">
             {detailsCta}
           </span>
           {/* mm:I2167:9075;214:1023;186:1441 — arrow icon */}
@@ -117,7 +74,7 @@ export function AwardCard({
             viewBox="0 0 24 24"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            style={{ color: "#fff" }}
+            className="text-white"
             aria-hidden="true"
           >
             <path
