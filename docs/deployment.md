@@ -26,6 +26,7 @@ server-/CI-only and must never get a `NEXT_PUBLIC_` prefix.
 |---|:--:|:--:|:--:|:--:|:--:|:--:|
 | `NEXT_PUBLIC_SUPABASE_URL` | ✅ | ✅ | — | — | ✅ | ✅ (safe) |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` (`sb_publishable_…`) | ✅ | ✅ | — | — | ✅ | ✅ (safe) |
+| `NEXT_PUBLIC_EVENT_DATETIME` | ✅ | ✅ | — | — | ✅ | ✅ (safe) |
 | `SUPABASE_SECRET_KEY` | ❌ not used¹ | ❌ | — | — | ❌ optional¹ | ❌ never |
 | `GOOGLE_CLIENT_ID` | ❌ | ❌ | ✅ Providers→Google | — | ✅ (local CLI) | ❌ |
 | `GOOGLE_CLIENT_SECRET` | ❌ | ❌ | ✅ Providers→Google | — | ✅ (local CLI) | ❌ |
@@ -69,8 +70,11 @@ future server-side admin op (RLS bypass, Admin API) actually requires it.
    ```
    NEXT_PUBLIC_SUPABASE_URL       = https://<ref>.supabase.co
    NEXT_PUBLIC_SUPABASE_ANON_KEY  = sb_publishable_…
+   NEXT_PUBLIC_EVENT_DATETIME     = 2025-12-26T18:30:00+07:00   # ISO-8601 with TZ offset; drives homepage countdown
    ```
    `NEXT_PUBLIC_*` are inlined at build time → changing a value requires a redeploy.
+
+   > If `NEXT_PUBLIC_EVENT_DATETIME` is missing or unparseable, the homepage countdown degrades gracefully (shows 00s). Set it before the first production deploy.
 
 > A harmless `"middleware missing"` warning may appear in Vercel logs despite `proxy.ts` being correct — cosmetic, ignore.
 
@@ -116,7 +120,10 @@ GitHub → Settings → **Secrets and variables → Actions**, add:
 
 ## 5. Verification checklist (after first deploy)
 
-- [ ] `https://<app>.vercel.app` loads; `/login` renders.
+- [ ] `https://<app>.vercel.app` loads; public homepage (`/`) renders without login.
+- [ ] Countdown on homepage ticks (confirms `NEXT_PUBLIC_EVENT_DATETIME` is set).
+- [ ] `/awards-information`, `/sun-kudos`, `/tieu-chuan-chung` accessible as guest.
+- [ ] `/profile` redirects unauthenticated visitors to `/login`.
 - [ ] Google login: `@sun-asterisk.com` → in; other domain → `/login?error=domain` (signed out).
 - [ ] i18n: vi ↔ en switch persists via `NEXT_LOCALE` cookie.
 - [ ] Authenticated read returns rows under RLS.
