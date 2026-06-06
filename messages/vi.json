@@ -21,6 +21,12 @@
       "standards": "Tiêu chuẩn chung",
       "langSelectAria": "Chọn ngôn ngữ"
     },
+    "account": {
+      "menuAria": "Menu tài khoản",
+      "profile": "Profile",
+      "adminDashboard": "Admin Dashboard",
+      "logout": "Logout"
+    },
     "countdown": {
       "comingSoon": "Coming soon",
       "days": "DAYS",

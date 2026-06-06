@@ -6,6 +6,8 @@ mode: auto
 package_manager: pnpm
 blockedBy: []
 blocks: []
+supersededBy:
+  - 260606-0802-account-menu-redesign-login-gating   # reverses "Homepage access = Public" → login-required
 momorph:
   fileKey: 9ypp4enmFmdK3YAFJLIu6C
   screens:
@@ -35,7 +37,7 @@ notification bell + account menu. Scope = **UI shell + working basics** (see cla
 ## Locked decisions (from clarification)
 | Decision | Choice |
 |----------|--------|
-| Homepage access | **Public** — update `proxy.ts` to allow `/` for guests; auth-only controls render conditionally |
+| Homepage access | ~~**Public** — `proxy.ts` allows `/` for guests~~ → **SUPERSEDED 2026-06-06**: app is now **login-required** (see [account-menu-redesign-login-gating](../260606-0802-account-menu-redesign-login-gating/plan.md)). Auth-only controls still render conditionally. |
 | Scope | UI shell + working basics; notifications/roles/target-pages = placeholder/stub |
 | Links to unbuilt pages | Minimal **stub route pages** (coming soon) so no broken links (ID-59) |
 | i18n | VN authored in `messages/vi.json`, EN keys mirrored in `en.json`; all strings via next-intl |

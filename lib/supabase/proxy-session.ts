@@ -4,17 +4,11 @@ import { isAllowedEmail } from "@/lib/auth/allowed-domain";
 
 /**
  * Paths reachable without an authenticated session.
- * Guest-visible marketing and auth routes only.
- * /profile is NOT listed — it is user-specific and must redirect guests to /login.
+ * The app is internal-only — login required for @sun-asterisk.com accounts.
+ * ONLY the login page and the OAuth callback are public; every other route
+ * (including "/" and the marketing/info pages) redirects guests to /login.
  */
-const PUBLIC_PATHS = new Set([
-  "/",
-  "/login",
-  "/auth/callback",
-  "/awards-information",
-  "/sun-kudos",
-  "/tieu-chuan-chung",
-]);
+const PUBLIC_PATHS = new Set(["/login", "/auth/callback"]);
 
 /**
  * Builds a redirect that carries over the freshly-refreshed auth cookies, so

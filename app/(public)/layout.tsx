@@ -30,7 +30,7 @@ export default async function PublicLayout({
   const authControls = user ? (
     <>
       <NotificationBell />
-      <AccountMenu email={user.email} role={user.role} />
+      <AccountMenu role={user.role} />
     </>
   ) : null;
 

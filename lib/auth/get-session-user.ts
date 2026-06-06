@@ -1,4 +1,5 @@
 import { createClient } from "@/lib/supabase/server";
+import { isAllowedEmail } from "@/lib/auth/allowed-domain";
 
 /**
  * Authenticated user shape returned by getSessionUser.
@@ -30,7 +31,9 @@ export async function getSessionUser(): Promise<SessionUser | null> {
   const claims = data.claims;
   const email = (claims.email as string | undefined) ?? "";
 
-  if (!email) return null;
+  // Defense-in-depth: mirror the proxy's domain restriction at the UI layer so a
+  // disallowed session (e.g. a future provider) never renders authenticated UI.
+  if (!isAllowedEmail(email)) return null;
 
   return {
     id: claims.sub as string,

@@ -8,10 +8,11 @@ export default defineConfig({
     environment: "jsdom",
     globals: true,
     setupFiles: ["./vitest.setup.ts"],
-    // Only our app/lib/i18n/messages tests — never the .claude/ tooling's own .test.cjs suites.
+    // Only our app/lib/components/i18n/messages tests — never the .claude/ tooling's own .test.cjs suites.
     include: [
       "app/**/*.{test,spec}.{ts,tsx}",
       "lib/**/*.{test,spec}.{ts,tsx}",
+      "components/**/*.{test,spec}.{ts,tsx}",
       "i18n/**/*.{test,spec}.{ts,tsx}",
       "messages/**/*.{test,spec}.{ts,tsx}",
       "tests/**/*.{test,spec}.{ts,tsx}",
