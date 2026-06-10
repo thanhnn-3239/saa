@@ -7,6 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
@@ -15,7 +16,8 @@
     "db:stop": "supabase stop",
     "db:reset": "supabase db reset",
     "db:status": "supabase status",
-    "dev:docker": "docker compose up --build"
+    "dev:docker": "docker compose up --build",
+    "postinstall": "node -e \"if (!process.env.CI) require('child_process').execSync('lefthook install', {stdio: 'inherit'})\""
   },
   "engines": {
     "node": ">=20.9.0"
@@ -43,6 +45,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.7",
     "jsdom": "^29.1.1",
+    "lefthook": "^2.1.9",
     "supabase": "^2.104.0",
     "tailwindcss": "^4",
     "typescript": "^5",
