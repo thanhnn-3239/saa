@@ -52,6 +52,7 @@ async function findUserByEmail(admin: AdminClient, email: string) {
 
 export async function GET(request: NextRequest) {
   // 1. Disabled unless a token is configured. Don't reveal the route exists.
+  // Read process.env directly: the gate is a runtime secret the test suite varies per-case; typed env captures values at import.
   const expected = process.env.AUTO_LOGIN_TOKEN;
   if (!expected) return notFound();
 
