@@ -131,6 +131,23 @@ describe("updateSession", () => {
       expect(response.status).toBe(200);
     });
 
+    it("does NOT redirect unauthenticated requests to /auto-login (public path)", async () => {
+      // /auto-login is the token-gated test backdoor; it must be reachable for guests
+      // so the handler runs (the token gate is the real security boundary).
+      mockCreateServerClient.mockReturnValue({
+        auth: {
+          getClaims: vi.fn().mockResolvedValue({
+            data: null,
+          }),
+        },
+      });
+
+      const request = createMockRequest("/auto-login");
+      const response = await updateSession(request);
+
+      expect(response.status).toBe(200);
+    });
+
     it("redirects unauthenticated users from / to /login (login-required)", async () => {
       // / is NOT in PUBLIC_PATHS — app is now login-required. Unauthenticated guests are redirected.
       mockCreateServerClient.mockReturnValue({
