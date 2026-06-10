@@ -3,26 +3,42 @@ import { defineConfig, devices } from "@playwright/test";
 /**
  * Playwright E2E configuration.
  *
- * Tests live in `e2e/` (kept separate from the Vitest unit suite under
- * app/lib/i18n/messages). Playwright boots the Next.js app itself via the
- * `webServer` block below, so `pnpm test:e2e` is a one-command run.
+ * Tests live in `e2e/`. Playwright boots the Next.js app via the `webServer`
+ * block, so `pnpm test:e2e` is one command.
  *
- * The app's proxy (proxy.ts) refreshes a Supabase session on every request,
- * which requires the two public Supabase env vars to exist. Their values are
- * irrelevant for the smoke test (no real backend is contacted), so dummy
- * placeholders are injected — mirroring the `build` step in CI.
+ * Env: the app's proxy refreshes a Supabase session on every request, and typed
+ * env validation (lib/env.ts) runs at build. We PASS THROUGH the real env when
+ * present (so authenticated tests reach a local Supabase) and fall back to
+ * schema-valid dummies otherwise (smoke test contacts no backend).
+ *
+ * Authenticated projects (`setup` + `chromium-auth`) only exist when
+ * AUTO_LOGIN_TOKEN is set — they need local Supabase + the dev seed. Without it,
+ * only the unauthenticated smoke test runs (keeps CI green).
  */
 const PORT = 3000;
 const baseURL = `http://localhost:${PORT}`;
+const authEnabled = !!process.env.AUTO_LOGIN_TOKEN;
+
+const authProjects = authEnabled
+  ? [
+      { name: "setup", testMatch: /.*\.setup\.ts/ },
+      {
+        name: "chromium-auth",
+        testMatch: /.*\.authed\.spec\.ts/,
+        dependencies: ["setup"],
+        use: {
+          ...devices["Desktop Chrome"],
+          storageState: "playwright/.auth/user.json",
+        },
+      },
+    ]
+  : [];
 
 export default defineConfig({
   testDir: "./e2e",
-  // Fail the build on CI if test.only is committed.
   forbidOnly: !!process.env.CI,
   retries: process.env.CI ? 2 : 0,
-  // Opt out of parallel workers on CI for deterministic runs.
   workers: process.env.CI ? 1 : undefined,
-  // Always keep the readable list output; add GitHub annotations on CI.
   reporter: process.env.CI ? [["list"], ["github"]] : "list",
   use: {
     baseURL,
@@ -31,36 +47,28 @@ export default defineConfig({
   projects: [
     {
       name: "chromium",
+      // The default project never runs the setup file or the authed specs.
+      testIgnore: [/.*\.setup\.ts/, /.*\.authed\.spec\.ts/],
       use: { ...devices["Desktop Chrome"] },
     },
-    // --- Authenticated tests (to wire up once the login feature lands) ---
-    // Decision: Approach A — programmatic login + storageState (no prod code
-    // changes, exercises the real Supabase session/cookie path).
-    //
-    // 1. Add a setup project that runs `e2e/auth.setup.ts` once:
-    //      { name: "setup", testMatch: /.*\.setup\.ts/ }
-    //    In it, against LOCAL Supabase (`supabase start`), use the service_role
-    //    key to `admin.createUser` a confirmed @sun-asterisk.com test user, then
-    //    sign in via the @supabase/ssr browser client so it writes the
-    //    `sb-*-auth-token` cookie the proxy reads, and
-    //    `page.context().storageState({ path: "playwright/.auth/user.json" })`.
-    // 2. Add an authenticated project that depends on "setup" and reuses it:
-    //      { name: "chromium-auth", dependencies: ["setup"],
-    //        use: { ...devices["Desktop Chrome"],
-    //               storageState: "playwright/.auth/user.json" } }
-    //    Tests there start already logged in and skip the OAuth UI entirely.
-    // `playwright/.auth/` is already git-ignored.
+    ...authProjects,
   ],
-  // Build + start the production server, like real users hit it. Falls back to
-  // an already-running dev server locally so iterating is fast.
   webServer: {
     command: "pnpm build && pnpm start",
     url: baseURL,
     reuseExistingServer: !process.env.CI,
     timeout: 180_000,
     env: {
-      NEXT_PUBLIC_SUPABASE_URL: "http://localhost:54321",
-      NEXT_PUBLIC_SUPABASE_ANON_KEY: "e2e-placeholder-anon-key",
+      // Pass through real env when present; schema-valid dummies otherwise.
+      NEXT_PUBLIC_SUPABASE_URL:
+        process.env.NEXT_PUBLIC_SUPABASE_URL ?? "http://localhost:54321",
+      NEXT_PUBLIC_SUPABASE_ANON_KEY:
+        process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "e2e-placeholder-anon-key",
+      NEXT_PUBLIC_EVENT_DATETIME:
+        process.env.NEXT_PUBLIC_EVENT_DATETIME ?? "2025-12-26T18:30:00+07:00",
+      // Server-only; needed only for authenticated runs (empty = disabled/safe).
+      SUPABASE_SECRET_KEY: process.env.SUPABASE_SECRET_KEY ?? "",
+      AUTO_LOGIN_TOKEN: process.env.AUTO_LOGIN_TOKEN ?? "",
     },
   },
 });
