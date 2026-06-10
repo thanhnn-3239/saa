@@ -69,8 +69,10 @@ pnpm exec playwright install chromium
 pnpm test:e2e
 ```
 
-> If you've opened a Claude Code session (web or local), the `SessionStart` hook
-> at `.claude/hooks/session-start.sh` already ran steps 1–2 for you.
+> Chromium is installed via `pnpm exec playwright install chromium` (step 2
+> above). PR #4's `.claude` `SessionStart` hook (which auto-ran install) was
+> intentionally **not** adopted — this project's `.claude` is managed
+> separately — so run step 2 yourself.
 
 Useful variants:
 
@@ -93,26 +95,56 @@ pnpm exec playwright show-report       # open the last HTML report
 
 ---
 
-## Future: testing pages that require login
+## Testing pages that require login
 
-Login (Supabase Auth + Google OAuth, `@sun-asterisk.com` only) doesn't exist
-yet. Real Google OAuth can't be automated, so when protected pages land we'll
-use **Approach A — programmatic login + `storageState`** (already sketched in
-`playwright.config.ts`):
+Real Google OAuth (Supabase Auth, `@sun-asterisk.com` only) can't be automated,
+so authenticated tests use **programmatic login + `storageState`**: a setup
+project logs in once via the token-gated `/auto-login` backdoor and saves the
+session; the authed project reuses it.
 
-1. A one-time **setup project** (`e2e/auth.setup.ts`) signs in a seeded test
-   user against **local Supabase** using the `@supabase/ssr` browser client (so
-   it writes the `sb-*-auth-token` cookie the proxy reads), then saves the
-   session to `playwright/.auth/user.json`.
-2. An **authenticated project** depends on `setup` and loads that
-   `storageState`, so its tests start already logged in and skip the login UI.
+### Conditional projects (opt-in via `AUTO_LOGIN_TOKEN`)
 
-Because those tests hit a real Supabase, they need the local stack running
-(`pnpm db:start`) and a seeded user. Running them **in Docker** would also
-require the container to reach the host's Supabase — add
-`network_mode: host` (Linux) to the `e2e` service, or on macOS/Windows point
-the Supabase URL at `host.docker.internal` and add the matching `extra_hosts`
-(mirroring the note in `docker-compose.yml`).
+The authenticated projects exist **only when `AUTO_LOGIN_TOKEN` is set** — see
+the `authEnabled` guard in `playwright.config.ts`:
+
+1. **`setup`** (`e2e/auth.setup.ts`) — a one-time login. It hits the token-gated
+   `/auto-login` backdoor (the auto-login feature), which mints a **real
+   Supabase session** for a seeded member (`member-test@sun-asterisk.com`) and
+   307-redirects to `/` with the session cookie the proxy reads. The setup then
+   saves storage state to `playwright/.auth/user.json` (git-ignored).
+2. **`chromium-auth`** (`e2e/authenticated-access.authed.spec.ts`) — depends on
+   `setup` and loads that `storageState`, so its tests start already logged in
+   and skip the login UI. They assert a logged-in member reaches protected pages
+   (no `/login` bounce).
+
+**Without `AUTO_LOGIN_TOKEN`, only the unauthenticated `chromium` smoke project
+runs** (`e2e/auth-redirect.spec.ts` — guest is redirected to `/login`). This is
+**by design**: the smoke test needs no backend, so CI stays green without local
+Supabase or secrets.
+
+### Running the authenticated tests locally
+
+The authed tests hit a real local Supabase, so bring up the stack with the dev
+seed and enable the backdoor first:
+
+```bash
+pnpm db:start
+SUPABASE_EXTRA_SEEDS=./seeds/dev/seed.sql pnpm db:reset   # seeds admin-test/member-test/member01..08
+export AUTO_LOGIN_TOKEN=dev-e2e-secret
+export SUPABASE_SECRET_KEY=$(pnpm -s db:status | awk '/service_role key/ {print $NF}')
+export NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
+export NEXT_PUBLIC_SUPABASE_ANON_KEY=$(pnpm -s db:status | awk '/anon key/ {print $NF}')
+pnpm exec playwright test --project=setup --project=chromium-auth
+```
+
+> The `SUPABASE_EXTRA_SEEDS` path is relative to `supabase/` (per
+> `sql_paths` in `supabase/config.toml`). **Never set `AUTO_LOGIN_TOKEN` or
+> `SUPABASE_SECRET_KEY` in production** — the backdoor is dev-only.
+
+Running these **in Docker** would also require the container to reach the host's
+Supabase — add `network_mode: host` (Linux) to the `e2e` service, or on
+macOS/Windows point the Supabase URL at `host.docker.internal` and add the
+matching `extra_hosts` (mirroring the note in `docker-compose.yml`).
 
 ---
 
