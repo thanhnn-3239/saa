@@ -2,7 +2,7 @@
 
 **Date:** 2026-06-10
 **Status:** Approved design (pre-plan)
-**Branch (impl):** `feat/template-adoption` (worktree off `feat/sun-kudos-live-board` HEAD)
+**Branch (impl):** `feat/template-adoption` (worktree off `origin/main` — the kudos feature branch's board work is uncommitted/non-building, so we base off clean `main`; `/sun-kudos` is a `ComingSoon` stub there)
 
 ## Context
 

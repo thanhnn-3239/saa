@@ -12,7 +12,7 @@
 
 ## Pre-flight (already done — do not repeat)
 
-- Worktree exists at `.claude/worktrees/template-adoption` on branch `feat/template-adoption`, based off `feat/sun-kudos-live-board` HEAD (`3bb0720`). **All work happens in this worktree.**
+- Worktree exists at `.claude/worktrees/template-adoption` on branch `feat/template-adoption`, based off **`origin/main`** (`7d7a48a`). **All work happens in this worktree.** (Originally scoped off the kudos feature branch, but that branch's board work is uncommitted and non-building, so we base off clean `main`. Consequence: on `main`, `next.config.ts` is minimal and `/sun-kudos` is a `ComingSoon` stub — Tasks 1 and 7 are written for that reality.)
 - PR branches fetched and available locally:
   - PR #11 → `origin/feat/auto-login-backdoor` (auto-login backdoor, ~288 unit tests)
   - PR #4 → `origin/claude/affectionate-euler-GeCkp` (Playwright infra)
@@ -40,7 +40,7 @@
 - Merge-in (PR #4): `playwright.config.ts`, `docker-compose.e2e.yml`, `e2e/auth-redirect.spec.ts`, `docs/e2e-testing.md`, `package.json` (scripts/dep), `.gitignore`, `README.md`.
 - Modify (Task 4): `lib/supabase/admin.ts`, `app/auto-login/route.ts`, `lib/supabase/proxy-session.ts` → typed env.
 - Modify (Task 6): `playwright.config.ts` → env passthrough + conditional auth projects.
-- Create (Task 7): `e2e/auth.setup.ts`, `e2e/kudos-board.authed.spec.ts`.
+- Create (Task 7): `e2e/auth.setup.ts`, `e2e/authenticated-access.authed.spec.ts`.
 - Modify (Task 8): `e2e/auth-redirect.spec.ts` → match current `/`→`/login` behavior.
 - Modify (Task 9): `docs/e2e-testing.md` → authenticated-test section.
 
@@ -119,7 +119,7 @@ export const env = createEnv({
 
 - [ ] **Step 3: Import env in `next.config.ts`**
 
-Add the import as the **first** line so validation runs before the config builds. Edit `next.config.ts`:
+Add the import as the **first** line so validation runs before the config builds. On `main`, `next.config.ts` is minimal (no `images` block — that was kudos WIP), so only add the env import. Final file:
 
 ```ts
 import "./lib/env"; // Fail-fast env validation at build/dev start.
@@ -127,14 +127,10 @@ import type { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
 
 const nextConfig: NextConfig = {
-  images: {
-    remotePatterns: [
-      { protocol: "https", hostname: "i.pravatar.cc" },
-      { protocol: "https", hostname: "lh3.googleusercontent.com" },
-    ],
-  },
+  /* config options here */
 };
 
+// No path arg: auto-detects ./i18n/request.ts. Works with Turbopack.
 const withNextIntl = createNextIntlPlugin();
 
 export default withNextIntl(nextConfig);
@@ -292,7 +288,7 @@ Run:
 ```bash
 git merge --no-ff origin/feat/auto-login-backdoor -m "merge: token-gated auto-login backdoor for test/E2E (PR #11)"
 ```
-Expected: either a clean merge, or a stop with conflicts. Inspect with `git status`.
+Expected: **a clean merge** — PR #11 branched from the current `main` HEAD (`7d7a48a`), so no conflicts are expected. Inspect with `git status`; if there are unexpected conflicts, resolve per Step 2.
 
 - [ ] **Step 2: Resolve expected conflicts**
 
@@ -409,7 +405,7 @@ Run:
 ```bash
 git merge --no-ff origin/claude/affectionate-euler-GeCkp -m "merge: Playwright E2E infrastructure (PR #4)"
 ```
-Expected: stops with conflicts (package.json, .gitignore, README.md likely; possibly `.claude/*`).
+Expected: stops with conflicts. PR #4 branched from `b2fd341` (2 commits behind `main`), so expect **minor** conflicts in `package.json`, `.gitignore`, `README.md` (and possibly `.claude/*`). `playwright.config.ts`, `docker-compose.e2e.yml`, `e2e/*`, `docs/e2e-testing.md` are new files (no conflict).
 
 - [ ] **Step 2: Resolve `package.json` (union of scripts + deps)**
 
@@ -575,11 +571,13 @@ git commit -m "test(e2e): reconcile playwright config with typed env + condition
 
 ---
 
-## Task 7: Authenticated E2E — setup + kudos board test (Slice C.3 cont.)
+## Task 7: Authenticated E2E — setup + protected-page access test (Slice C.3 cont.)
+
+> **Base note:** on `main`, `/sun-kudos` is a `ComingSoon` stub, so the authenticated test targets the real protected homepage `/` (and confirms `/sun-kudos` is reachable when logged in). The point of this task is proving the `/auto-login` backdoor mints a session that the proxy honors on protected routes.
 
 **Files:**
 - Create: `e2e/auth.setup.ts`
-- Create: `e2e/kudos-board.authed.spec.ts`
+- Create: `e2e/authenticated-access.authed.spec.ts`
 
 **Prerequisite for running (not for committing):** local Supabase up with the dev seed, and the backdoor enabled:
 ```bash
@@ -622,30 +620,40 @@ setup("authenticate via /auto-login backdoor", async ({ page }) => {
 });
 ```
 
-- [ ] **Step 2: Create `e2e/kudos-board.authed.spec.ts`**
+- [ ] **Step 2: Create `e2e/authenticated-access.authed.spec.ts`**
 
 ```ts
 import { test, expect } from "@playwright/test";
 
 /**
- * Authenticated E2E for the Sun Kudos live board. Runs in the `chromium-auth`
- * project, which reuses the storage state saved by e2e/auth.setup.ts — so the
- * page starts already logged in as the seeded member-test user.
+ * Authenticated E2E. Runs in the `chromium-auth` project, which reuses the
+ * storage state saved by e2e/auth.setup.ts — so the page starts already logged
+ * in as the seeded member-test user.
  *
- * Verifies a logged-in user can reach the protected board and that it renders
- * (header + main content), exercising the full authed stack: proxy session
- * check → SSR → React Query hydration.
+ * Verifies a logged-in user reaches protected pages (no /login bounce),
+ * exercising the full authed stack: proxy session check → SSR render. On `main`,
+ * `/sun-kudos` is a ComingSoon stub, so the content assertion targets the real
+ * homepage `/`; `/sun-kudos` is only checked for "not redirected to /login".
  */
-test("a logged-in member can open the Sun Kudos board", async ({ page }) => {
-  await page.goto("/sun-kudos");
+test("a logged-in member sees the protected homepage", async ({ page }) => {
+  await page.goto("/");
 
   // Not bounced to /login — the session from auth.setup.ts is honored.
-  await expect(page).toHaveURL(/\/sun-kudos$/);
+  await expect(page).toHaveURL(/\/$/);
   await expect(page).not.toHaveURL(/\/login$/);
 
-  // The authenticated chrome (header) and the board content render.
+  // The authenticated chrome (header) and page content render.
   await expect(page.getByRole("banner")).toBeVisible();
   await expect(page.getByRole("main")).toBeVisible();
+});
+
+test("a logged-in member can reach /sun-kudos (not bounced to /login)", async ({
+  page,
+}) => {
+  await page.goto("/sun-kudos");
+
+  await expect(page).toHaveURL(/\/sun-kudos$/);
+  await expect(page).not.toHaveURL(/\/login$/);
 });
 ```
 
@@ -655,13 +663,15 @@ Run:
 ```bash
 pnpm exec playwright test --project=setup --project=chromium-auth
 ```
-Expected: `setup` logs in and writes `playwright/.auth/user.json`; `chromium-auth` opens `/sun-kudos` and the assertions pass. If `/auto-login` returns 404, recheck `AUTO_LOGIN_TOKEN` is exported and the dev seed ran (the `member-test` user must exist).
+Expected: `setup` logs in and writes `playwright/.auth/user.json`; `chromium-auth` loads `/` and `/sun-kudos` and the assertions pass. If `/auto-login` returns 404, recheck `AUTO_LOGIN_TOKEN` is exported and the dev seed ran (the `member-test` user must exist).
+
+> If a running local Supabase is not available in this environment, create + commit the two files and verify only that `AUTO_LOGIN_TOKEN=x pnpm exec playwright test --list` shows the `setup` and `chromium-auth` projects. Note in the report that the live authed run was deferred (documented prerequisite).
 
 - [ ] **Step 4: Commit**
 
 ```bash
-git add e2e/auth.setup.ts e2e/kudos-board.authed.spec.ts
-git commit -m "test(e2e): authenticated kudos-board test via auto-login backdoor"
+git add e2e/auth.setup.ts e2e/authenticated-access.authed.spec.ts
+git commit -m "test(e2e): authenticated protected-page access via auto-login backdoor"
 ```
 
 ---
@@ -767,12 +777,12 @@ git commit -m "docs(e2e): document authenticated tests via auto-login backdoor"
 
 ```bash
 git push -u origin feat/template-adoption
-gh pr create --base feat/sun-kudos-live-board --title "feat: adopt typed env, lefthook, and Playwright E2E from template" --body "Adopts three safe-additive template practices into ssa.
+gh pr create --base main --title "feat: adopt typed env, lefthook, and Playwright E2E from template" --body "Adopts three safe-additive template practices into ssa.
 
 ## Slices
 - **Typed env** (\`lib/env.ts\`, @t3-oss/env-nextjs + zod) — fail-fast validation, migrated call sites.
 - **lefthook** pre-commit — eslint --fix + tsc --noEmit (keeps ESLint, not Biome).
-- **Playwright E2E** — integrates PR #11 (auto-login backdoor) + PR #4 (Playwright infra); adds an authenticated kudos-board test; fixes the stale smoke test to the login-required homepage behavior.
+- **Playwright E2E** — integrates PR #11 (auto-login backdoor) + PR #4 (Playwright infra); adds an authenticated protected-page-access test; fixes the stale smoke test to the login-required homepage behavior.
 
 Supersedes PRs #4 and #11 (their commits are merged in here).
 
@@ -791,4 +801,4 @@ Expected: PR URL printed. Mention in the PR that #4 and #11 can be closed in fav
 
 **Type/name consistency:** `env` export used consistently (`@/lib/env`); `createAdminClient` signature unchanged for callers; storageState path `playwright/.auth/user.json` matches between `auth.setup.ts`, the `chromium-auth` project, and the `.gitignore` entry; authed spec named `*.authed.spec.ts` matches the project `testMatch`/`testIgnore`. ✓
 
-**Open items (carried from spec):** final PR base (`feat/sun-kudos-live-board` assumed); optional `pre-push` test job not included (out of scope).
+**Open items (carried from spec):** PR base is `main` (worktree is based off `main`); optional `pre-push` test job not included (out of scope). The kudos board's latest UI (uncommitted on the feature branch) is intentionally not part of this branch — the authed E2E targets the protected homepage instead of the `/sun-kudos` stub.
