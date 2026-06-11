@@ -38,6 +38,8 @@ interface KudoCardBaseProps {
   showImages?: boolean;
   /** Render the "Xem chi tiết" action (highlight variant). */
   showViewDetail?: boolean;
+  /** Render the owner edit pencil on the title row (feed; temp UI only). */
+  showEdit?: boolean;
   /** Body line-clamp — 3 (highlight) or 5 (feed). */
   bodyClamp?: 3 | 5;
   /** Cap hashtags and show a "+N" overflow (highlight). Omit to show all (feed). */
@@ -46,6 +48,8 @@ interface KudoCardBaseProps {
   active?: boolean;
   onLike?: (id: string) => void;
   onViewDetail?: (id: string) => void;
+  /** Owner edit handler — unwired for now (temp UI). */
+  onEdit?: (id: string) => void;
   onOpenProfile?: (profileId: string) => void;
   onOpenImage?: (kudoId: string, index: number) => void;
 }
@@ -67,11 +71,13 @@ export function KudoCardBase({
   baseUrl,
   showImages = false,
   showViewDetail = false,
+  showEdit = false,
   bodyClamp = 3,
   maxHashtags,
   active,
   onLike,
   onViewDetail,
+  onEdit,
   onOpenProfile,
   onOpenImage,
 }: KudoCardBaseProps) {
@@ -88,7 +94,9 @@ export function KudoCardBase({
   // `active` is only passed by the highlight carousel; feed leaves it undefined.
   const isHighlight = active !== undefined;
   const shellClass = [
-    "flex flex-col gap-4 rounded-[24px] p-10 bg-[rgba(255,248,225,1)]",
+    "flex flex-col rounded-[16px] bg-[rgba(255,248,225,1)]",
+    // Reference: feed = 40px padding + 32px gap; highlight = 16px padding + 16px gap.
+    isHighlight ? "gap-4 p-4" : "gap-8 p-10",
     isHighlight ? "transition-all duration-300 select-none" : "",
     active === true ? "opacity-100 scale-100" : "",
     active === false ? "opacity-50 scale-95 pointer-events-none" : "",
@@ -112,13 +120,19 @@ export function KudoCardBase({
           className="flex items-center gap-3 text-left hover:opacity-80 transition-opacity min-w-0"
           aria-label={t("leaderboard.profileAria", { name: card.sender.fullName })}
         >
-          <Avatar src={card.sender.avatarUrl} alt={card.sender.fullName} size={48} />
+          <Avatar src={card.sender.avatarUrl} alt={card.sender.fullName} size={62} />
           <div className="flex flex-col min-w-0">
             <span className="font-montserrat font-bold text-sm text-saa-navy-dark leading-5 truncate">
               {senderName}
             </span>
             <div className="flex items-center gap-1.5">
-              <StarsIndicator stars={card.sender.stars} size={12} />
+              {card.sender.departmentName ? (
+                <span className="font-montserrat font-semibold text-[11px] text-gray-500">
+                  {card.sender.departmentName}
+                </span>
+              ) : (
+                <StarsIndicator stars={card.sender.stars} size={12} />
+              )}
               {senderTier && <HeroTitlePill tierKey={senderTier.key} label={senderTier.label} />}
             </div>
           </div>
@@ -137,7 +151,9 @@ export function KudoCardBase({
           className="shrink-0 text-saa-navy-mid mt-3"
           aria-label={t("card.sentTo")}
         >
-          <path d="M5 12h14M12 5l7 7-7 7" />
+          {/* Paper-plane "send" icon (design) */}
+          <line x1="22" y1="2" x2="11" y2="13" />
+          <polygon points="22 2 15 22 11 13 2 9 22 2" />
         </svg>
 
         <button
@@ -146,13 +162,19 @@ export function KudoCardBase({
           className="flex items-center gap-3 text-left hover:opacity-80 transition-opacity min-w-0"
           aria-label={t("leaderboard.profileAria", { name: card.recipient.fullName })}
         >
-          <Avatar src={card.recipient.avatarUrl} alt={card.recipient.fullName} size={48} />
+          <Avatar src={card.recipient.avatarUrl} alt={card.recipient.fullName} size={62} />
           <div className="flex flex-col min-w-0">
             <span className="font-montserrat font-bold text-sm text-saa-navy-dark leading-5 truncate">
               {card.recipient.fullName}
             </span>
             <div className="flex items-center gap-1.5">
-              <StarsIndicator stars={card.recipient.stars} size={12} />
+              {card.recipient.departmentName ? (
+                <span className="font-montserrat font-semibold text-[11px] text-gray-500">
+                  {card.recipient.departmentName}
+                </span>
+              ) : (
+                <StarsIndicator stars={card.recipient.stars} size={12} />
+              )}
               {recipientTier && <HeroTitlePill tierKey={recipientTier.key} label={recipientTier.label} />}
             </div>
           </div>
@@ -167,6 +189,38 @@ export function KudoCardBase({
         <time dateTime={card.createdAt} className="text-xs text-gray-500 font-montserrat">
           {formatTime(card.createdAt)}
         </time>
+
+        {/* Award/category title (design "IDOL GIỎI TRẺ") — fixed text for now;
+            `card.title` overrides once a data source exists. Optional owner
+            edit pencil sits at the right (temp UI — handler unwired). */}
+        <div className="relative flex items-center justify-center">
+          <p className="text-center font-montserrat font-bold text-base text-saa-navy-dark uppercase">
+            {card.title ?? t("card.idolTitle")}
+          </p>
+          {showEdit && (
+            <button
+              type="button"
+              onClick={() => onEdit?.(card.id)}
+              aria-label={t("card.edit")}
+              className="absolute right-0 text-saa-navy-dark hover:text-saa-navy-mid transition-colors"
+            >
+              <svg
+                width="18"
+                height="18"
+                viewBox="0 0 24 24"
+                fill="none"
+                stroke="currentColor"
+                strokeWidth="2"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                aria-hidden="true"
+              >
+                <path d="M12 20h9" />
+                <path d="M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4 12.5-12.5z" />
+              </svg>
+            </button>
+          )}
+        </div>
 
         {/* Body box — Frame 425 (gold-glass 40% on cream) */}
         <div className="rounded-[12px] border border-saa-gold-accent bg-[rgba(255,234,158,0.40)] px-6 py-4">
@@ -216,30 +270,37 @@ export function KudoCardBase({
       {/* Gold divider */}
       <div className="h-px bg-saa-gold-accent" />
 
-      {/* Action bar — heart + copy link, plus optional "Xem chi tiết" */}
-      <div
-        className={
-          showViewDetail
-            ? "flex items-center justify-between gap-4"
-            : "flex items-center gap-1"
-        }
-      >
-        <div className="flex items-center gap-1">
-          <HeartButton
-            liked={card.liked}
-            count={card.heartTotal}
-            onClick={() => onLike?.(card.id)}
-          />
-          <CopyLinkButton url={`${baseUrl}/sun-kudos?kudo=${card.id}`} />
-        </div>
-        {showViewDetail && (
-          <button
-            type="button"
-            onClick={() => onViewDetail?.(card.id)}
-            className="font-montserrat font-bold text-sm text-saa-navy-dark hover:underline transition-colors whitespace-nowrap"
-          >
-            {t("card.viewDetail")}
-          </button>
+      {/* Action bar — always space-between.
+          Highlight: [heart + copy] left, "Xem chi tiết" right.
+          Feed: heart left, Copy Link right (design). */}
+      <div className="flex items-center justify-between gap-4">
+        {showViewDetail ? (
+          <>
+            <div className="flex items-center gap-1">
+              <HeartButton
+                liked={card.liked}
+                count={card.heartTotal}
+                onClick={() => onLike?.(card.id)}
+              />
+              <CopyLinkButton url={`${baseUrl}/sun-kudos?kudo=${card.id}`} />
+            </div>
+            <button
+              type="button"
+              onClick={() => onViewDetail?.(card.id)}
+              className="font-montserrat font-bold text-sm text-saa-navy-dark hover:underline transition-colors whitespace-nowrap"
+            >
+              {t("card.viewDetail")}
+            </button>
+          </>
+        ) : (
+          <>
+            <HeartButton
+              liked={card.liked}
+              count={card.heartTotal}
+              onClick={() => onLike?.(card.id)}
+            />
+            <CopyLinkButton url={`${baseUrl}/sun-kudos?kudo=${card.id}`} />
+          </>
         )}
       </div>
     </article>

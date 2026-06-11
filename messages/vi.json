@@ -88,6 +88,92 @@
       "theleLabel": "Thể lệ",
       "writeKudosLabel": "Viết KUDOS"
     },
+    "kudosPage": {
+      "banner": {
+        "title": "Hệ thống ghi nhận và cảm ơn",
+        "placeholder": "Hôm nay, bạn muốn gửi lời cảm ơn và ghi nhận đến ai?",
+        "searchPlaceholder": "Tìm kiếm sunner...",
+        "clearSearch": "Xóa tìm kiếm"
+      },
+      "carousel": {
+        "eyebrow": "Sun* Annual Awards 2025",
+        "title": "HIGHLIGHT KUDOS",
+        "prev": "Trước",
+        "next": "Tiếp"
+      },
+      "filter": {
+        "all": "Tất cả",
+        "hashtag": "Hashtag",
+        "department": "Phòng ban"
+      },
+      "card": {
+        "viewDetail": "Xem chi tiết",
+        "anonymous": "Ẩn danh",
+        "sentTo": "gửi tới",
+        "imageAlt": "Ảnh kudo",
+        "idolTitle": "IDOL GIỎI TRẺ",
+        "edit": "Chỉnh sửa"
+      },
+      "copyLink": {
+        "label": "Sao chép link",
+        "success": "Link đã được sao chép — sẵn sàng chia sẻ!",
+        "aria": "Sao chép liên kết",
+        "error": "Không thể sao chép — hãy sao chép URL thủ công."
+      },
+      "spotlight": {
+        "eyebrow": "Sun* Annual Awards 2025",
+        "title": "SPOTLIGHT BOARD",
+        "searchPlaceholder": "Tìm kiếm",
+        "searchAria": "Tìm kiếm sunner",
+        "clearSearch": "Xóa tìm kiếm",
+        "zoomIn": "Phóng to",
+        "zoomOut": "Thu nhỏ",
+        "zoomReset": "Đặt lại",
+        "enterFullscreen": "Toàn màn hình",
+        "exitFullscreen": "Thoát toàn màn hình",
+        "empty": "Chưa có dữ liệu",
+        "noMatch": "Không tìm thấy sunner phù hợp",
+        "loading": "Đang tải...",
+        "cloudAria": "Biểu đồ tên sunner theo số kudos nhận được",
+        "nodeAria": "{name} — {count} kudos nhận được",
+        "totalAria": "Tổng cộng {count} kudos"
+      },
+      "feed": {
+        "eyebrow": "Sun* Annual Awards 2025",
+        "title": "ALL KUDOS",
+        "empty": "Hiện tại chưa có Kudos nào.",
+        "loadingMore": "Đang tải thêm..."
+      },
+      "sidebar": {
+        "kudosReceived": "Số Kudos bạn nhận được:",
+        "kudosSent": "Số Kudos bạn đã gửi:",
+        "heartsReceived": "Số tim bạn nhận được:",
+        "secretBoxOpened": "Số Secret Box bạn đã mở:",
+        "secretBoxUnopened": "Số Secret Box chưa mở:",
+        "openGift": "Mở Secret Box",
+        "openGiftStub": "Tính năng này sẽ sớm ra mắt!"
+      },
+      "leaderboard": {
+        "empty": "Chưa có dữ liệu",
+        "kudosCount": "{score} kudos",
+        "promotions": {
+          "title": "10 SUNNER CÓ SỰ THĂNG HẠNG MỚI NHẤT",
+          "scoreLabel": "kudos nhận được"
+        },
+        "gifts": {
+          "title": "10 SUNNER NHẬN QUÀ MỚI NHẤT",
+          "scoreLabel": "quà đã nhận"
+        },
+        "profileAria": "Xem hồ sơ {name}"
+      },
+      "heartButton": {
+        "like": "Thích",
+        "unlike": "Bỏ thích"
+      },
+      "stars": {
+        "tier": "Hạng {n} sao"
+      }
+    },
     "thele": {
       "panelTitle": "Thể lệ",
       "receiverSectionTitle": "NGƯỜI NHẬN KUDOS: HUY HIỆU HERO CHO NHỮNG ẢNH HƯỞNG TÍCH CỰC",

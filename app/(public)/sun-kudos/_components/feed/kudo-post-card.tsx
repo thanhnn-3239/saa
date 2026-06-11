@@ -35,6 +35,7 @@ export function KudoPostCard({
       baseUrl={baseUrl}
       showImages
       showViewDetail={false}
+      showEdit
       bodyClamp={5}
       onLike={onLike}
       onOpenProfile={onOpenProfile}

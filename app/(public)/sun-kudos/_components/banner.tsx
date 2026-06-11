@@ -50,6 +50,7 @@ export function Banner({
 
   // Keep in sync when parent resets (e.g. Spotlight's clear button)
   useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- mirror controlled prop on external reset
     setInputValue(spotlightSearch);
   }, [spotlightSearch]);
 
@@ -102,7 +103,7 @@ export function Banner({
       />
 
       {/* Content — padded to match Figma 144px horizontal margins */}
-      <div className="relative z-[2] mx-auto flex flex-col gap-10 px-4 sm:px-9 lg:px-36 pt-24 pb-12">
+      <div className="relative z-[2] mx-auto max-w-[1240px] flex flex-col gap-10 px-4 sm:px-9 xl:px-0 pt-24 pb-12">
 
         {/* A_KV Kudos block — title + logo (Figma 2940:13437) */}
         <div className="flex flex-col gap-2">
@@ -188,6 +189,8 @@ export function Banner({
             <input
               id={searchId}
               type="search"
+              spellCheck={false}
+              autoComplete="off"
               placeholder={t("searchPlaceholder")}
               value={inputValue}
               maxLength={100}

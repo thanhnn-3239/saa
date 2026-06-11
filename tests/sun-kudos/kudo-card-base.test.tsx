@@ -144,6 +144,58 @@ describe("KudoCardBase — highlight variant", () => {
   });
 });
 
+describe("KudoCardBase — department sub-line & title", () => {
+  it("shows the department name in the sub-line when present", () => {
+    renderWithIntl(
+      <KudoCardBase
+        card={makeCard({
+          sender: { ...profile("Alice Nguyen"), departmentName: "CEVC10" },
+        })}
+        baseUrl={BASE_URL}
+        showImages
+        bodyClamp={5}
+      />
+    );
+    expect(screen.getByText("CEVC10")).toBeInTheDocument();
+  });
+
+  it("shows the fixed default title when card.title is unset", () => {
+    renderWithIntl(
+      <KudoCardBase card={makeCard()} baseUrl={BASE_URL} showImages bodyClamp={5} />
+    );
+    expect(
+      screen.getByText(messages.Home.kudosPage.card.idolTitle)
+    ).toBeInTheDocument();
+  });
+
+  it("lets card.title override the fixed default", () => {
+    renderWithIntl(
+      <KudoCardBase
+        card={makeCard({ title: "CUSTOM AWARD" })}
+        baseUrl={BASE_URL}
+        showImages
+        bodyClamp={5}
+      />
+    );
+    expect(screen.getByText("CUSTOM AWARD")).toBeInTheDocument();
+  });
+
+  it("renders the edit pencil only when showEdit is set", () => {
+    const editLabel = messages.Home.kudosPage.card.edit;
+    const { rerender } = renderWithIntl(
+      <KudoCardBase card={makeCard()} baseUrl={BASE_URL} showImages bodyClamp={5} showEdit />
+    );
+    expect(screen.getByLabelText(editLabel)).toBeInTheDocument();
+
+    rerender(
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <KudoCardBase card={makeCard()} baseUrl={BASE_URL} showImages bodyClamp={5} />
+      </NextIntlClientProvider>
+    );
+    expect(screen.queryByLabelText(editLabel)).not.toBeInTheDocument();
+  });
+});
+
 describe("KudoCardBase — anonymous sender", () => {
   it("renders the anonymous label instead of the sender name", () => {
     renderWithIntl(

@@ -41,7 +41,7 @@ interface StatRowProps {
 function StatRow({ label, value }: StatRowProps) {
   return (
     <div className="flex items-center justify-between gap-2 w-full">
-      <span className="font-montserrat font-bold text-[22px] leading-7 text-white text-right flex-1">
+      <span className="font-montserrat font-bold text-[22px] leading-7 text-white text-left flex-1">
         {label}
       </span>
       <span className="font-montserrat font-bold text-[32px] leading-10 text-saa-gold-accent tabular-nums shrink-0">
@@ -72,15 +72,15 @@ export function SidebarStatsBlock({ stats, onOpenGift }: SidebarStatsProps) {
 
         {/* D.1.4 — hearts received, with the 🔥 x2 multiplier badge (design node 3241:14882) */}
         <div className="flex items-center justify-between gap-2 w-full">
-          <span className="font-montserrat font-bold text-[22px] leading-7 text-white text-right flex-1">
+          <span className="font-montserrat font-bold text-[22px] leading-7 text-white text-left flex-1">
             {t("heartsReceived")}
           </span>
           <div className="flex items-center gap-1.5 shrink-0">
             {/* Flame x2 multiplier badge */}
             <span className="flex items-center gap-0.5 text-saa-gold-accent" aria-label="x2">
               <svg
-                width="20"
-                height="20"
+                width="18"
+                height="18"
                 viewBox="0 0 24 24"
                 fill="currentColor"
                 aria-hidden="true"
@@ -91,7 +91,7 @@ export function SidebarStatsBlock({ stats, onOpenGift }: SidebarStatsProps) {
                   clipRule="evenodd"
                 />
               </svg>
-              <span className="font-montserrat font-bold text-lg leading-none">x2</span>
+              <span className="font-montserrat font-bold text-sm leading-none">x2</span>
             </span>
             <span className="font-montserrat font-bold text-[32px] leading-10 text-saa-gold-accent tabular-nums">
               {stats.heartsReceived}
