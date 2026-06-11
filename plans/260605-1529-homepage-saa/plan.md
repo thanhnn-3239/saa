@@ -85,4 +85,4 @@ detail). User later supplied 3 separate MoMorph frames (FAB collapsed/expanded +
 ## Known limitations (deferred)
 - No real notification system, no user roles (ID-5/ID-37 deferred).
 - "Viết KUDOS" action is a placeholder (no write-kudos design provided) — see D1.
-- Awards Information / Sun* Kudos / Tiêu chuẩn chung are stub pages only.
+- Awards Information / Tiêu chuẩn chung are stub pages only. **Sun* Kudos board is now implemented** (see [plan 260606-1325-sun-kudos-live-board](../260606-1325-sun-kudos-live-board/plan.md)).
