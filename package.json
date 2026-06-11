@@ -7,15 +7,20 @@
     "build": "next build",
     "start": "next start",
     "lint": "eslint",
+    "typecheck": "tsc --noEmit",
     "test": "vitest run",
     "test:watch": "vitest",
     "test:ui": "vitest --ui",
     "test:coverage": "vitest run --coverage",
+    "test:e2e": "playwright test",
+    "test:e2e:ui": "playwright test --ui",
+    "test:e2e:docker": "docker compose -f docker-compose.e2e.yml run --rm e2e",
     "db:start": "supabase start",
     "db:stop": "supabase stop",
     "db:reset": "supabase db reset",
     "db:status": "supabase status",
-    "dev:docker": "docker compose up --build"
+    "dev:docker": "docker compose up --build",
+    "postinstall": "node -e \"if (!process.env.CI) require('child_process').execSync('lefthook install', {stdio: 'inherit'})\""
   },
   "engines": {
     "node": ">=20.9.0"
@@ -23,12 +28,15 @@
   "dependencies": {
     "@supabase/ssr": "^0.10.3",
     "@supabase/supabase-js": "^2.107.0",
+    "@t3-oss/env-nextjs": "^0.13.11",
     "next": "16.2.7",
     "next-intl": "^4.13.0",
     "react": "19.2.4",
-    "react-dom": "19.2.4"
+    "react-dom": "19.2.4",
+    "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@playwright/test": "^1.60.0",
     "@tailwindcss/postcss": "^4",
     "@testing-library/jest-dom": "^6.9.1",
     "@testing-library/react": "^16.3.2",
@@ -41,6 +49,7 @@
     "eslint": "^9",
     "eslint-config-next": "16.2.7",
     "jsdom": "^29.1.1",
+    "lefthook": "^2.1.9",
     "supabase": "^2.104.0",
     "tailwindcss": "^4",
     "typescript": "^5",

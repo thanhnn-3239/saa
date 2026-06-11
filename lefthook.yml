@@ -1,0 +1,12 @@
+# Git hooks (adopted from the sun-nextjs-template). Installed by the package.json
+# postinstall script; skipped on CI (postinstall guards on !process.env.CI).
+# Keeps ESLint — does NOT switch to Biome.
+pre-commit:
+  parallel: false
+  jobs:
+    - name: lint
+      glob: "*.{ts,tsx,js,jsx,mjs,cjs}"
+      run: pnpm exec eslint --fix {staged_files}
+      stage_fixed: true
+    - name: typecheck
+      run: pnpm typecheck

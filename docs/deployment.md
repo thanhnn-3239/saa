@@ -27,19 +27,41 @@ server-/CI-only and must never get a `NEXT_PUBLIC_` prefix.
 | `NEXT_PUBLIC_SUPABASE_URL` | ✅ | ✅ | — | — | ✅ | ✅ (safe) |
 | `NEXT_PUBLIC_SUPABASE_ANON_KEY` (`sb_publishable_…`) | ✅ | ✅ | — | — | ✅ | ✅ (safe) |
 | `NEXT_PUBLIC_EVENT_DATETIME` | ✅ | ✅ | — | — | ✅ | ✅ (safe) |
-| `SUPABASE_SECRET_KEY` | ❌ not used¹ | ❌ | — | — | ❌ optional¹ | ❌ never |
+| `SUPABASE_SECRET_KEY` | ❌ never¹ | ❌ never¹ | — | — | ✅ dev-only¹ | ❌ never |
 | `GOOGLE_CLIENT_ID` | ❌ | ❌ | ✅ Providers→Google | — | ✅ (local CLI) | ❌ |
 | `GOOGLE_CLIENT_SECRET` | ❌ | ❌ | ✅ Providers→Google | — | ✅ (local CLI) | ❌ |
 | `SUPABASE_ACCESS_TOKEN` | — | — | — | ✅ | — | — |
 | `SUPABASE_PROJECT_REF` | — | — | — | ✅ | — | — |
 | `SUPABASE_DB_PASSWORD` | — | — | — | ✅ | — | — |
 
-¹ `SUPABASE_SECRET_KEY` (the `service_role`/secret key) is **not referenced anywhere in the code** —
-the SSR auth flow needs only the URL + publishable key. **Do not set it in Vercel.** Add it only if a
-future server-side admin op (RLS bypass, Admin API) actually requires it.
+¹ `SUPABASE_SECRET_KEY` (the `service_role`/secret key) is used by **one code path only**: the
+service-role client (`lib/supabase/admin.ts`) behind the **dev-only auto-login backdoor**
+(`app/auto-login/route.ts`, gated by `AUTO_LOGIN_TOKEN`). The normal SSR auth flow needs only the
+URL + publishable key. **Never set `SUPABASE_SECRET_KEY` (or `AUTO_LOGIN_TOKEN`) in Vercel** — the
+backdoor must stay disabled in production. Set the secret in local `.env.local` only when you also
+enable `AUTO_LOGIN_TOKEN` for E2E/manual testing.
 
 **Key naming (2026):** new Supabase projects expose `sb_publishable_…` / `sb_secret_…`. Use the
 **publishable** key as `NEXT_PUBLIC_SUPABASE_ANON_KEY`. (Legacy `anon` JWT only exists on pre-Jun-2025 projects.)
+
+### Typed env validation (fail-fast at build)
+
+`next build` validates env vars via `lib/env.ts` (imported by `next.config.ts`). This **changes the
+failure mode on Vercel**: a missing/invalid required var now **fails the build** instead of deploying
+successfully and breaking at runtime.
+
+- **Required (build fails without them):** `NEXT_PUBLIC_SUPABASE_URL` (must be a valid URL) and
+  `NEXT_PUBLIC_SUPABASE_ANON_KEY`. The current Vercel project already sets both (see matrix) — no
+  action needed; but a **new project/environment must set them before the first build**.
+- **Empty string = missing** (`emptyStringAsUndefined`): setting a var to `""` in Vercel also fails
+  the build.
+- **Optional:** `NEXT_PUBLIC_EVENT_DATETIME` (countdown degrades gracefully when absent) — but if
+  set, it must parse as ISO-8601 or the build fails. `SUPABASE_SECRET_KEY` / `AUTO_LOGIN_TOKEN` are
+  optional by design so production builds **without** them succeed (and keep the backdoor disabled).
+- **Escape hatch:** `SKIP_ENV_VALIDATION=1` bypasses validation (intended for Docker image builds).
+  Don't set it on Vercel — it defeats the fail-fast protection.
+- **lefthook is deploy-neutral:** its `postinstall` hook-install is guarded by `!process.env.CI`, and
+  Vercel sets `CI=1`, so builds skip it automatically.
 
 ---
 

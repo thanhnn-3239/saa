@@ -1,0 +1,40 @@
+# Run the Playwright E2E suite in a container — no local browser / system-deps
+# setup required. Uses the OFFICIAL Playwright image (Ubuntu) on purpose:
+# Playwright browsers are NOT supported on the project's Alpine dev image
+# (Dockerfile.dev), and this image ships Chromium + all OS libs preinstalled.
+#
+# IMPORTANT: the image tag MUST match the @playwright/test version pinned in
+# package.json. Currently v1.60.0 → `v1.60.0-noble`. Bump both together.
+#
+# Usage (one-shot, auto-removed):
+#   docker compose -f docker-compose.e2e.yml run --rm e2e
+#   # or: pnpm test:e2e:docker
+#
+# Pass extra Playwright args after the service name, e.g.:
+#   docker compose -f docker-compose.e2e.yml run --rm e2e pnpm exec playwright test --headed
+#
+# The container builds + starts the app itself (see `webServer` in
+# playwright.config.ts) with dummy Supabase env, so NO backend is needed for
+# the current smoke test. Authenticated tests (Approach A) will additionally
+# need a reachable Supabase — see docs/e2e-testing.md.
+services:
+  e2e:
+    image: mcr.microsoft.com/playwright:v1.60.0-noble
+    working_dir: /app
+    # Mount the repo, but keep node_modules and .next in named volumes so the
+    # container builds its own Linux binaries (never reuses host/macOS ones) and
+    # caches them across runs for faster repeat runs.
+    volumes:
+      - .:/app
+      - e2e_node_modules:/app/node_modules
+      - e2e_next:/app/.next
+    # corepack picks the pnpm version pinned in package.json's packageManager.
+    # Browsers are already baked into the image, so no `playwright install`.
+    command: >
+      sh -c "corepack enable &&
+             pnpm install --frozen-lockfile &&
+             pnpm exec playwright test"
+
+volumes:
+  e2e_node_modules:
+  e2e_next:
