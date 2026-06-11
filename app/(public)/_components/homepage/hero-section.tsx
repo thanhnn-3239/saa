@@ -91,7 +91,7 @@ export async function HeroSection() {
           {/* CTA buttons */}
           {/* mm:2167:9062 */}
           <div className="flex flex-row flex-wrap gap-10">
-            {/* mm:2167:9063 — About Awards (primary gold) → awards-information */}
+            {/* mm:2167:9063 — About Awards (primary gold) → he-thong-giai */}
             <Link
               href={ROUTES.awardsInfo}
               className="inline-flex items-center gap-2 transition-opacity hover:opacity-90 p-4 px-6 rounded-saa-button bg-saa-gold-accent no-underline shrink-0"

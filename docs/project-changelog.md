@@ -4,6 +4,22 @@ Significant changes, features, and fixes in reverse-chronological order.
 
 ---
 
+## [Unreleased] — 2026-06-11 (feat/he-thong-giai — SAA 2025 awards system page)
+
+### Added
+- **`/he-thong-giai` page** (login-gated): keyvisual hero → title block → two-column layout (sticky scroll-spy left nav + 6 award info cards) → Sun* Kudos promo banner (CTA → `/sun-kudos`).
+- **New components** under `app/(public)/he-thong-giai/_components/`: `hero-banner.tsx`, `title-block.tsx`, `section-nav.tsx`, `award-info-card.tsx`, `kudos-promo-banner.tsx`, `he-thong-giai-screen.tsx`, `use-scroll-spy.ts` (IntersectionObserver hook).
+- **`HeThongGiai` i18n namespace** added to `messages/vi.json` + `messages/en.json` (page chrome, nav labels, card content, kudos promo).
+- **`awardAnchor(slug)` helper** in `lib/navigation/routes.ts`: builds `/he-thong-giai#<slug>` anchor links.
+
+### Changed
+- **`ROUTES.awardsInfo`** value changed from `/awards-information` to `/he-thong-giai`.
+- **`lib/awards/categories.ts`** extended with `quantityKey`, `valueKey`, `navKey`, `imageRight` fields per Figma spec.
+- **Nav + footer label** `Home.nav.awardInformation` updated: vi → "Hệ thống giải", en → "Award System".
+- **`next.config.ts`**: permanent 308 redirect `/awards-information` → `/he-thong-giai` (old stub directory deleted).
+
+---
+
 ## [Unreleased] — 2026-06-10 (feat/sun-kudos-live-board — UI fidelity pass)
 
 ### Added

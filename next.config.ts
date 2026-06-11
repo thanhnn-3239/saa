@@ -10,6 +10,19 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "lh3.googleusercontent.com" },
     ],
   },
+  // Permanent redirect from old route to new canonical path.
+  // Runs before any rendering — cheapest possible redirect mechanism.
+  // Source is intentionally kept even after deleting the stub dir: handles
+  // any bookmarks, external links, or cached redirects pointing to the old path.
+  async redirects() {
+    return [
+      {
+        source: "/awards-information",
+        destination: "/he-thong-giai",
+        permanent: true,
+      },
+    ];
+  },
 };
 
 // No path arg: auto-detects ./i18n/request.ts. Works with Turbopack.

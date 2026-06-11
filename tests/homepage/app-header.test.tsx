@@ -27,7 +27,7 @@ beforeEach(() => {
 /** Resolved EN nav labels — mirrors what the layout passes at runtime. */
 const defaultNavLabels = {
   aboutSaa: "About SAA 2025",
-  awardInformation: "Award Information",
+  awardInformation: "Hệ thống giải",
   kudos: "Sun* Kudos",
 };
 
@@ -43,7 +43,7 @@ describe("AppHeader (ID-0, ID-1, ID-18, ID-20, ID-21, ID-22)", () => {
 
     expect(screen.getByAltText("Sun* Annual Awards")).toBeInTheDocument();
     expect(screen.getByText("About SAA 2025")).toBeInTheDocument();
-    expect(screen.getByText("Award Information")).toBeInTheDocument();
+    expect(screen.getByText("Hệ thống giải")).toBeInTheDocument();
     expect(screen.getByText("Sun* Kudos")).toBeInTheDocument();
     expect(screen.getByText("Language Switcher Slot")).toBeInTheDocument();
   });
@@ -85,7 +85,7 @@ describe("AppHeader (ID-0, ID-1, ID-18, ID-20, ID-21, ID-22)", () => {
     expect(aboutLink).toHaveAttribute("href", ROUTES.home);
   });
 
-  it("'Award Information' nav link points to awardsInfo route (ID-21)", () => {
+  it("'Hệ thống giải' nav link points to awardsInfo route (ID-21)", () => {
     render(
       <AppHeader
         languageSwitcher={<div>Language Switcher Slot</div>}
@@ -93,7 +93,7 @@ describe("AppHeader (ID-0, ID-1, ID-18, ID-20, ID-21, ID-22)", () => {
       />
     );
 
-    const awardLink = screen.getByText("Award Information").closest("a");
+    const awardLink = screen.getByText("Hệ thống giải").closest("a");
     expect(awardLink).toHaveAttribute("href", ROUTES.awardsInfo);
   });
 
@@ -133,11 +133,11 @@ describe("AppHeader — active nav tab follows the current pathname", () => {
     expect(activeLink()?.className).toContain("text-saa-gold-accent");
   });
 
-  it("marks 'Award Information' active on the awards-information page", () => {
+  it("marks 'Hệ thống giải' active on the he-thong-giai page", () => {
     mockUsePathname.mockReturnValue(ROUTES.awardsInfo);
     renderHeader();
 
-    expect(activeLink()).toHaveTextContent("Award Information");
+    expect(activeLink()).toHaveTextContent("Hệ thống giải");
     // The previously hardcoded tab must no longer be highlighted.
     const aboutLink = screen.getByText("About SAA 2025").closest("a");
     expect(aboutLink?.className).toContain("text-white");

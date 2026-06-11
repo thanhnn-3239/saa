@@ -11,7 +11,7 @@ describe("lib/navigation/routes", () => {
     });
 
     it("exports awardsInfo route (ID-20)", () => {
-      expect(ROUTES.awardsInfo).toBe("/awards-information");
+      expect(ROUTES.awardsInfo).toBe("/he-thong-giai");
     });
 
     it("exports kudos route (ID-21)", () => {
@@ -35,9 +35,9 @@ describe("lib/navigation/routes", () => {
     });
 
     it("returns awardsInfo with hash anchor when slug provided (ID-47)", () => {
-      expect(awardAnchor("top-talent")).toBe("/awards-information#top-talent");
+      expect(awardAnchor("top-talent")).toBe("/he-thong-giai#top-talent");
       expect(awardAnchor("best-manager")).toBe(
-        "/awards-information#best-manager"
+        "/he-thong-giai#best-manager"
       );
     });
 
@@ -53,7 +53,7 @@ describe("lib/navigation/routes", () => {
 
       categories.forEach((slug) => {
         const result = awardAnchor(slug);
-        expect(result).toBe(`/awards-information#${slug}`);
+        expect(result).toBe(`/he-thong-giai#${slug}`);
         expect(result).toContain("#");
         expect(result).toContain(slug);
       });
@@ -68,7 +68,7 @@ describe("lib/navigation/routes", () => {
 
     const routeMap: Record<string, string> = {
       "/": "app/(public)/page.tsx",
-      "/awards-information": "app/(public)/awards-information/page.tsx",
+      "/he-thong-giai": "app/(public)/he-thong-giai/page.tsx",
       "/sun-kudos": "app/(public)/sun-kudos/page.tsx",
       "/tieu-chuan-chung": "app/(public)/tieu-chuan-chung/page.tsx",
       "/profile": "app/(public)/profile/page.tsx",

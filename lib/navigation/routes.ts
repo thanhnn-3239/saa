@@ -6,7 +6,7 @@
 
 export const ROUTES = {
   home: "/",
-  awardsInfo: "/awards-information",
+  awardsInfo: "/he-thong-giai",
   kudos: "/sun-kudos",
   standards: "/tieu-chuan-chung",
   profile: "/profile",
@@ -14,8 +14,8 @@ export const ROUTES = {
 
 /**
  * Returns the URL for a specific award category anchor on the
- * Awards Information page (e.g. "/awards-information#top-talent").
- * If slug is empty, falls back to the base awards-information path.
+ * Hệ thống giải page (e.g. "/he-thong-giai#top-talent").
+ * If slug is empty, falls back to the base he-thong-giai path.
  */
 export function awardAnchor(slug: string): string {
   const trimmed = slug.trim();

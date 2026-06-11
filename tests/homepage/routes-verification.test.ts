@@ -5,7 +5,7 @@ describe("ROUTES verification (ID-59)", () => {
   it("ROUTES object contains all expected navigation paths", () => {
     expect(ROUTES).toEqual({
       home: "/",
-      awardsInfo: "/awards-information",
+      awardsInfo: "/he-thong-giai",
       kudos: "/sun-kudos",
       standards: "/tieu-chuan-chung",
       profile: "/profile",
@@ -16,8 +16,8 @@ describe("ROUTES verification (ID-59)", () => {
     expect(ROUTES.home).toBe("/");
   });
 
-  it("awardsInfo route points to /awards-information", () => {
-    expect(ROUTES.awardsInfo).toBe("/awards-information");
+  it("awardsInfo route points to /he-thong-giai", () => {
+    expect(ROUTES.awardsInfo).toBe("/he-thong-giai");
   });
 
   it("kudos route points to /sun-kudos", () => {

@@ -34,20 +34,20 @@ describe("AwardsSection data (ID-15, ID-47–52, ID-62)", () => {
     expect(actualSlugs).toEqual(expectedSlugs);
   });
 
-  it("awardAnchor(slug) produces correct /awards-information#<slug> URLs (ID-62)", () => {
+  it("awardAnchor(slug) produces correct /he-thong-giai#<slug> URLs (ID-62)", () => {
     AWARD_CATEGORIES.forEach((category) => {
       const anchor = awardAnchor(category.slug);
-      expect(anchor).toBe(`/awards-information#${category.slug}`);
+      expect(anchor).toBe(`/he-thong-giai#${category.slug}`);
     });
   });
 
-  it("awardAnchor with empty string returns base path /awards-information (ID-62)", () => {
-    expect(awardAnchor("")).toBe("/awards-information");
+  it("awardAnchor with empty string returns base path /he-thong-giai (ID-62)", () => {
+    expect(awardAnchor("")).toBe("/he-thong-giai");
   });
 
-  it("awardAnchor with whitespace-only string returns base path /awards-information (ID-62, whitespace guard)", () => {
-    expect(awardAnchor("   ")).toBe("/awards-information");
-    expect(awardAnchor("\t")).toBe("/awards-information");
+  it("awardAnchor with whitespace-only string returns base path /he-thong-giai (ID-62, whitespace guard)", () => {
+    expect(awardAnchor("   ")).toBe("/he-thong-giai");
+    expect(awardAnchor("\t")).toBe("/he-thong-giai");
   });
 
   it("all image sources are valid paths starting with /homepage-saa/", () => {
