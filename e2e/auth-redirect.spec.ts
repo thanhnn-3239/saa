@@ -19,10 +19,13 @@ test("redirects an unauthenticated visitor from / to /login", async ({
   await expect(page.getByRole("button").first()).toBeVisible();
 });
 
-test("redirects an unauthenticated visitor from a protected route to /login", async ({
-  page,
-}) => {
-  await page.goto("/sun-kudos");
+// Every non-allowlisted route bounces to /login — one case per nav target.
+for (const route of ["/sun-kudos", "/awards-information", "/profile"]) {
+  test(`redirects an unauthenticated visitor from ${route} to /login`, async ({
+    page,
+  }) => {
+    await page.goto(route);
 
-  await expect(page).toHaveURL(/\/login$/);
-});
+    await expect(page).toHaveURL(/\/login$/);
+  });
+}
