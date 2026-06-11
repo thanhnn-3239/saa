@@ -7,9 +7,18 @@ compiler**: AI writes three human-readable input files — Gherkin `.feature`,
 Playwright `.spec.ts`. No AI runs during compilation, so the same inputs always
 produce the same tests.
 
-This pilot wired it into the repo and proved the full pipeline end-to-end on the
-**login screen**. Status: **working, 4/4 compiled tests green against the real
-app**, coexisting with the existing hand-written `e2e/` suite (13/13 total).
+This pilot wired it into the repo and proved the full pipeline end-to-end on
+**two screens**:
+
+- **login** (unauthenticated) — 4 compiled tests.
+- **sun-kudos** (authenticated via `@auth:member`) — 4 compiled tests: board
+  sections, hashtag filter → empty state, hashtag filter drops non-matching
+  kudos, and like→unlike.
+
+Status: **working, all green against the real app + local Supabase**. The full
+combined run — hand-written `e2e/` + sungen, authed and unauthed — is **34/34**.
+Unauthenticated runs (CI without Supabase) stay green: the base `sungen` project
+skips authed screens, so the no-token suite is 13 tests.
 
 ## What was set up
 
@@ -26,14 +35,16 @@ pnpm exec sungen init --base-url http://localhost:3000
 | `qa/screens/<name>/` | ✅ | Gherkin + selectors + test-data + requirements (the source) |
 | `specs/generated/` | ✅ | Compiled `.spec.ts` + `base.ts`/`test-data.ts`/`locale-fixture.ts` runtime |
 | `.github/prompts/`, `.github/skills/`, `.github/copilot-instructions.md` | ✅ | Copilot AI rules (25 files) |
-| `.claude/commands/sungen/`, `.claude/skills/sungen-*/` | ❌ gitignored | Claude Code rules — `.gitignore` has `/.claude/*`, so these are **local-only** |
+| `.claude/commands/sungen/`, `.claude/skills/sungen-*/` | ✅ | Claude Code rules. The repo's `/.claude/*` gitignore was **removed** in this pilot so these are committed and shared (23 markdown files) |
 | `.mcp.json`, `.vscode/mcp.json`, `.vscode/settings.json` | ✅ | MCP servers (playwright + figma) + Copilot auto-approve |
 
 ### Manual reconciliation applied
 
 - **`playwright.config.ts`** — added a `sungen` project (`testDir: specs/generated`)
-  that reuses the existing `webServer` + `baseURL`. The hand-written suite stays
-  in `e2e/` (project `chromium`); the two never overlap.
+  reusing the existing `webServer` + `baseURL`, plus `sungen-setup` + `sungen-auth`
+  (gated on `AUTO_LOGIN_TOKEN`) for authed screens. The base `sungen` project
+  `testIgnore`s the authed screen dirs (listed in `SUNGEN_AUTHED_SCREENS`), so
+  unauthenticated runs stay green. The hand-written suite stays in `e2e/`.
 - **`package.json`** — replaced sungen's generic `test:headed`/`test:debug`/`report`/
   `install:browsers` scripts with namespaced `test:sungen`, `test:sungen:ui`,
   `sungen:generate` to match the repo's `test:e2e*` convention.
@@ -62,6 +73,23 @@ The Gherkin reads like plain English and compiles 1:1 to Playwright — e.g.
 NFC selector keys hold Vietnamese strings directly (`không thuộc miền`,
 `Đăng nhập bằng Google`), which is the awkward part of the hand-written vi/en suite.
 
+### Authed screens (`@auth:member`)
+
+`@auth:member` compiles to `newContext({ storageState: 'specs/.auth/member.json' })`.
+We mint that session through the existing `/auto-login` backdoor in
+`specs/auth.setup.ts` (the `sungen-setup` project), instead of sungen's `makeauth`
+(which opens a browser for manual SSO). Run authed locally:
+
+```bash
+pnpm db:start
+SUPABASE_EXTRA_SEEDS="./seeds/dev/*.sql" pnpm db:reset
+export AUTO_LOGIN_TOKEN=dev-e2e-secret \
+  NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321 \
+  NEXT_PUBLIC_SUPABASE_ANON_KEY=$(pnpm -s db:status | awk '/Publishable/ {print $3}') \
+  SUPABASE_SECRET_KEY=$(pnpm -s db:status | awk '/Secret/ {print $3}')
+pnpm exec playwright test --project=sungen-setup --project=sungen-auth
+```
+
 ## Findings
 
 **Strengths**
@@ -78,27 +106,37 @@ NFC selector keys hold Vietnamese strings directly (`không thuộc miền`,
    `init` pre-creates `base.ts`). Worked around by copying the template:
    `cp node_modules/@sun-asterisk/sungen/dist/orchestrator/templates/specs-locale-fixture.ts specs/generated/locale-fixture.ts`.
    Reported upstream candidate — re-check on the next release.
-3. **`.claude/` is gitignored in this repo**, so the Claude Code slash commands/skills
-   are local-only. The shareable, committed path is Copilot (`.github/`). Anyone using
-   Claude Code must run `sungen init` (or `sungen update`) locally to get the commands.
-4. **Large footprint** — 25 tracked `.github/` rule files. Acceptable, but a deliberate choice.
-5. **`.vscode/settings.json` auto-approves** `sungen` + `npx playwright` terminal commands
+3. **Repeated components need test landmarks.** Each kudo renders in BOTH the
+   highlight carousel and the feed, so an unscoped locator matches twice (strict-mode
+   error). We added one `data-testid="all-kudos-feed"` to the feed `<section>` and
+   scoped the feed selectors with it. Expect a few such `data-testid` additions when
+   adopting sungen on dynamic screens.
+4. **Two parallel auth setups for the SAME user race in GoTrue.** The e2e `setup`
+   (member-test) and `sungen-setup` initially both logged in as member-test;
+   concurrent `/auto-login` left one stuck on the redirect. Fixed by giving sungen a
+   distinct user (member03). Lesson: one seeded user per parallel setup project.
+5. **Large footprint** — ~25 `.github/` + 23 `.claude/` rule files now tracked
+   (the `/.claude/*` gitignore was removed so both AI assistants share the rules).
+6. **`.vscode/settings.json` auto-approves** `sungen` + `npx playwright` terminal commands
    for Copilot — review before keeping.
+
+> Earlier bug (2.6.15): `base.ts` imports `./locale-fixture` but neither `init` nor
+> the first `generate` created it — worked around by copying the template (see above).
 
 ## Two-tier convention (recommended)
 
 - **Sungen (`qa/` → `specs/generated/`)** — broad coverage of static screens & forms:
   login, awards-information, profile, homepage. QA owns the Gherkin.
 - **Hand-written (`e2e/`)** — flows Gherkin can't express: optimistic UI, realtime,
-  the like-persistence race, Spotlight pan/zoom. Engineers own these.
+  the like-persistence race (reload mid-mutation), Spotlight pan/zoom. Engineers own
+  these. The sungen sun-kudos like test deliberately stays at like→unlike (no reload),
+  which is exactly the boundary: the cross-reload persistence race lives in `e2e/`.
 
 Without this split the two suites drift and duplicate.
 
 ## Next steps (not done in this pilot)
 
-- Wire `@auth:<role>` to the existing `/auto-login` backdoor (write
-  `specs/.auth/<role>.json` from a setup project) so authed screens (sun-kudos)
-  compile too — sungen's own `makeauth` opens a browser for manual SSO, which we
-  don't need.
-- Decide whether to run `--project=sungen` in CI, and whether to commit generated
-  specs (currently yes) or regenerate them in CI from `qa/`.
+- Decide whether to run `--project=sungen` (and the authed `sungen-auth`) in CI, and
+  whether to commit generated specs (currently yes) or regenerate them from `qa/` in CI.
+- Expand sungen coverage to the remaining static screens (awards-information, profile).
+- Re-check the `locale-fixture` bug on the next sungen release; drop the workaround if fixed.

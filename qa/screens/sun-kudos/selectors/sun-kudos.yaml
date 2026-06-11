@@ -1,0 +1,71 @@
+# Sun* Kudos board selectors. The same kudo renders in both the highlight
+# carousel and the feed, so feed-specific elements are scoped to the
+# [data-testid="all-kudos-feed"] section to stay unambiguous.
+
+sun-kudos:
+  type: 'page'
+  value: '/sun-kudos'
+
+# --- Section headings (one <h2> each, unique on the page) ---
+highlight heading:
+  type: 'role'
+  value: 'heading'
+  name: 'HIGHLIGHT KUDOS'
+  exact: true
+
+spotlight heading:
+  type: 'role'
+  value: 'heading'
+  name: 'SPOTLIGHT BOARD'
+  exact: true
+
+all kudos heading:
+  type: 'role'
+  value: 'heading'
+  name: 'ALL KUDOS'
+  exact: true
+
+# --- Hashtag filter (in the highlight carousel header) ---
+hashtag filter:
+  type: 'role'
+  value: 'button'
+  name: 'Hashtag'
+  exact: true
+
+# 'positivity' exists in the hashtag list but is attached to no seeded kudo.
+positivity option:
+  type: 'role'
+  value: 'option'
+  name: 'positivity'
+  exact: true
+
+teamwork option:
+  type: 'role'
+  value: 'option'
+  name: 'teamwork'
+  exact: true
+
+# --- Feed-scoped elements ---
+# EmptyState message; scoped so the carousel's own empty render can't double-match.
+empty feed:
+  type: 'locator'
+  value: '[data-testid="all-kudos-feed"]:has-text("Hiện tại chưa có Kudos nào.")'
+
+# k3 (#innovation) — used to prove the teamwork filter drops it from the feed.
+k3 feed card:
+  type: 'locator'
+  value: '[data-testid="all-kudos-feed"] article:has-text("[e2e-k3]")'
+
+# k1 heart (Member One → Member Two). aria-pressed toggles on like/unlike;
+# scoped to the feed so the carousel copy isn't also matched.
+k1 heart:
+  type: 'locator'
+  value: '[data-testid="all-kudos-feed"] article[aria-label="Kudo từ Member One tới Member Two"] button[aria-pressed]'
+
+k1 heart liked:
+  type: 'locator'
+  value: '[data-testid="all-kudos-feed"] article[aria-label="Kudo từ Member One tới Member Two"] button[aria-pressed="true"]'
+
+k1 heart unliked:
+  type: 'locator'
+  value: '[data-testid="all-kudos-feed"] article[aria-label="Kudo từ Member One tới Member Two"] button[aria-pressed="false"]'

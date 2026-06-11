@@ -70,7 +70,9 @@ export function KudosFeed({
   }, [hasNext, isLoading, onLoadMore]);
 
   return (
-    <section className="w-full">
+    // data-testid scopes E2E selectors to the feed — the same kudo also renders
+    // in the highlight carousel, so an unscoped locator would match twice.
+    <section className="w-full" data-testid="all-kudos-feed">
       {/* Center the content at the reference width (feed ~770 + gap-12 + sidebar 422
           = 1240), matching production /kudos. px outside max-w on small screens,
           0 at desktop so content lands at the centered box edge like the reference. */}
