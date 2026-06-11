@@ -44,6 +44,13 @@ next-env.d.ts
 # claude
 /.claude/*
 
+# playwright
+/test-results/
+/playwright-report/
+/blob-report/
+/playwright/.cache/
+/playwright/.auth/
+
 /resources/*
 
 # playwright mcp (screenshots / traces from visual validation)

@@ -4,8 +4,9 @@
  * 2025-12-26T18:30:00+07:00) and validates it. Safe to import on both
  * server and client because of the NEXT_PUBLIC_ prefix.
  */
+import { env } from "@/lib/env";
 
-const raw = process.env.NEXT_PUBLIC_EVENT_DATETIME ?? "";
+const raw = env.NEXT_PUBLIC_EVENT_DATETIME ?? "";
 
 /**
  * True when the env var is present and parses to a finite Date.

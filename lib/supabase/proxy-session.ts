@@ -1,14 +1,19 @@
 import { createServerClient } from "@supabase/ssr";
 import { NextResponse, type NextRequest } from "next/server";
 import { isAllowedEmail } from "@/lib/auth/allowed-domain";
+import { env } from "@/lib/env";
 
 /**
  * Paths reachable without an authenticated session.
  * The app is internal-only — login required for @sun-asterisk.com accounts.
  * ONLY the login page and the OAuth callback are public; every other route
  * (including "/" and the marketing/info pages) redirects guests to /login.
+ *
+ * `/auto-login` is the token-gated test/E2E backdoor: it must be public so the
+ * handler can run for a guest (its own token gate is the security boundary).
+ * Default-off — disabled unless AUTO_LOGIN_TOKEN is set. See app/auto-login/route.ts.
  */
-const PUBLIC_PATHS = new Set(["/login", "/auth/callback"]);
+const PUBLIC_PATHS = new Set(["/login", "/auth/callback", "/auto-login"]);
 
 /**
  * Builds a redirect that carries over the freshly-refreshed auth cookies, so
@@ -38,8 +43,8 @@ export async function updateSession(request: NextRequest) {
   let response = NextResponse.next({ request });
 
   const supabase = createServerClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    env.NEXT_PUBLIC_SUPABASE_URL,
+    env.NEXT_PUBLIC_SUPABASE_ANON_KEY,
     {
       cookies: {
         getAll() {
