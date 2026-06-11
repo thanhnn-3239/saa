@@ -1,6 +1,6 @@
 # Pushes local DB migrations to the Supabase Cloud project on merge to main.
 # Vercel auto-deploys the front end separately; this workflow owns the database half.
-# Runs only when files under supabase/migrations/** change.
+# Runs when files under supabase/migrations/** change, or on manual dispatch.
 #
 # Required GitHub repo secrets (Settings -> Secrets and variables -> Actions):
 #   SUPABASE_ACCESS_TOKEN  - account access token (Supabase dashboard -> Account -> Access Tokens)
@@ -13,11 +13,19 @@ on:
     branches: [main]
     paths:
       - "supabase/migrations/**"
+  # Allow manual runs from the Actions tab — e.g. after first-time secret setup,
+  # or to re-sync the Cloud DB without pushing a new migration.
+  workflow_dispatch:
 
 # Prevent overlapping migration pushes from racing against the same DB.
 concurrency:
   group: supabase-migrations
   cancel-in-progress: false
+
+# Opt JS-based actions into Node.js 24 (silences the Node 20 deprecation warning
+# ahead of GitHub forcing Node 24 on runners in Sept 2026).
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: "true"
 
 jobs:
   push:
@@ -26,6 +34,28 @@ jobs:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
       SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
     steps:
+      # Fail fast with an actionable message if the deploy secrets are missing,
+      # instead of the opaque `supabase link --project-ref ""` error.
+      - name: Verify required secrets are configured
+        env:
+          ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
+          PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+          DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
+        run: |
+          missing=()
+          if [ -z "$ACCESS_TOKEN" ]; then missing+=("SUPABASE_ACCESS_TOKEN"); fi
+          if [ -z "$PROJECT_REF" ]; then missing+=("SUPABASE_PROJECT_REF"); fi
+          if [ -z "$DB_PASSWORD" ]; then missing+=("SUPABASE_DB_PASSWORD"); fi
+          if [ "${#missing[@]}" -gt 0 ]; then
+            echo "::error::Missing required GitHub Actions secrets: ${missing[*]}"
+            echo "Add them under Settings -> Secrets and variables -> Actions:"
+            echo "  SUPABASE_ACCESS_TOKEN  - Supabase dashboard -> Account -> Access Tokens"
+            echo "  SUPABASE_PROJECT_REF   - the Cloud project ref"
+            echo "  SUPABASE_DB_PASSWORD   - the DB password from project creation"
+            exit 1
+          fi
+          echo "All required Supabase secrets are present."
+
       - uses: actions/checkout@v4
 
       - uses: supabase/setup-cli@v2
@@ -33,7 +63,9 @@ jobs:
           version: latest
 
       - name: Link to Cloud project
-        run: supabase link --project-ref "${{ secrets.SUPABASE_PROJECT_REF }}"
+        env:
+          SUPABASE_PROJECT_REF: ${{ secrets.SUPABASE_PROJECT_REF }}
+        run: supabase link --project-ref "$SUPABASE_PROJECT_REF"
 
       - name: Push migrations (no seeds)
         run: supabase db push
