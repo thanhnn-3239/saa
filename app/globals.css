@@ -83,3 +83,95 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+/* Tailwind v4 Preflight does NOT set cursor:pointer on buttons. Restore the
+   expected affordance for all interactive controls (disabled stays default). */
+button:not(:disabled),
+[role="button"]:not([aria-disabled="true"]),
+label[for],
+summary,
+select:not(:disabled) {
+  cursor: pointer;
+}
+button:disabled,
+[aria-disabled="true"] {
+  cursor: not-allowed;
+}
+
+/* ── Scrollbar utility: thin gold/navy themed scrollbar for SAA sidebar lists ── */
+/* Usage: add class "scrollbar-saa" to the scrollable element.                   */
+.scrollbar-saa {
+  /* Firefox */
+  scrollbar-width: thin;
+  scrollbar-color: #998C5F #00101a;
+}
+/* WebKit (Chrome, Safari, Edge) */
+.scrollbar-saa::-webkit-scrollbar {
+  width: 4px;
+}
+.scrollbar-saa::-webkit-scrollbar-track {
+  background: #00101a;
+  border-radius: 2px;
+}
+.scrollbar-saa::-webkit-scrollbar-thumb {
+  background: #998C5F;
+  border-radius: 2px;
+}
+.scrollbar-saa::-webkit-scrollbar-thumb:hover {
+  background: #FFEA9E;
+}
+
+/* ── Spotlight word-cloud word motion ──────────────────────────────────────── */
+/* Each name enters with a staggered slide-in, then drifts with a gentle,        */
+/* continuous float. Per-word timing comes from inline CSS vars set in JS:       */
+/*   --cloud-delay      entrance + float phase offset (stagger)                  */
+/*   --cloud-float-dur  float loop duration (varied for an organic feel)         */
+@keyframes kudos-cloud-slide-in {
+  from {
+    opacity: 0;
+    transform: translateX(-10px) scale(0.92);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+@keyframes kudos-cloud-float {
+  0%,
+  100% {
+    transform: translate(0, 0) rotate(0deg);
+  }
+  20% {
+    transform: translate(9px, -7px) rotate(1deg);
+  }
+  40% {
+    transform: translate(-7px, 6px) rotate(-1deg);
+  }
+  60% {
+    transform: translate(8px, 5px) rotate(0.8deg);
+  }
+  80% {
+    transform: translate(-5px, -5px) rotate(-0.6deg);
+  }
+}
+/* Longhand (NOT the `animation` shorthand): a var()/calc() delay inside the
+   shorthand is dropped by some parsers, which would kill BOTH animations. */
+.kudos-cloud-word {
+  animation-name: kudos-cloud-slide-in, kudos-cloud-float;
+  animation-duration: 0.45s, var(--cloud-float-dur, 10s);
+  animation-timing-function: ease-out, ease-in-out;
+  animation-iteration-count: 1, infinite;
+  animation-fill-mode: backwards, both;
+  animation-delay: var(--cloud-delay, 0s), calc(var(--cloud-delay, 0s) + 0.45s);
+}
+@media (prefers-reduced-motion: reduce) {
+  /* Respect reduced-motion: keep the entrance, drop the perpetual drift. */
+  .kudos-cloud-word {
+    animation-name: kudos-cloud-slide-in;
+    animation-duration: 0.3s;
+    animation-timing-function: ease-out;
+    animation-iteration-count: 1;
+    animation-fill-mode: backwards;
+    animation-delay: var(--cloud-delay, 0s);
+  }
+}

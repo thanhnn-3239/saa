@@ -59,3 +59,5 @@ next-env.d.ts
 # tooling artifacts (Takumi/Sixth kit)
 /.sixth/
 /release-manifest.json
+
+/.momorph/*

@@ -24,6 +24,8 @@ Supabase model. A traditional standalone backend (Node/Nest/etc.) would add ops 
 - **Supabase** — Postgres + Auth + Storage + Realtime; the real backend. Cloud for prod, CLI for local.
 - **TailwindCSS v4** — styling.
 - **next-intl 4.13** — i18n; cookie-based locale (`NEXT_LOCALE`), no URL routing. Locales: `vi` (default), `en`.
+- **@tanstack/react-query** — client-side data fetching, caching, and infinite scroll for the kudos board. Provider in `app/providers.tsx`; hooks in `lib/kudos/`.
+- **embla-carousel-react** — lightweight carousel used by the kudos highlight section.
 
 ## Environment model
 - **Local dev:** Supabase CLI runs a trimmed backend stack — `db, kong/api, auth, realtime, storage, studio` (+pg-meta); `edge_runtime, analytics, vector, inbucket, db.pooler` disabled in `config.toml`. Docker Compose (`node:24-alpine`, `network_mode: host`) runs the Next.js dev container.
@@ -35,14 +37,22 @@ Supabase model. A traditional standalone backend (Node/Nest/etc.) would add ops 
 - Correctness-critical logic (random rewards, atomic multi-table writes) lives in **Postgres functions**, never client-side.
 - Realtime via Supabase, not a hand-rolled WebSocket server.
 
-## Shipped (as of 2026-06-04)
+## Shipped
+
+**2026-06-04**
 - **Auth + login screen** — Google OAuth via Supabase Auth (`@supabase/ssr`, PKCE). Domain restriction enforced server-side in `app/auth/callback/route.ts`. Access control in `proxy.ts` + `lib/supabase/proxy-session.ts`.
 - **Login UI** — `/login` route (SAA branded hero; inline error banner for `?error=oauth|domain|access_denied`).
 - **i18n** — next-intl 4.13; cookie-based locale, no URL routing; `vi`/`en` with key-parity test. See `docs/i18n.md`.
-- **Tests** — Vitest + React Testing Library; 140 tests passing (`pnpm test`).
+- **Tests** — Vitest + React Testing Library; 275 tests passing (`pnpm test`).
+- **Database schema** — full Kudos schema, RLS, functions/triggers, dev seeds. See `docs/database-design.md`.
+
+**2026-06-06**
+- **Kudos Live Board** (`/sun-kudos`) — highlight carousel, spotlight cloud, infinite-scroll feed, sidebar stats + leaderboards, heart toggle. TanStack Query + Supabase Realtime. `kudo_likes` migration. See `docs/project-changelog.md`.
 
 ## Still out of scope
-Full feature implementation (kudos, leaderboard, profiles, realtime). Schema design draft: `plans/260603-1716-nextjs-supabase-vercel-setup/data-model-and-backend-architecture.md`.
+Send-kudo flow, full profile pages, admin dashboard, secret-box grant triggers, notifications bell (realtime read).
+
+Schema design reference: `plans/260603-1716-nextjs-supabase-vercel-setup/data-model-and-backend-architecture.md`.
 
 ## Related
 - Setup plan: `plans/260603-1716-nextjs-supabase-vercel-setup/plan.md`

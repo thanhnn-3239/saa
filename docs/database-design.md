@@ -1,7 +1,7 @@
 # Database Design — SAA Kudos
 
-**Status:** v1 — migrations applied & verified on local Supabase (2026-06-04) · **DB:** PostgreSQL 17 (Supabase)
-**Migrations:** `supabase/migrations/20260604070000_schema.sql`, `…070100_rls_policies.sql`, `…070200_functions_triggers_views.sql`; seed `supabase/seeds/common/seed.sql`.
+**Status:** v2 — `kudo_likes` migration applied (2026-06-06) · **DB:** PostgreSQL 17 (Supabase)
+**Migrations:** `supabase/migrations/20260604070000_schema.sql`, `…070100_rls_policies.sql`, `…070200_functions_triggers_views.sql`, `20260606000000_kudo_likes.sql`; seed `supabase/seeds/common/seed.sql`.
 **Resolved defaults:** secret-box grant via `grant_secret_box()` (admin/system; auto-grant rule TBD) · added `profiles.active_badge_id` (showcase title) · leaderboard ranks by `kudos_received` · single recipient · catalog single-language.
 **Source:** MoMorph design (fileKey `9ypp4enmFmdK3YAFJLIu6C`) → analysis
 `plans/reports/researcher-260604-1059-saa-kudos-design-analysis.md`
@@ -46,6 +46,8 @@ erDiagram
     badges       ||--o{ secret_boxes   : "drops"
     profiles     ||--o{ notifications  : "receives"
     kudos        ||--o{ notifications  : "triggers"
+    kudos        ||--o{ kudo_likes     : "receives"
+    profiles     ||--o{ kudo_likes     : "gives"
 ```
 
 > Note: `kudos` links to `profiles` twice (`sender_id`, `recipient_id`). `kudo_hashtags` is the
@@ -136,7 +138,21 @@ Seed: Stay Gold 30 · Flow to Horizon 25 · Touch of Light 20 · Beyond Boundary
 | opened_at | timestamptz | nullable |
 | created_at | timestamptz | NOT NULL default now() |
 
-### 3.5 Awards & Notifications
+### 3.5 Kudo Likes
+
+**`kudo_likes`** (heart reactions on kudos; one row per user per kudo — toggle model)
+| Column | Type | Constraints |
+|--------|------|-------------|
+| id | bigint identity | PK |
+| kudo_id | uuid | NOT NULL, FK→kudos(id) ON DELETE CASCADE |
+| user_id | uuid | NOT NULL, FK→profiles(id) ON DELETE CASCADE |
+| hearts | smallint | NOT NULL default 1, CHECK in (1, 2) — 2 = admin-granted special-day bonus |
+| created_at | timestamptz | NOT NULL default now() |
+| | | UNIQUE (kudo_id, user_id) |
+
+**Replica identity:** `FULL` — required so Realtime DELETE payloads carry `kudo_id` + `user_id` (not just `id`), enabling board-side heart-count decrements.
+
+### 3.6 Awards & Notifications
 
 **`awards`** (read-only catalog — "Hệ thống giải", 6 categories; informational)
 | id PK · category text NOT NULL · name text NOT NULL · description text · image_url text · sort_order int default 0 |
@@ -163,6 +179,8 @@ Seed: Stay Gold 30 · Flow to Horizon 25 · Touch of Light 20 · Beyond Boundary
 | secret_boxes | (user_id, status) | count/open unopened boxes |
 | notifications | (user_id, is_read, created_at desc) | unread bell |
 | kudo_hashtags | (hashtag_id) | filter by hashtag |
+| kudo_likes | (kudo_id) | aggregate heart counts per kudo |
+| kudo_likes | (user_id) | user's like history |
 
 ---
 
@@ -178,6 +196,7 @@ Seed: Stay Gold 30 · Flow to Horizon 25 · Touch of Light 20 · Beyond Boundary
 | kudo_hashtags / kudo_images / kudo_links | follows parent kudo | via `create_kudo()` | admin |
 | secret_boxes | own only | grant path (TBD) / admin | **none direct — via `open_secret_box()`** |
 | user_badges | all (public profile badges) | **via `open_secret_box()` only** | none |
+| kudo_likes | all authenticated (heart counts are public) | own only; NOT on sender's own kudo | DELETE own only (unlike) |
 | notifications | own | trigger (definer) | own (mark read) |
 
 **Invariant:** `secret_boxes` and `user_badges` have NO direct user INSERT/UPDATE policy — mutated
@@ -196,8 +215,10 @@ only through `SECURITY DEFINER` functions. This makes the random reward tamper-p
 | `notify_on_kudo` | trigger AFTER INSERT on kudos | Inserts a `kudo_received` notification for the recipient. |
 | `is_admin()` | function (definer) | Role check used by RLS policies. |
 | `user_statistics` | view | Per-user `kudos_received`, `kudos_sent`, `badges_count` for profile tiles / leaderboard. |
+| `kudo_heart_counts` | view | Per-kudo `heart_total` (sum of `hearts`) and `like_count` (row count); consumed by board cards and realtime updates. |
+| `profile_kudo_stats` | view | Per-profile `kudos_received`, `kudos_sent`, `hearts_received` (hearts on kudos sent by this profile); drives sidebar stats and spotlight sizing. |
 
-**Realtime:** publish `kudos` and `notifications` to `supabase_realtime` (live board + bell). RLS applies to realtime payloads.
+**Realtime:** publish `kudos`, `notifications`, and `kudo_likes` to `supabase_realtime` (live board + bell + heart counts). `kudo_likes` uses `REPLICA IDENTITY FULL` so DELETE payloads carry full row data. RLS applies to realtime payloads.
 
 ---
 
@@ -222,6 +243,7 @@ Allowed mime: `image/png`, `image/jpeg`. (Local bucket `images` already defined 
 7. Functions: `create_kudo`, `open_secret_box`; trigger `notify_on_kudo`; view `user_statistics`
 8. Realtime publication + storage buckets
 9. Seeds (dev): departments, hashtags, badges, awards, sample profiles/kudos
+10. `kudo_likes` table, indexes, RLS, views (`kudo_heart_counts`, `profile_kudo_stats`), replica identity, realtime publication (`20260606000000_kudo_likes.sql`)
 
 ---
 

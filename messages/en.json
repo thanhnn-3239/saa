@@ -88,6 +88,92 @@
       "theleLabel": "Thể lệ",
       "writeKudosLabel": "Write KUDOS"
     },
+    "kudosPage": {
+      "banner": {
+        "title": "Recognition & gratitude system",
+        "placeholder": "Today, who would you like to send appreciation and recognition to?",
+        "searchPlaceholder": "Search sunner...",
+        "clearSearch": "Clear search"
+      },
+      "carousel": {
+        "eyebrow": "Sun* Annual Awards 2025",
+        "title": "HIGHLIGHT KUDOS",
+        "prev": "Previous",
+        "next": "Next"
+      },
+      "filter": {
+        "all": "All",
+        "hashtag": "Hashtag",
+        "department": "Department"
+      },
+      "card": {
+        "viewDetail": "View detail",
+        "anonymous": "Anonymous",
+        "sentTo": "sent to",
+        "imageAlt": "Kudo image",
+        "idolTitle": "IDOL GIỎI TRẺ",
+        "edit": "Edit"
+      },
+      "copyLink": {
+        "label": "Copy link",
+        "success": "Link copied — ready to share!",
+        "aria": "Copy link",
+        "error": "Unable to copy — please copy the URL manually."
+      },
+      "spotlight": {
+        "eyebrow": "Sun* Annual Awards 2025",
+        "title": "SPOTLIGHT BOARD",
+        "searchPlaceholder": "Search",
+        "searchAria": "Search sunner",
+        "clearSearch": "Clear search",
+        "zoomIn": "Zoom in",
+        "zoomOut": "Zoom out",
+        "zoomReset": "Reset view",
+        "enterFullscreen": "Fullscreen",
+        "exitFullscreen": "Exit fullscreen",
+        "empty": "No data yet",
+        "noMatch": "No matching sunner found",
+        "loading": "Loading...",
+        "cloudAria": "Sunner name chart by kudos received",
+        "nodeAria": "{name} — {count} kudos received",
+        "totalAria": "Total {count} kudos"
+      },
+      "feed": {
+        "eyebrow": "Sun* Annual Awards 2025",
+        "title": "ALL KUDOS",
+        "empty": "No Kudos yet.",
+        "loadingMore": "Loading more..."
+      },
+      "sidebar": {
+        "kudosReceived": "Kudos you received:",
+        "kudosSent": "Kudos you sent:",
+        "heartsReceived": "Hearts you received:",
+        "secretBoxOpened": "Secret Boxes opened:",
+        "secretBoxUnopened": "Secret Boxes unopened:",
+        "openGift": "Open Secret Box",
+        "openGiftStub": "This feature is coming soon!"
+      },
+      "leaderboard": {
+        "empty": "No data yet",
+        "kudosCount": "{score} kudos",
+        "promotions": {
+          "title": "10 SUNNERS WITH LATEST PROMOTIONS",
+          "scoreLabel": "kudos received"
+        },
+        "gifts": {
+          "title": "10 SUNNERS WITH LATEST GIFTS",
+          "scoreLabel": "gifts received"
+        },
+        "profileAria": "View {name}'s profile"
+      },
+      "heartButton": {
+        "like": "Like",
+        "unlike": "Unlike"
+      },
+      "stars": {
+        "tier": "Tier {n} stars"
+      }
+    },
     "thele": {
       "panelTitle": "Thể lệ",
       "receiverSectionTitle": "KUDOS RECIPIENT: HERO BADGE FOR POSITIVE INFLUENCE",

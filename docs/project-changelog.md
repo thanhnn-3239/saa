@@ -4,6 +4,42 @@ Significant changes, features, and fixes in reverse-chronological order.
 
 ---
 
+## [Unreleased] — 2026-06-10 (feat/sun-kudos-live-board — UI fidelity pass)
+
+### Added
+- **`kudo-card-base.tsx`** (`app/(public)/sun-kudos/_components/ui/`): new shared base component for feed and highlight kudo cards (Figma family 256:5231). Renders body text inside a gold-glass box (`bg-saa-gold-glass`, `border-saa-gold-accent`, `rounded-saa-card`), with timestamp placed below the sender divider. `highlight-card.tsx` and `kudo-post-card.tsx` are now thin wrappers over this base.
+
+### Changed
+- **Search inputs** (`banner.tsx`, `spotlight-cloud.tsx`): native browser search-clear (×) button hidden via CSS.
+- **Filter dropdown trigger** (`ui/filter-dropdown.tsx`): restyled to a single `rounded-[4px]` pill; trigger label shows selected filter label, falling back to category name. Open panel behavior and accessibility attributes unchanged.
+- **Sidebar stats flame badge** (`sidebar-stats.tsx`): "x2" badge added on the hearts row; gift icon repositioned to after button text (filled variant).
+
+### Deferred
+- Kudo card title / category ("IDOL GIỎI TRẺ"): omitted — `kudos` table has no `title`/`category` column. Tracked as open question in `plans/260610-1011-kudos-ui-fidelity/`.
+
+---
+
+## [Unreleased] — 2026-06-06 (feat/sun-kudos-live-board)
+
+### Added
+- **Sun* Kudos Live Board** (`/sun-kudos`): full public-facing live board replacing the prior stub page. Ships:
+  - **Highlight carousel** — top kudos in an Embla-powered auto-scroll carousel.
+  - **Spotlight name-cloud** — simplified cloud sized by `hearts_received` from `profile_kudo_stats` view.
+  - **All-kudos feed** — TanStack Query infinite-scroll feed with hashtag/date filters and realtime inserts via Supabase Realtime.
+  - **Sidebar** — campaign stats (`kudo_heart_counts` view) + top-sender and top-recipient leaderboards.
+  - **Heart button** — optimistic toggle-like with `kudo_likes` table; sender cannot like their own kudo.
+- **`kudo_likes` DB migration** (`20260606000000_kudo_likes.sql`): new table, indexes, RLS policies, `kudo_heart_counts` + `profile_kudo_stats` views, `REPLICA IDENTITY FULL`, realtime publication.
+- **API routes**: `GET /api/kudos/feed`, `/highlight`, `/spotlight`, `/sidebar`, `/filters`; `POST/DELETE /api/kudos/[id]/like`.
+- **Data layer** (`lib/kudos/*`): TanStack Query hooks (`use-kudos-feed`, `use-highlight-kudos`, `use-spotlight`, `use-sidebar`, `use-toggle-like`, `use-filters`), query key types, Supabase realtime subscription helper.
+- **TanStack Query provider** (`app/providers.tsx`): wraps the app with `QueryClientProvider`.
+- **New deps**: `@tanstack/react-query`, `embla-carousel-react`.
+- **i18n keys** under `Home.kudosPage.*` namespace in `messages/{vi,en}.json`.
+
+### Changed
+- `/sun-kudos` promoted from a "coming soon" stub to a fully-implemented live board page.
+
+---
+
 ## [Unreleased] — 2026-06-06
 
 ### Added
