@@ -1,0 +1,31 @@
+# Awards Information selectors. The page is a ComingSoon stub (vi default
+# locale → strings from messages/vi.json Home.comingSoonPage).
+
+awards-information:
+  type: 'page'
+  value: '/awards-information'
+
+coming soon title:
+  type: 'role'
+  value: 'heading'
+  name: 'Trang này sắp ra mắt'
+  exact: true
+
+back home:
+  type: 'role'
+  value: 'link'
+  name: 'Quay lại trang chủ'
+  exact: true
+
+# Header nav link — proves the app chrome renders around the stub.
+# Scoped to the banner: the footer repeats the same link label.
+award information nav:
+  type: 'locator'
+  value: 'header >> role=link[name="Award Information"]'
+
+# Homepage awards-section <h2> — asserts the back-home link really landed on /.
+awards system heading:
+  type: 'role'
+  value: 'heading'
+  name: 'Hệ thống giải thưởng'
+  exact: true

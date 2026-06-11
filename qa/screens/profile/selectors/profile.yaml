@@ -1,0 +1,25 @@
+# Profile selectors. ComingSoon stub (vi default locale → strings from
+# messages/vi.json Home.comingSoonPage).
+
+profile:
+  type: 'page'
+  value: '/profile'
+
+coming soon title:
+  type: 'role'
+  value: 'heading'
+  name: 'Trang này sắp ra mắt'
+  exact: true
+
+back home:
+  type: 'role'
+  value: 'link'
+  name: 'Quay lại trang chủ'
+  exact: true
+
+# Homepage awards-section <h2> — asserts the back-home link really landed on /.
+awards system heading:
+  type: 'role'
+  value: 'heading'
+  name: 'Hệ thống giải thưởng'
+  exact: true

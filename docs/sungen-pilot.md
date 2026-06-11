@@ -8,17 +8,24 @@ Playwright `.spec.ts`. No AI runs during compilation, so the same inputs always
 produce the same tests.
 
 This pilot wired it into the repo and proved the full pipeline end-to-end on
-**two screens**:
+**four screens**:
 
 - **login** (unauthenticated) — 4 compiled tests.
 - **sun-kudos** (authenticated via `@auth:member`) — 4 compiled tests: board
   sections, hashtag filter → empty state, hashtag filter drops non-matching
   kudos, and like→unlike.
+- **awards-information** + **profile** (authenticated) — 2 compiled tests each:
+  the ComingSoon stub renders for a logged-in member (no `/login` bounce) and
+  the back-home link navigates to the homepage.
 
-Status: **working, all green against the real app + local Supabase**. The full
-combined run — hand-written `e2e/` + sungen, authed and unauthed — is **34/34**.
-Unauthenticated runs (CI without Supabase) stay green: the base `sungen` project
-skips authed screens, so the no-token suite is 13 tests.
+Status: **adopted — sungen runs in CI**. The full combined run — hand-written
+`e2e/` + sungen, authed and unauthed — is **38/38** against the real app +
+local Supabase. The `e2e` job in `.github/workflows/ci.yml` starts a local
+Supabase on the runner (seeded via `SUPABASE_EXTRA_SEEDS`), exports its keys,
+and runs `pnpm test:e2e` with `AUTO_LOGIN_TOKEN` set — so every project
+(`chromium`, `sungen`, `setup`/`chromium-auth`, `sungen-setup`/`sungen-auth`)
+executes on every PR. Without a token (e.g. running locally with no Supabase)
+the suite degrades gracefully to 13 unauthenticated tests.
 
 ## What was set up
 
@@ -134,9 +141,26 @@ pnpm exec playwright test --project=sungen-setup --project=sungen-auth
 
 Without this split the two suites drift and duplicate.
 
-## Next steps (not done in this pilot)
+## CI
 
-- Decide whether to run `--project=sungen` (and the authed `sungen-auth`) in CI, and
-  whether to commit generated specs (currently yes) or regenerate them from `qa/` in CI.
-- Expand sungen coverage to the remaining static screens (awards-information, profile).
+The `e2e` job (`.github/workflows/ci.yml`) runs the full matrix on every PR:
+
+1. `pnpm exec playwright install --with-deps chromium`
+2. `pnpm db:start` with `SUPABASE_EXTRA_SEEDS=./seeds/dev/*.sql` — migrations +
+   common/dev/e2e-kudos seeds apply on first boot.
+3. `supabase status -o env` → exports `NEXT_PUBLIC_SUPABASE_URL` /
+   `NEXT_PUBLIC_SUPABASE_ANON_KEY` / `SUPABASE_SECRET_KEY` (well-known local-dev
+   demo values, not secrets).
+4. `pnpm test:e2e` with `AUTO_LOGIN_TOKEN=ci-e2e-secret` — Playwright builds and
+   starts the app (webServer), then runs all 6 projects. Traces upload as an
+   artifact on failure.
+
+Generated specs are **committed** (not regenerated in CI): the compile step is
+deterministic, so the diff is reviewable, and CI never depends on sungen itself.
+Regenerate after editing any `qa/**` input (`pnpm sungen:generate`) and commit both.
+
+## Next steps
+
 - Re-check the `locale-fixture` bug on the next sungen release; drop the workaround if fixed.
+- When awards-information/profile grow real content, replace the ComingSoon scenarios
+  with real coverage (the screens and auth wiring are already in place).
