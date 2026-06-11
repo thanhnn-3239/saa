@@ -74,6 +74,24 @@ describe("GET /auto-login", () => {
     vi.unstubAllEnvs();
   });
 
+  describe("production kill-switch", () => {
+    it("returns 404 on Vercel production even with a valid token + existing user", async () => {
+      vi.stubEnv("VERCEL_ENV", "production");
+      stubClients({ users: [{ email: "admin-test@sun-asterisk.com" }] });
+
+      const res = await GET(
+        makeRequest({
+          email: "admin-test@sun-asterisk.com",
+          token: VALID_TOKEN,
+        }),
+      );
+
+      expect(res.status).toBe(404);
+      // The guard fires before any client work — the admin client is never created.
+      expect(mockCreateAdminClient).not.toHaveBeenCalled();
+    });
+  });
+
   describe("token gate", () => {
     it("returns 404 when AUTO_LOGIN_TOKEN is unset/empty (disabled)", async () => {
       vi.stubEnv("AUTO_LOGIN_TOKEN", "");

@@ -13,7 +13,9 @@ import { isAllowedEmail } from "@/lib/auth/allowed-domain";
  *
  * SECURITY: default-OFF (disabled unless AUTO_LOGIN_TOKEN is set). EVERY reject
  * branch returns an identical 404 — never 403 — so the route's existence is never
- * revealed. NEVER set AUTO_LOGIN_TOKEN in production. See .env.example / docs/deployment.md.
+ * revealed. A hard kill-switch forces 404 whenever VERCEL_ENV === "production", so the
+ * backdoor can never run on prod even if the token is mis-set there; enable it on Vercel
+ * Preview/Development only (and behind Deployment Protection). See .env.example / docs/deployment.md.
  */
 
 // node:crypto + service-role client → must run on Node, not the Edge runtime.
@@ -51,6 +53,13 @@ async function findUserByEmail(admin: AdminClient, email: string) {
 }
 
 export async function GET(request: NextRequest) {
+  // 0. Hard kill-switch: NEVER run on Vercel production, even if AUTO_LOGIN_TOKEN
+  // is somehow set there. Preview/Development may enable it via the token gate
+  // below. Defense-in-depth — Vercel previews share the production Supabase DB,
+  // so an enabled backdoor would reach prod data. `VERCEL_ENV` is injected by
+  // Vercel ("production" | "preview" | "development"); unset off-Vercel (local/CI).
+  if (process.env.VERCEL_ENV === "production") return notFound();
+
   // 1. Disabled unless a token is configured. Don't reveal the route exists.
   // Read process.env directly: the gate is a runtime secret the test suite varies per-case; typed env captures values at import.
   const expected = process.env.AUTO_LOGIN_TOKEN;
