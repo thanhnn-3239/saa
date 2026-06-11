@@ -36,6 +36,20 @@ function heartButton(card: Locator): Locator {
   return card.locator("button[aria-pressed]");
 }
 
+/**
+ * Click the heart and wait for the like API round-trip to settle. Reloading
+ * while the POST is still in flight can catch the next SSR between its
+ * heart-count and liked-set queries (lib/kudos/queries.ts fetches them
+ * sequentially), rendering a momentary liked=true/count=0 state.
+ */
+async function toggleHeart(page: Page, heart: Locator): Promise<void> {
+  const settled = page.waitForResponse(
+    (r) => r.url().includes("/api/kudos/") && r.url().endsWith("/like") && r.ok(),
+  );
+  await heart.click();
+  await settled;
+}
+
 async function pickFilter(
   page: Page,
   trigger: string | RegExp,
@@ -127,12 +141,12 @@ test("liking a kudo persists across reload and unliking restores the count", asy
 
   // Normalize: a crashed earlier run may have left the like behind.
   if ((await heart.getAttribute("aria-pressed")) === "true") {
-    await heart.click();
+    await toggleHeart(page, heart);
     await expect(heart).toHaveAttribute("aria-pressed", "false");
   }
   const before = Number(await heart.textContent());
 
-  await heart.click();
+  await toggleHeart(page, heart);
   await expect(heart).toHaveAttribute("aria-pressed", "true");
   await expect(heart).toHaveText(String(before + 1));
 
@@ -143,7 +157,7 @@ test("liking a kudo persists across reload and unliking restores the count", asy
   await expect(heartAfterReload).toHaveText(String(before + 1));
 
   // Unlike — also resets DB state so the test is repeatable.
-  await heartAfterReload.click();
+  await toggleHeart(page, heartAfterReload);
   await expect(heartAfterReload).toHaveAttribute("aria-pressed", "false");
   await expect(heartAfterReload).toHaveText(String(before));
 });
