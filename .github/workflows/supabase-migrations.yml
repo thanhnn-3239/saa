@@ -30,6 +30,10 @@ env:
 jobs:
   push:
     runs-on: ubuntu-latest
+    # The Supabase secrets live in the "Production" GitHub Environment, so the
+    # job must opt into it for ${{ secrets.* }} to resolve (repo-level is empty).
+    # NOTE: this environment has a 15-minute wait_timer protection rule.
+    environment: Production
     env:
       SUPABASE_ACCESS_TOKEN: ${{ secrets.SUPABASE_ACCESS_TOKEN }}
       SUPABASE_DB_PASSWORD: ${{ secrets.SUPABASE_DB_PASSWORD }}
