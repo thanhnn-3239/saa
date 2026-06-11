@@ -51,6 +51,14 @@ export default defineConfig({
       testIgnore: [/.*\.setup\.ts/, /.*\.authed\.spec\.ts/],
       use: { ...devices["Desktop Chrome"] },
     },
+    // Sungen-compiled specs live in their own tree (specs/generated/), kept
+    // separate from the hand-written e2e/ suite. Reuses the same webServer +
+    // baseURL. Run in isolation with `pnpm test:sungen` (--project=sungen).
+    {
+      name: "sungen",
+      testDir: "./specs/generated",
+      use: { ...devices["Desktop Chrome"] },
+    },
     ...authProjects,
   ],
   webServer: {

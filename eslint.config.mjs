@@ -16,6 +16,7 @@ const eslintConfig = defineConfig([
     ".claude/**", // Takumi/Sixth agent-kit scripts (.cjs, require()-style)
     "**/.venv/**", // Python virtualenvs (e.g. .claude/skills/.venv)
     "coverage/**",
+    "specs/generated/**", // Sungen-compiled output + runtime fixtures (auto-generated, "DO NOT EDIT")
   ]),
   {
     // Test files & setup: relax rules that legitimately appear in test mocks

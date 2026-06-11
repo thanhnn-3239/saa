@@ -10,6 +10,10 @@ This project has two test layers:
 > The two suites never overlap — Vitest only picks up tests under
 > `app/lib/i18n/messages`, Playwright only runs `e2e/`.
 
+> **Also evaluating:** [Sungen](./sungen-pilot.md) — a deterministic Gherkin →
+> Playwright compiler (`qa/` → `specs/generated/`, run via `pnpm test:sungen`).
+> Hand-written specs stay in `e2e/`; see the pilot doc for the two-tier split.
+
 Playwright **starts the app itself** (see the `webServer` block in
 `playwright.config.ts`): it runs `pnpm build && pnpm start` and waits for
 `http://localhost:3000` before running tests. It injects **dummy Supabase env

@@ -61,3 +61,7 @@ next-env.d.ts
 /release-manifest.json
 
 /.momorph/*
+
+# Sungen — captured auth state (test-results/playwright-report/.playwright-mcp
+# are already ignored above). Generated specs under specs/generated/ ARE tracked.
+specs/.auth/
