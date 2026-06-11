@@ -1,4 +1,4 @@
-import { describe, it, expect, vi } from "vitest";
+import { describe, it, expect, vi, beforeEach } from "vitest";
 import { screen } from "@testing-library/react";
 import { render } from "@testing-library/react";
 import { AppHeader } from "@/app/(public)/_components/app-header";
@@ -11,6 +11,18 @@ vi.mock("next/image", () => ({
     <img src={src} alt={alt} />
   ),
 }));
+
+// Controllable pathname so each test can simulate being on a different tab.
+const { mockUsePathname } = vi.hoisted(() => ({
+  mockUsePathname: vi.fn<() => string>(() => "/"),
+}));
+vi.mock("next/navigation", () => ({
+  usePathname: mockUsePathname,
+}));
+
+beforeEach(() => {
+  mockUsePathname.mockReturnValue("/");
+});
 
 /** Resolved EN nav labels — mirrors what the layout passes at runtime. */
 const defaultNavLabels = {
@@ -95,5 +107,69 @@ describe("AppHeader (ID-0, ID-1, ID-18, ID-20, ID-21, ID-22)", () => {
 
     const kudosLink = screen.getByText("Sun* Kudos").closest("a");
     expect(kudosLink).toHaveAttribute("href", ROUTES.kudos);
+  });
+});
+
+describe("AppHeader — active nav tab follows the current pathname", () => {
+  function renderHeader() {
+    render(
+      <AppHeader
+        languageSwitcher={<div>Language Switcher Slot</div>}
+        navLabels={defaultNavLabels}
+      />
+    );
+  }
+
+  /** The link marked active via aria-current="page", or null when none is. */
+  function activeLink(): HTMLElement | null {
+    return screen.queryByRole("link", { current: "page" });
+  }
+
+  it("marks 'About SAA 2025' active on the home page", () => {
+    mockUsePathname.mockReturnValue(ROUTES.home);
+    renderHeader();
+
+    expect(activeLink()).toHaveTextContent("About SAA 2025");
+    expect(activeLink()?.className).toContain("text-saa-gold-accent");
+  });
+
+  it("marks 'Award Information' active on the awards-information page", () => {
+    mockUsePathname.mockReturnValue(ROUTES.awardsInfo);
+    renderHeader();
+
+    expect(activeLink()).toHaveTextContent("Award Information");
+    // The previously hardcoded tab must no longer be highlighted.
+    const aboutLink = screen.getByText("About SAA 2025").closest("a");
+    expect(aboutLink?.className).toContain("text-white");
+    expect(aboutLink?.className).not.toContain("text-saa-gold-accent");
+  });
+
+  it("marks 'Sun* Kudos' active on the sun-kudos page", () => {
+    mockUsePathname.mockReturnValue(ROUTES.kudos);
+    renderHeader();
+
+    expect(activeLink()).toHaveTextContent("Sun* Kudos");
+    expect(activeLink()?.className).toContain("text-saa-gold-accent");
+  });
+
+  it("keeps 'Sun* Kudos' active on nested kudos paths", () => {
+    mockUsePathname.mockReturnValue(`${ROUTES.kudos}/some-post`);
+    renderHeader();
+
+    expect(activeLink()).toHaveTextContent("Sun* Kudos");
+  });
+
+  it("highlights no tab on unrelated pages (e.g. /profile)", () => {
+    mockUsePathname.mockReturnValue(ROUTES.profile);
+    renderHeader();
+
+    expect(activeLink()).toBeNull();
+  });
+
+  it("does NOT mark 'About SAA 2025' active outside home — only one tab is active at a time", () => {
+    mockUsePathname.mockReturnValue(ROUTES.kudos);
+    renderHeader();
+
+    expect(screen.getAllByRole("link", { current: "page" })).toHaveLength(1);
   });
 });

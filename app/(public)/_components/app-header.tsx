@@ -2,6 +2,7 @@ import Image from "next/image";
 import Link from "next/link";
 import React from "react";
 import { ROUTES } from "@/lib/navigation/routes";
+import { HeaderNav } from "./header-nav";
 
 // mm:2167:9091
 interface AppHeaderProps {
@@ -39,32 +40,8 @@ export function AppHeader({ languageSwitcher, authControls, navLabels }: AppHead
           />
         </Link>
 
-        {/* mm:I2167:9091;178:653 — Nav links (hidden on mobile, shown from md) */}
-        <nav className="hidden md:flex items-center gap-6">
-          {/* mm:I2167:9091;186:1579 — About SAA 2025 (active / selected state) */}
-          <Link
-            href={ROUTES.home}
-            className="flex items-center px-4 py-4 font-montserrat font-bold text-sm leading-5 text-saa-gold-accent tracking-[0.1px] no-underline border-b border-saa-gold-accent transition-colors hover:opacity-80 whitespace-nowrap [text-shadow:0_4px_4px_rgba(0,0,0,0.25),0_0_6px_#FAE287]"
-          >
-            {navLabels.aboutSaa}
-          </Link>
-
-          {/* mm:I2167:9091;186:1587 — Awards Information */}
-          <Link
-            href={ROUTES.awardsInfo}
-            className="flex items-center px-4 py-4 font-montserrat font-bold text-sm leading-5 text-white tracking-[0.1px] no-underline rounded transition-colors hover:opacity-80 whitespace-nowrap"
-          >
-            {navLabels.awardInformation}
-          </Link>
-
-          {/* mm:I2167:9091;186:1593 — Sun* Kudos */}
-          <Link
-            href={ROUTES.kudos}
-            className="flex items-center px-4 py-4 font-montserrat font-bold text-sm leading-5 text-white tracking-[0.1px] no-underline rounded transition-colors hover:opacity-80 whitespace-nowrap"
-          >
-            {navLabels.kudos}
-          </Link>
-        </nav>
+        {/* mm:I2167:9091;178:653 — Nav links; active tab follows the current pathname */}
+        <HeaderNav navLabels={navLabels} />
       </div>
 
       {/* Right: language switcher + auth controls */}
