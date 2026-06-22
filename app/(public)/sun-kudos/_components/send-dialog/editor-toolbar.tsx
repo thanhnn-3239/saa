@@ -100,7 +100,7 @@ export function EditorToolbar({
             onClick={handler}
             disabled={!handler}
             className={[
-              "flex items-center justify-center w-14 shrink-0 transition-colors duration-200",
+              "flex items-center justify-center w-10 sm:w-14 shrink-0 transition-colors duration-200",
               i > 0 ? "border-l border-[#998C5F]" : "",
               "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[#998C5F]",
               "disabled:pointer-events-none",

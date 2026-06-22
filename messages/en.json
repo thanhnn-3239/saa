@@ -19,7 +19,8 @@
       "awardInformation": "Award Information",
       "kudos": "Sun* Kudos",
       "standards": "General Standards",
-      "langSelectAria": "Select language"
+      "langSelectAria": "Select language",
+      "menuToggle": "Toggle navigation menu"
     },
     "account": {
       "menuAria": "Account menu",

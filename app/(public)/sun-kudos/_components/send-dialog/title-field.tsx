@@ -18,13 +18,12 @@ export function TitleField({ value, onChange, error }: TitleFieldProps) {
   const t = useTranslations("Home.kudosPage.sendDialog");
   return (
     <div className="flex flex-col w-full" style={{ gap: 0 }}>
-      {/* Row: label + input */}
-      <div className="flex flex-row items-center gap-4 w-full">
+      {/* Row: label + input. Label stacks above the input on mobile. */}
+      <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 w-full">
         {/* Label: Title — 22px bold #00101A */}
-        <div className="flex flex-row items-center gap-[2px] shrink-0 w-[146px]">
+        <div className="flex flex-row items-center gap-[2px] shrink-0 sm:w-[146px]">
           <span
-            className="font-montserrat font-bold text-[#00101A] leading-7"
-            style={{ fontSize: 22 }}
+            className="font-montserrat font-bold text-[#00101A] leading-7 text-lg sm:text-[22px]"
           >
             {t("titleLabel")}
           </span>
@@ -54,9 +53,10 @@ export function TitleField({ value, onChange, error }: TitleFieldProps) {
         </div>
       </div>
 
-      {/* Helper text: 16px bold #999 — offset to align under input (skip label width) */}
+      {/* Helper text: 16px bold #999 — offset to align under input on desktop
+          (skip label width); full width on mobile where the label is stacked. */}
       <div className="flex flex-row w-full">
-        <div className="shrink-0" style={{ width: "calc(146px + 16px)" }} />
+        <div className="hidden sm:block shrink-0" style={{ width: "calc(146px + 16px)" }} />
         <div className="flex-1">
           <p
             className="mt-1 font-montserrat font-bold text-base leading-6 tracking-[0.15px] text-[#999999] whitespace-pre-line"

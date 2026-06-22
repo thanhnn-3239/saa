@@ -49,6 +49,7 @@ export default async function PublicLayout({
           awardInformation: t("nav.awardInformation"),
           kudos: t("nav.kudos"),
         }}
+        menuToggleLabel={t("nav.menuToggle")}
       />
 
       {/* Send-kudo dialog provider — lets the FAB, Thể lệ panel, and board

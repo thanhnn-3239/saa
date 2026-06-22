@@ -38,6 +38,7 @@ describe("AppHeader (ID-0, ID-1, ID-18, ID-20, ID-21, ID-22)", () => {
         languageSwitcher={<div>Language Switcher Slot</div>}
         authControls={undefined}
         navLabels={defaultNavLabels}
+        menuToggleLabel="Toggle navigation menu"
       />
     );
 
@@ -54,6 +55,7 @@ describe("AppHeader (ID-0, ID-1, ID-18, ID-20, ID-21, ID-22)", () => {
         languageSwitcher={<div>Language Switcher Slot</div>}
         authControls={<div>Auth Controls: Notification + Account Menu</div>}
         navLabels={defaultNavLabels}
+        menuToggleLabel="Toggle navigation menu"
       />
     );
 
@@ -66,6 +68,7 @@ describe("AppHeader (ID-0, ID-1, ID-18, ID-20, ID-21, ID-22)", () => {
       <AppHeader
         languageSwitcher={<div>Language Switcher Slot</div>}
         navLabels={defaultNavLabels}
+        menuToggleLabel="Toggle navigation menu"
       />
     );
 
@@ -78,6 +81,7 @@ describe("AppHeader (ID-0, ID-1, ID-18, ID-20, ID-21, ID-22)", () => {
       <AppHeader
         languageSwitcher={<div>Language Switcher Slot</div>}
         navLabels={defaultNavLabels}
+        menuToggleLabel="Toggle navigation menu"
       />
     );
 
@@ -90,6 +94,7 @@ describe("AppHeader (ID-0, ID-1, ID-18, ID-20, ID-21, ID-22)", () => {
       <AppHeader
         languageSwitcher={<div>Language Switcher Slot</div>}
         navLabels={defaultNavLabels}
+        menuToggleLabel="Toggle navigation menu"
       />
     );
 
@@ -102,6 +107,7 @@ describe("AppHeader (ID-0, ID-1, ID-18, ID-20, ID-21, ID-22)", () => {
       <AppHeader
         languageSwitcher={<div>Language Switcher Slot</div>}
         navLabels={defaultNavLabels}
+        menuToggleLabel="Toggle navigation menu"
       />
     );
 
@@ -116,6 +122,7 @@ describe("AppHeader — active nav tab follows the current pathname", () => {
       <AppHeader
         languageSwitcher={<div>Language Switcher Slot</div>}
         navLabels={defaultNavLabels}
+        menuToggleLabel="Toggle navigation menu"
       />
     );
   }

@@ -57,7 +57,7 @@ export async function HeroSection() {
             {/* mm:2167:9053 */}
             <div className="flex flex-col gap-2">
               {/* mm:2167:9054 */}
-              <div className="flex flex-row flex-wrap items-center gap-[60px]">
+              <div className="flex flex-row flex-wrap items-center gap-x-6 gap-y-2 sm:gap-x-[60px] sm:gap-y-[60px]">
                 {/* mm:2167:9055 — date */}
                 <div className="flex flex-row items-baseline gap-1">
                   {/* mm:2167:9056 */}

@@ -25,12 +25,11 @@ export function ImageField({ images, onAdd, onRemove, error }: ImageFieldProps) 
   const canAdd = images.length < MAX_IMAGES;
 
   return (
-    <div className="flex flex-row items-center gap-4 w-full">
-      {/* Label: mms_F.1_Title — "Image" 22px bold */}
-      <div className="flex flex-row items-center shrink-0 w-[74px]">
+    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 w-full">
+      {/* Label: mms_F.1_Title — "Image" 22px bold. Stacks above on mobile. */}
+      <div className="flex flex-row items-center shrink-0 sm:w-[74px]">
         <span
-          className="font-montserrat font-bold text-[#00101A] leading-7"
-          style={{ fontSize: 22 }}
+          className="font-montserrat font-bold text-[#00101A] leading-7 text-lg sm:text-[22px]"
         >
           {t("imageLabel")}
         </span>

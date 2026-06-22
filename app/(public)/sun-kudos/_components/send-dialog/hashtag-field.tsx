@@ -35,12 +35,11 @@ export function HashtagField({
   const atMax = selected.length >= max;
 
   return (
-    <div className="flex flex-row items-start gap-4 w-full">
-      {/* Label */}
-      <div className="flex flex-row items-center gap-[2px] shrink-0 w-[108px] pt-[10px]">
+    <div className="flex flex-col sm:flex-row sm:items-start gap-2 sm:gap-4 w-full">
+      {/* Label — stacks above the pills on mobile. */}
+      <div className="flex flex-row items-center gap-[2px] shrink-0 sm:w-[108px] sm:pt-[10px]">
         <span
-          className="font-montserrat font-bold text-[#00101A] leading-7"
-          style={{ fontSize: 22 }}
+          className="font-montserrat font-bold text-[#00101A] leading-7 text-lg sm:text-[22px]"
         >
           {t("hashtagLabel")}
         </span>

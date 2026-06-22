@@ -78,8 +78,9 @@ export function KudosFeed({
         {/* Header — C.1 */}
         <SectionHeader eyebrow={t("feed.eyebrow")} title={t("feed.title")} />
 
-        {/* Two-column layout: feed (left, dominant) + sidebar (right, narrower) */}
-        <div className="mt-10 flex gap-12 items-start">
+        {/* Two-column layout on lg+: feed (left, dominant) + sidebar (right,
+            narrower). Stacks to one column below lg so nothing overflows. */}
+        <div className="mt-10 flex flex-col lg:flex-row gap-8 lg:gap-12 items-stretch lg:items-start">
         {/* C.2 — Feed column: flex-1 so it takes all remaining width */}
         <div className="flex flex-col gap-6 flex-1 min-w-0">
           {cards.length === 0 && !isLoading ? (
@@ -118,9 +119,10 @@ export function KudosFeed({
           )}
         </div>
 
-        {/* D — Sidebar slot (sticky, fixed width, no overflow — each inner block owns its scroll) */}
+        {/* D — Sidebar slot. Full width when stacked (below lg); fixed 422px and
+            sticky alongside the feed on lg+. Each inner block owns its scroll. */}
         {sidebar && (
-          <aside className="w-[422px] shrink-0 sticky top-24 self-start">
+          <aside className="w-full lg:w-[422px] lg:shrink-0 lg:sticky lg:top-24 lg:self-start">
             {sidebar}
           </aside>
         )}

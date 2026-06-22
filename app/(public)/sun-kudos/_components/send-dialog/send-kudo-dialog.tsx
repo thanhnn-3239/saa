@@ -108,22 +108,17 @@ export function SendKudoDialog({
         className="flex min-h-full items-center justify-center p-4 sm:py-8"
         onClick={handleBackdropClick}
       >
-        {/* Panel — cream/ivory bg, rounded 24px, max-w 752px */}
+        {/* Panel — cream/ivory bg, rounded 24px, max-w 752px. Padding/gap scale
+            down on mobile so the form doesn't get squeezed on small screens. */}
         <div
           ref={panelRef}
           tabIndex={-1}
-          className="relative w-full bg-[#FFF8E1] outline-none shadow-2xl flex flex-col"
-          style={{
-            maxWidth: 752,
-            borderRadius: 24,
-            padding: 40,
-            gap: 32,
-          }}
+          className="relative w-full bg-[#FFF8E1] outline-none shadow-2xl flex flex-col rounded-3xl p-5 gap-6 sm:p-10 sm:gap-8"
+          style={{ maxWidth: 752 }}
         >
         {/* 1. Title: mms_A */}
         <h2
-          className="font-montserrat font-bold text-[#00101A] text-center w-full leading-10"
-          style={{ fontSize: 32 }}
+          className="font-montserrat font-bold text-[#00101A] text-center w-full leading-tight sm:leading-10 text-[26px] sm:text-[32px]"
         >
           {t("title")}
         </h2>
