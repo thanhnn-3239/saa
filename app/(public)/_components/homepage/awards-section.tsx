@@ -44,17 +44,11 @@ export async function AwardsSection() {
 
         {/* mm:2167:9072 — section title */}
         <div style={{ paddingTop: "16px" }}>
-          {/* mm:2167:9073 */}
+          {/* mm:2167:9073 — responsive font: scales down on mobile/tablet so the
+              57px design size doesn't overflow narrow viewports. */}
           <h2
-            style={{
-              fontFamily: "Montserrat, sans-serif",
-              fontWeight: 700,
-              fontSize: "57px",
-              lineHeight: "64px",
-              color: "#FFEA9E",
-              letterSpacing: "-0.25px",
-              margin: 0,
-            }}
+            className="m-0 font-montserrat font-bold tracking-[-0.25px] text-[32px] leading-[40px] sm:text-[40px] sm:leading-[48px] lg:text-[57px] lg:leading-[64px]"
+            style={{ color: "#FFEA9E" }}
           >
             {t("sectionTitle")}
           </h2>
@@ -62,7 +56,7 @@ export async function AwardsSection() {
       </div>
 
       {/* mm:5005:14974 — awards grid: 3 cols desktop, 2 cols tablet/mobile */}
-      <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-[80px] gap-y-[80px]">
+      <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-6 gap-y-8 sm:gap-x-[80px] sm:gap-y-[80px]">
         {AWARD_CATEGORIES.map((category) => (
           <AwardCard
             key={category.slug}

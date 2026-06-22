@@ -48,6 +48,7 @@ export default async function PublicLayout({
           awardInformation: t("nav.awardInformation"),
           kudos: t("nav.kudos"),
         }}
+        menuToggleLabel={t("nav.menuToggle")}
       />
 
       {/* Page content — padded top to clear fixed header */}

@@ -3,6 +3,7 @@ import Link from "next/link";
 import React from "react";
 import { ROUTES } from "@/lib/navigation/routes";
 import { HeaderNav } from "./header-nav";
+import { MobileMenu } from "./mobile-menu";
 
 // mm:2167:9091
 interface AppHeaderProps {
@@ -16,9 +17,11 @@ interface AppHeaderProps {
     awardInformation: string;
     kudos: string;
   };
+  /** Accessible label for the mobile hamburger toggle. */
+  menuToggleLabel: string;
 }
 
-export function AppHeader({ languageSwitcher, authControls, navLabels }: AppHeaderProps) {
+export function AppHeader({ languageSwitcher, authControls, navLabels, menuToggleLabel }: AppHeaderProps) {
   return (
     // mm:2167:9091
     <header
@@ -54,6 +57,9 @@ export function AppHeader({ languageSwitcher, authControls, navLabels }: AppHead
         {/* mm:I2167:9091;186:2101;186:2020;186:1420 Noti.svg — notification bell */}
         {/* mm:I2167:9091;186:1597;186:1420 User_Profile.svg — user avatar */}
         {authControls}
+
+        {/* Mobile-only hamburger + drawer (HeaderNav is hidden below md) */}
+        <MobileMenu navLabels={navLabels} toggleLabel={menuToggleLabel} />
       </div>
     </header>
   );
