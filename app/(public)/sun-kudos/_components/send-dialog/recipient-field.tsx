@@ -32,12 +32,11 @@ export function RecipientField({
 }: RecipientFieldProps) {
   const t = useTranslations("Home.kudosPage.sendDialog");
   return (
-    <div className="flex flex-row items-center gap-4 w-full">
-      {/* Label: mms_B.1_Title — 22px bold #00101A */}
-      <div className="flex flex-row items-center gap-[2px] shrink-0 w-[146px]">
+    <div className="flex flex-col sm:flex-row sm:items-center gap-2 sm:gap-4 w-full">
+      {/* Label: mms_B.1_Title — 22px bold #00101A. Stacks above the input on mobile. */}
+      <div className="flex flex-row items-center gap-[2px] shrink-0 sm:w-[146px]">
         <span
-          className="font-montserrat font-bold text-[#00101A] leading-7"
-          style={{ fontSize: 22 }}
+          className="font-montserrat font-bold text-[#00101A] leading-7 text-lg sm:text-[22px]"
         >
           {t("recipientLabel")}
         </span>

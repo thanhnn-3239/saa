@@ -57,8 +57,7 @@ export function AnonymousField({
 
         {/* Label */}
         <span
-          className="font-montserrat font-bold text-[#999999] leading-7"
-          style={{ fontSize: 22 }}
+          className="font-montserrat font-bold text-[#999999] leading-7 text-lg sm:text-[22px]"
         >
           {t("anonymousLabel")}
         </span>

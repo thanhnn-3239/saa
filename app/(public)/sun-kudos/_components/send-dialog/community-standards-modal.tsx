@@ -47,15 +47,15 @@ export function CommunityStandardsModal({
 
   return (
     <div
-      className="fixed inset-0 z-[60] flex items-center justify-center bg-black/60"
+      className="fixed inset-0 z-[60] flex items-center justify-center overflow-y-auto bg-black/60 p-4"
       onClick={(e) => { if (e.target === e.currentTarget) onClose(); }}
       aria-modal="true"
       role="dialog"
       aria-label={t("title")}
     >
       <div
-        className="relative w-full bg-[#FFF8E1] shadow-2xl flex flex-col p-10"
-        style={{ maxWidth: 560, borderRadius: 20, gap: 24 }}
+        className="relative w-full my-auto bg-[#FFF8E1] shadow-2xl flex flex-col p-6 gap-6 sm:p-10"
+        style={{ maxWidth: 560, borderRadius: 20 }}
       >
         {/* Close button */}
         <button
