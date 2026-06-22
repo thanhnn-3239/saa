@@ -74,7 +74,7 @@ describe("KudoCardBase — feed variant", () => {
   it("shows all hashtags with no overflow chip when maxHashtags is unset", () => {
     renderWithIntl(
       <KudoCardBase
-        card={makeCard({ hashtags: ["#a", "#b", "#c", "#d", "#e", "#f"] })}
+        card={makeCard({ hashtags: ["a", "b", "c", "d", "e", "f"] })}
         baseUrl={BASE_URL}
         showImages
         bodyClamp={5}
@@ -115,7 +115,7 @@ describe("KudoCardBase — highlight variant", () => {
   it("caps hashtags at maxHashtags and shows a '+N' overflow chip", () => {
     renderWithIntl(
       <KudoCardBase
-        card={makeCard({ hashtags: ["#1", "#2", "#3", "#4", "#5", "#6", "#7"] })}
+        card={makeCard({ hashtags: ["1", "2", "3", "4", "5", "6", "7"] })}
         baseUrl={BASE_URL}
         showViewDetail
         bodyClamp={3}

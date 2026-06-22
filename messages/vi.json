@@ -172,6 +172,52 @@
       },
       "stars": {
         "tier": "Hạng {n} sao"
+      },
+      "sendDialog": {
+        "title": "Gửi lời cám ơn và ghi nhận đến đồng đội",
+        "recipientLabel": "Người nhận",
+        "recipientPlaceholder": "Tìm kiếm",
+        "titleLabel": "Danh hiệu",
+        "titlePlaceholder": "Dành tặng một danh hiệu cho đồng đội",
+        "titleHelper": "Ví dụ: Người truyền động lực cho tôi.\nDanh hiệu sẽ hiển thị làm tiêu đề Kudos của bạn.",
+        "bodyPlaceholder": "Hãy gửi gắm lời cám ơn và ghi nhận đến đồng đội tại đây nhé!",
+        "bodyMentionHint": "Bạn có thể \"@ + tên\" để nhắc tới đồng nghiệp khác",
+        "hashtagLabel": "Hashtag",
+        "hashtagMax": "Tối đa 5",
+        "imageLabel": "Image",
+        "imageMax": "Tối đa 5",
+        "anonymousLabel": "Gửi lời cám ơn và ghi nhận ẩn danh",
+        "anonymousNamePlaceholder": "Bí danh (tuỳ chọn)",
+        "cancelButton": "Hủy",
+        "submitButton": "Gửi",
+        "communityStandardsLink": "Tiêu chuẩn cộng đồng",
+        "toastSuccess": "Kudo đã được gửi thành công!",
+        "errors": {
+          "recipientRequired": "Vui lòng chọn người nhận",
+          "titleRequired": "Vui lòng nhập danh hiệu",
+          "titleTooLong": "Danh hiệu không được vượt quá 100 ký tự",
+          "bodyRequired": "Vui lòng nhập nội dung lời cám ơn",
+          "bodyTooLong": "Nội dung không được vượt quá 2000 ký tự",
+          "hashtagsRequired": "Vui lòng chọn ít nhất 1 hashtag",
+          "hashtagsTooMany": "Chỉ được chọn tối đa 5 hashtag",
+          "imageInvalid": "Ảnh không hợp lệ (JPG/PNG/WEBP, tối đa 5MB/ảnh, tối đa 5 ảnh)",
+          "submitFailed": "Gửi Kudo thất bại. Vui lòng thử lại."
+        },
+        "ariaClearRecipient": "Xóa người nhận đã chọn",
+        "ariaRemoveHashtag": "Xóa hashtag {name}",
+        "ariaImageAttachment": "Ảnh đính kèm {index}",
+        "ariaRemoveImage": "Xóa ảnh {index}"
+      },
+      "communityStandards": {
+        "title": "Tiêu chuẩn cộng đồng",
+        "intro": "Để tạo nên môi trường ghi nhận tích cực và chân thành, Sun* khuyến khích mọi Sunner tuân thủ các nguyên tắc sau khi gửi Kudo:",
+        "rule1": "Ghi nhận cụ thể và chân thực — mô tả rõ hành động hoặc đóng góp bạn trân trọng.",
+        "rule2": "Tôn trọng và chuyên nghiệp — giữ ngôn ngữ lịch sự, không phân biệt đối xử.",
+        "rule3": "Không chia sẻ thông tin cá nhân nhạy cảm của người khác.",
+        "rule4": "Không sử dụng Kudo cho mục đích quảng cáo hoặc nội dung không liên quan.",
+        "rule5": "Nội dung vi phạm sẽ bị gỡ bỏ và tài khoản có thể bị hạn chế quyền gửi Kudo.",
+        "dismiss": "Đã hiểu",
+        "close": "Đóng"
       }
     },
     "thele": {
