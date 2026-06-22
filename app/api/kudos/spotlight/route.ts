@@ -7,9 +7,14 @@
  * GET /api/kudos/spotlight?search=<term>
  * Search mode — returns { results: ProfileBrief[] }
  * Validation errors return 422 with { error: string }.
+ *
+ * GET /api/kudos/spotlight?search=<term>&excludeSelf=1
+ * Same as search mode but omits the authenticated caller from results
+ * (recipient picker in the send-kudo dialog — no self-kudos).
  */
 
 import { NextResponse } from "next/server";
+import { createClient } from "@/lib/supabase/server";
 import {
   getKudosTotal,
   getSpotlightNodes,
@@ -25,7 +30,15 @@ export async function GET(request: NextRequest) {
   // Search mode.
   if (searchTerm !== null) {
     try {
-      const results = await searchSunners(searchTerm);
+      let excludeUserId: string | undefined;
+      if (searchParams.get("excludeSelf") === "1") {
+        const supabase = await createClient();
+        const {
+          data: { user },
+        } = await supabase.auth.getUser();
+        excludeUserId = user?.id;
+      }
+      const results = await searchSunners(searchTerm, excludeUserId);
       return NextResponse.json({ results });
     } catch (err) {
       if (err instanceof SearchValidationError) {

@@ -26,6 +26,8 @@ Supabase model. A traditional standalone backend (Node/Nest/etc.) would add ops 
 - **next-intl 4.13** — i18n; cookie-based locale (`NEXT_LOCALE`), no URL routing. Locales: `vi` (default), `en`.
 - **@tanstack/react-query** — client-side data fetching, caching, and infinite scroll for the kudos board. Provider in `app/providers.tsx`; hooks in `lib/kudos/`.
 - **embla-carousel-react** — lightweight carousel used by the kudos highlight section.
+- **@tiptap/* suite** — rich-text editor used by the send-kudo dialog; output stored as HTML in `kudos.body`.
+- **isomorphic-dompurify** — server-side HTML sanitization; `lib/kudos/sanitize-html.ts` applies a DOMPurify allowlist before rendering kudo body on the board.
 
 ## Environment model
 - **Local dev:** Supabase CLI runs a trimmed backend stack — `db, kong/api, auth, realtime, storage, studio` (+pg-meta); `edge_runtime, analytics, vector, inbucket, db.pooler` disabled in `config.toml`. Docker Compose (`node:24-alpine`, `network_mode: host`) runs the Next.js dev container.
@@ -49,8 +51,11 @@ Supabase model. A traditional standalone backend (Node/Nest/etc.) would add ops 
 **2026-06-06**
 - **Kudos Live Board** (`/sun-kudos`) — highlight carousel, spotlight cloud, infinite-scroll feed, sidebar stats + leaderboards, heart toggle. TanStack Query + Supabase Realtime. `kudo_likes` migration. See `docs/project-changelog.md`.
 
+**2026-06-11**
+- **Send-kudo dialog** — Tiptap rich-text, image upload (kudo-images bucket), hashtag picker, anonymous alias. `POST /api/kudos`. DB migration adds `kudos.title` + `kudos.anonymous_name`; `create_kudo` re-created with 8-param signature. See `docs/project-changelog.md`.
+
 ## Still out of scope
-Send-kudo flow, full profile pages, admin dashboard, secret-box grant triggers, notifications bell (realtime read).
+Full profile pages, admin dashboard, secret-box grant triggers, notifications bell (realtime read).
 
 Schema design reference: `plans/260603-1716-nextjs-supabase-vercel-setup/data-model-and-backend-architecture.md`.
 
