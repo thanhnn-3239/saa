@@ -4,6 +4,23 @@ Significant changes, features, and fixes in reverse-chronological order.
 
 ---
 
+## [Unreleased] — 2026-06-11 (fix/ci-migrations-production-env + feat: send-kudos dialog)
+
+### Added
+- **Send-kudo dialog** (`app/(public)/sun-kudos/_components/send-dialog/`): full kudo-creation flow. Tiptap rich-text editor (HTML stored in `kudos.body`; rendered via `lib/kudos/sanitize-html.ts` with DOMPurify allowlist — XSS-safe). Image upload to `kudo-images` bucket (`{uid}/{uuid}.{ext}`, max 5 × 5 MB, jpg/png/webp). Hashtag picker (1–5 existing hashtags). Optional title (≤100 chars). Optional anonymous mode with alias display.
+- **`POST /api/kudos`**: creates a kudo (401/400/422/500); validates `imagePaths` ownership against the authenticated user's storage prefix.
+- **`GET /api/kudos/spotlight`**: extended with `excludeSelf=1` query param.
+- **DB migration `20260611070000_kudo_title_anonymous_name.sql`**: adds `kudos.title` (text, nullable) and `kudos.anonymous_name` (text, nullable); re-creates `create_kudo` with new 8-param signature (adds `p_title`, `p_anonymous_name`); drops old 6-param overload; grants `EXECUTE` to `authenticated`.
+- **Anonymous privacy:** `hydrateKudoCard` (server-side) masks real sender name/id with `anonymous_name` for anonymous rows — client never sees `sender_id`.
+- **New deps:** `@tiptap/*` suite (rich text editor), `isomorphic-dompurify` (server-side HTML sanitization).
+- **CI fix:** Supabase migration job bound to `Production` environment so `SUPABASE_*` secrets are available in the workflow.
+
+### Changed
+- Board kudo cards now render `title` (when present) and sanitized HTML `body`.
+- Anonymous kudos display `anonymous_name` alias on cards (replacing sender name).
+
+---
+
 ## [Unreleased] — 2026-06-10 (feat/sun-kudos-live-board — UI fidelity pass)
 
 ### Added
@@ -14,8 +31,8 @@ Significant changes, features, and fixes in reverse-chronological order.
 - **Filter dropdown trigger** (`ui/filter-dropdown.tsx`): restyled to a single `rounded-[4px]` pill; trigger label shows selected filter label, falling back to category name. Open panel behavior and accessibility attributes unchanged.
 - **Sidebar stats flame badge** (`sidebar-stats.tsx`): "x2" badge added on the hearts row; gift icon repositioned to after button text (filled variant).
 
-### Deferred
-- Kudo card title / category ("IDOL GIỎI TRẺ"): omitted — `kudos` table has no `title`/`category` column. Tracked as open question in `plans/260610-1011-kudos-ui-fidelity/`.
+### Deferred (resolved in 2026-06-11 entry)
+- Kudo card title ("IDOL GIỎI TRẺ"): was omitted here — `kudos.title` column added by `20260611070000_kudo_title_anonymous_name.sql` and cards now render it.
 
 ---
 
