@@ -173,6 +173,52 @@
       },
       "stars": {
         "tier": "Tier {n} stars"
+      },
+      "sendDialog": {
+        "title": "Send appreciation and recognition to your teammate",
+        "recipientLabel": "Recipient",
+        "recipientPlaceholder": "Search",
+        "titleLabel": "Title",
+        "titlePlaceholder": "Give your teammate a title",
+        "titleHelper": "Example: My inspiration.\nThe title will appear as the heading of your Kudo.",
+        "bodyPlaceholder": "Share your appreciation and recognition for your teammate here!",
+        "bodyMentionHint": "You can type \"@ + name\" to mention another colleague",
+        "hashtagLabel": "Hashtag",
+        "hashtagMax": "Max 5",
+        "imageLabel": "Image",
+        "imageMax": "Max 5",
+        "anonymousLabel": "Send anonymously",
+        "anonymousNamePlaceholder": "Alias (optional)",
+        "cancelButton": "Cancel",
+        "submitButton": "Send",
+        "communityStandardsLink": "Community Standards",
+        "toastSuccess": "Kudo sent successfully!",
+        "errors": {
+          "recipientRequired": "Please select a recipient",
+          "titleRequired": "Please enter a title",
+          "titleTooLong": "Title must not exceed 100 characters",
+          "bodyRequired": "Please enter the content of your appreciation",
+          "bodyTooLong": "Content must not exceed 2000 characters",
+          "hashtagsRequired": "Please select at least 1 hashtag",
+          "hashtagsTooMany": "You can select at most 5 hashtags",
+          "imageInvalid": "Invalid image (JPG/PNG/WEBP, max 5MB each, max 5 images)",
+          "submitFailed": "Failed to send Kudo. Please try again."
+        },
+        "ariaClearRecipient": "Clear selected recipient",
+        "ariaRemoveHashtag": "Remove hashtag {name}",
+        "ariaImageAttachment": "Attached image {index}",
+        "ariaRemoveImage": "Remove image {index}"
+      },
+      "communityStandards": {
+        "title": "Community Standards",
+        "intro": "To foster a positive and genuine recognition environment, Sun* encourages all Sunners to follow these guidelines when sending a Kudo:",
+        "rule1": "Be specific and genuine — describe the action or contribution you appreciate.",
+        "rule2": "Be respectful and professional — keep language polite and non-discriminatory.",
+        "rule3": "Do not share another person's sensitive personal information.",
+        "rule4": "Do not use Kudos for advertising or unrelated content.",
+        "rule5": "Violations will be removed and accounts may have their Kudo-sending rights restricted.",
+        "dismiss": "Got it",
+        "close": "Close"
       }
     },
     "thele": {

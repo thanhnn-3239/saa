@@ -37,8 +37,10 @@ function buildKudoSelect(filter: KudosFilter): string {
     : "kudo_hashtags ( hashtags ( name ) )";
   return `
     id,
+    title,
     body,
     is_anonymous,
+    anonymous_name,
     created_at,
     sender:profiles!kudos_sender_id_fkey (
       id, full_name, avatar_url, department_id, departments ( name )

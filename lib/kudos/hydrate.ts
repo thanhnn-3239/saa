@@ -25,8 +25,10 @@ export interface RawProfileJoin {
 /** Raw kudo row with all joins expanded. */
 export interface RawKudoRow {
   id: string;
+  title?: string | null;
   body: string;
   is_anonymous: boolean;
+  anonymous_name?: string | null;
   created_at: string;
   sender: RawProfileJoin | null;
   recipient: RawProfileJoin | null;
@@ -78,9 +80,12 @@ export function hydrateKudoCard(
   viewerLiked = false,
 ): KudoCard {
   // Fallback profiles so UI never crashes on missing join data.
-  const sender: ProfileBrief = raw.sender
-    ? hydrateProfile(raw.sender)
-    : { id: "", fullName: "Deleted", avatarUrl: null, stars: 0, kudosReceived: 0, departmentId: null };
+  // For anonymous kudos, mask the real sender so the identity never reaches the client.
+  const sender: ProfileBrief = raw.is_anonymous
+    ? { id: "", fullName: raw.anonymous_name?.trim() || "Ẩn danh", avatarUrl: null, stars: 0, kudosReceived: 0, departmentId: null, departmentName: null }
+    : raw.sender
+      ? hydrateProfile(raw.sender)
+      : { id: "", fullName: "Deleted", avatarUrl: null, stars: 0, kudosReceived: 0, departmentId: null, departmentName: null };
 
   const recipient: ProfileBrief = raw.recipient
     ? hydrateProfile(raw.recipient)
@@ -96,8 +101,10 @@ export function hydrateKudoCard(
     id: raw.id,
     sender,
     recipient,
+    title: raw.title ?? undefined,
     body: raw.body,
     isAnonymous: raw.is_anonymous,
+    anonymousName: raw.anonymous_name ?? null,
     createdAt: raw.created_at,
     heartTotal: raw.heart_total ?? 0,
     likeCount: raw.like_count ?? 0,

@@ -120,6 +120,44 @@ describe("hydrateKudoCard", () => {
     const card = hydrateKudoCard({ ...baseRawRow, heart_total: null });
     expect(card.heartTotal).toBe(0);
   });
+
+  // ---------------------------------------------------------------------------
+  // Anonymous masking — C1 fix: real sender must NOT reach the client
+  // ---------------------------------------------------------------------------
+
+  it("masks sender identity when is_anonymous=true (id becomes empty string)", () => {
+    const card = hydrateKudoCard({ ...baseRawRow, is_anonymous: true, anonymous_name: "Secret" });
+    // The real sender id must not be present
+    expect(card.sender.id).toBe("");
+  });
+
+  it("uses anonymous_name as sender fullName when is_anonymous=true and alias provided", () => {
+    const card = hydrateKudoCard({ ...baseRawRow, is_anonymous: true, anonymous_name: "Mystery User" });
+    expect(card.sender.fullName).toBe("Mystery User");
+    // Real sender name from baseRawRow is "Alice" — must not appear
+    expect(card.sender.fullName).not.toBe("Alice");
+  });
+
+  it("falls back to 'Ẩn danh' when is_anonymous=true but anonymous_name is null", () => {
+    const card = hydrateKudoCard({ ...baseRawRow, is_anonymous: true, anonymous_name: null });
+    expect(card.sender.fullName).toBe("Ẩn danh");
+  });
+
+  it("falls back to 'Ẩn danh' when is_anonymous=true but anonymous_name is empty/whitespace", () => {
+    const card = hydrateKudoCard({ ...baseRawRow, is_anonymous: true, anonymous_name: "   " });
+    expect(card.sender.fullName).toBe("Ẩn danh");
+  });
+
+  it("masks sender avatarUrl to null when is_anonymous=true", () => {
+    const card = hydrateKudoCard({ ...baseRawRow, is_anonymous: true, anonymous_name: "X" });
+    expect(card.sender.avatarUrl).toBeNull();
+  });
+
+  it("does NOT mask sender when is_anonymous=false (real profile exposed as usual)", () => {
+    const card = hydrateKudoCard({ ...baseRawRow, is_anonymous: false });
+    expect(card.sender.id).toBe("sender-1");
+    expect(card.sender.fullName).toBe("Alice");
+  });
 });
 
 // ---------------------------------------------------------------------------

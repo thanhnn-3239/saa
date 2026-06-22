@@ -38,6 +38,7 @@ import { SpotlightCloud } from "./spotlight/spotlight-cloud";
 import { KudosFeed } from "./feed/kudos-feed";
 import { SidebarStatsBlock } from "./sidebar/sidebar-stats";
 import { LeaderboardList } from "./sidebar/leaderboard-list";
+import { useSendKudo } from "../../_components/send-kudo-provider";
 
 import type { KudoCard, KudosFilter } from "@/lib/kudos/types";
 import type { KudosPage } from "@/lib/kudos/queries";
@@ -59,6 +60,10 @@ export function KudosBoard({
 }: KudosBoardProps) {
   const t = useTranslations("Home.kudosPage");
   const queryClient = useQueryClient();
+
+  // ── Send-kudo dialog — owned by the app-level provider (also opened by the
+  //    floating widget button + Thể lệ panel). The banner just triggers it. ──
+  const { openSendKudo } = useSendKudo();
 
   // ── Spotlight search state (shared between Banner pill + SpotlightCloud) ──
   const [spotlightSearchTerm, setSpotlightSearchTerm] = useState("");
@@ -253,7 +258,7 @@ export function KudosBoard({
       )}
       {/* ── A: Banner KV ─────────────────────────────────────────────────── */}
       <Banner
-        onOpenSendDialog={noop}
+        onOpenSendDialog={openSendKudo}
         spotlightSearch={spotlightSearchTerm}
         onSpotlightSearchChange={handleSpotlightSearchChange}
         spotlightRef={spotlightSectionRef}
