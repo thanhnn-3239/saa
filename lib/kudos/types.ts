@@ -56,6 +56,13 @@ export interface KudoCard {
   likeCount: number;
   /** Whether the current viewer has liked this kudo. */
   liked: boolean;
+  /**
+   * Whether the current viewer is the sender of this kudo. Computed server-side
+   * so it stays correct even for anonymous kudos (where `sender` is masked to
+   * protect identity). Drives the self-like guard — you cannot like your own
+   * kudo — without leaking who an anonymous sender is.
+   */
+  ownedByViewer: boolean;
   hashtags: string[];
   /** Storage paths (use Supabase storage URL helper to render). */
   images: string[];

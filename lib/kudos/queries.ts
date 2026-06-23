@@ -144,23 +144,33 @@ function mergeHeartCounts(
 async function fetchLikedSet(
   supabase: Awaited<ReturnType<typeof createClient>>,
   kudoIds: string[],
+  viewerId: string | null,
 ): Promise<Set<string>> {
-  if (kudoIds.length === 0) return new Set();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return new Set();
+  if (kudoIds.length === 0 || !viewerId) return new Set();
 
   const { data, error } = await supabase
     .from("kudo_likes")
     .select("kudo_id")
-    .eq("user_id", user.id)
+    .eq("user_id", viewerId)
     .in("kudo_id", kudoIds);
 
   if (error) throw new Error(`fetchLikedSet: ${error.message}`);
 
   return new Set((data ?? []).map((r) => r.kudo_id as string));
+}
+
+/**
+ * The authenticated viewer's id, or null when unauthenticated. Powers the
+ * per-viewer liked state and the self-like guard (ownedByViewer). Reads the
+ * JWT — no DB round trip.
+ */
+async function getViewerId(
+  supabase: Awaited<ReturnType<typeof createClient>>,
+): Promise<string | null> {
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+  return user?.id ?? null;
 }
 
 /**
@@ -275,7 +285,8 @@ export async function getHighlightKudos(filter: KudosFilter): Promise<KudoCard[]
   }
 
   // Per-user liked state so the heart renders active + unlike works.
-  const likedSet = await fetchLikedSet(supabase, top5Ids);
+  const viewerId = await getViewerId(supabase);
+  const likedSet = await fetchLikedSet(supabase, top5Ids, viewerId);
 
   // Stars + hero-title pill: kudos_received for each sender + recipient.
   const details = (detailData ?? []) as unknown as RawKudoRow[];
@@ -295,7 +306,7 @@ export async function getHighlightKudos(filter: KudosFilter): Promise<KudoCard[]
     .map((row) => {
       const counts = heartMap.get(row.id) ?? { heart_total: 0, like_count: 0 };
       const merged = injectProfileStats([{ ...row, ...counts }], statsMap)[0];
-      return hydrateKudoCard(merged, likedSet.has(row.id));
+      return hydrateKudoCard(merged, likedSet.has(row.id), viewerId);
     });
 }
 
@@ -359,7 +370,8 @@ export async function getKudosPage({
   // Fetch heart counts for this page separately (kudo_heart_counts is a view with no FK).
   const pageIds = pageRows.map((r) => r.id);
   const heartMap = await fetchHeartCounts(supabase, pageIds);
-  const likedSet = await fetchLikedSet(supabase, pageIds);
+  const viewerId = await getViewerId(supabase);
+  const likedSet = await fetchLikedSet(supabase, pageIds, viewerId);
 
   // Stars + hero-title pill: fetch kudos_received for every sender + recipient.
   const profileIds = pageRows
@@ -369,7 +381,9 @@ export async function getKudosPage({
 
   const mergedRows = injectProfileStats(mergeHeartCounts(pageRows, heartMap), statsMap);
 
-  const items = mergedRows.map((row) => hydrateKudoCard(row, likedSet.has(row.id)));
+  const items = mergedRows.map((row) =>
+    hydrateKudoCard(row, likedSet.has(row.id), viewerId),
+  );
 
   let nextCursor: PageCursor | null = null;
   if (hasMore) {
