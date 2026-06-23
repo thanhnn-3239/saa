@@ -158,6 +158,36 @@ describe("hydrateKudoCard", () => {
     expect(card.sender.id).toBe("sender-1");
     expect(card.sender.fullName).toBe("Alice");
   });
+
+  // ownedByViewer — server-computed self-like guard. Must use the REAL sender id
+  // even when anonymous, so the viewer can never like their own (anonymous) kudo.
+  it("sets ownedByViewer=true when the viewer is the real sender", () => {
+    const card = hydrateKudoCard(baseRawRow, false, "sender-1");
+    expect(card.ownedByViewer).toBe(true);
+  });
+
+  it("sets ownedByViewer=false when the viewer is someone else", () => {
+    const card = hydrateKudoCard(baseRawRow, false, "viewer-2");
+    expect(card.ownedByViewer).toBe(false);
+  });
+
+  it("sets ownedByViewer=false when there is no viewer (unauthenticated)", () => {
+    expect(hydrateKudoCard(baseRawRow, false, null).ownedByViewer).toBe(false);
+    expect(hydrateKudoCard(baseRawRow).ownedByViewer).toBe(false);
+  });
+
+  it("REGRESSION: ownedByViewer=true for an anonymous kudo the viewer authored, even though sender.id is masked", () => {
+    const card = hydrateKudoCard(
+      { ...baseRawRow, is_anonymous: true, anonymous_name: "Secret" },
+      false,
+      "sender-1",
+    );
+    // Identity stays masked for display…
+    expect(card.sender.id).toBe("");
+    expect(card.sender.fullName).toBe("Secret");
+    // …but the self-like guard still knows it's the viewer's own kudo.
+    expect(card.ownedByViewer).toBe(true);
+  });
 });
 
 // ---------------------------------------------------------------------------

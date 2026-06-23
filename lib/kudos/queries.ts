@@ -300,7 +300,7 @@ export async function getHighlightKudos(
     .map((row) => {
       const counts = heartMap.get(row.id) ?? { heart_total: 0, like_count: 0 };
       const merged = injectProfileStats([{ ...row, ...counts }], statsMap)[0];
-      return hydrateKudoCard(merged, likedSet.has(row.id));
+      return hydrateKudoCard(merged, likedSet.has(row.id), currentUserId);
     });
 }
 
@@ -380,7 +380,9 @@ export async function getKudosPage({
 
   const mergedRows = injectProfileStats(mergeHeartCounts(pageRows, heartMap), statsMap);
 
-  const items = mergedRows.map((row) => hydrateKudoCard(row, likedSet.has(row.id)));
+  const items = mergedRows.map((row) =>
+    hydrateKudoCard(row, likedSet.has(row.id), currentUserId),
+  );
 
   let nextCursor: PageCursor | null = null;
   if (hasMore) {

@@ -40,6 +40,7 @@ function makeCard(overrides: Partial<KudoCard> = {}): KudoCard {
     heartTotal: 5,
     likeCount: 3,
     liked: false,
+    ownedByViewer: false,
     hashtags: [],
     images: [],
     ...overrides,

@@ -289,6 +289,7 @@ export function KudoCardBase({
               <HeartButton
                 liked={card.liked}
                 count={card.heartTotal}
+                disabled={card.ownedByViewer}
                 onClick={() => onLike?.(card.id)}
               />
               <CopyLinkButton url={`${baseUrl}/sun-kudos?kudo=${card.id}`} />
@@ -306,6 +307,7 @@ export function KudoCardBase({
             <HeartButton
               liked={card.liked}
               count={card.heartTotal}
+              disabled={card.ownedByViewer}
               onClick={() => onLike?.(card.id)}
             />
             <CopyLinkButton url={`${baseUrl}/sun-kudos?kudo=${card.id}`} />

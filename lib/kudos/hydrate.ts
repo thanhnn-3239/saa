@@ -78,7 +78,13 @@ export function hydrateProfile(raw: RawProfileJoin): ProfileBrief {
 export function hydrateKudoCard(
   raw: RawKudoRow,
   viewerLiked = false,
+  viewerId: string | null = null,
 ): KudoCard {
+  // Whether the viewer authored this kudo. Computed from the REAL sender id
+  // (raw.sender) before masking, so it stays correct for anonymous kudos. Only
+  // the boolean reaches the client — the anonymous sender's identity never does.
+  const ownedByViewer = !!viewerId && raw.sender?.id === viewerId;
+
   // Fallback profiles so UI never crashes on missing join data.
   // For anonymous kudos, mask the real sender so the identity never reaches the client.
   const sender: ProfileBrief = raw.is_anonymous
@@ -109,6 +115,7 @@ export function hydrateKudoCard(
     heartTotal: raw.heart_total ?? 0,
     likeCount: raw.like_count ?? 0,
     liked: raw.liked ?? viewerLiked,
+    ownedByViewer,
     hashtags,
     images,
   };
