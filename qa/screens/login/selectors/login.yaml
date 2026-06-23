@@ -1,0 +1,63 @@
+# Login screen selectors — keys match [Reference] names in login.feature.
+# Page values feed page.goto(); element values are baked vi strings.
+
+# --- Pages ---
+login:
+  type: 'page'
+  value: '/login'
+
+home:
+  type: 'page'
+  value: '/'
+
+login domain error:
+  type: 'page'
+  value: '/login?error=domain'
+
+# --- Elements ---
+welcome:
+  type: 'text'
+  value: 'Bắt đầu hành trình của bạn cùng SAA 2025.'
+
+google login:
+  type: 'role'
+  value: 'button'
+  name: 'Đăng nhập bằng Google'
+  exact: true
+
+copyright:
+  type: 'text'
+  value: 'Bản quyền thuộc về Sun* © 2025'
+
+# Close button only exists while an error banner is shown — used both to
+# prove the banner rendered and (is hidden) to prove it did not.
+close error:
+  type: 'role'
+  value: 'button'
+  name: 'Đóng thông báo lỗi'
+  exact: true
+
+# Scopes the assertion to the banner message, dodging Next.js's own
+# role="alert" route announcer.
+error banner:
+  type: 'text'
+  value: 'không thuộc miền'
+
+language:
+  type: 'role'
+  value: 'button'
+  name: 'Chọn ngôn ngữ'
+  exact: true
+
+english:
+  type: 'role'
+  value: 'option'
+  name: 'EN'
+  exact: true
+
+# After switching to English the Google button's aria-label changes.
+google login en:
+  type: 'role'
+  value: 'button'
+  name: 'Sign in with Google'
+  exact: true

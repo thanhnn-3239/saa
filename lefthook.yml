@@ -6,6 +6,9 @@ pre-commit:
   jobs:
     - name: lint
       glob: "*.{ts,tsx,js,jsx,mjs,cjs}"
+      # Sungen-generated runtime/specs are auto-generated and eslint-ignored
+      # (see eslint.config.mjs); don't hand them to eslint --fix.
+      exclude: "specs/generated/"
       run: pnpm exec eslint --fix {staged_files}
       stage_fixed: true
     - name: typecheck

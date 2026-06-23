@@ -1,6 +1,8 @@
 # Runs the quality gate on every PR and on pushes to main:
-#   lint -> type-check -> test -> build
-# All four are blocking — a red check here blocks merge.
+#   quality: lint -> type-check -> test -> build
+#   e2e:     Playwright — hand-written e2e/ + sungen-compiled specs/generated/,
+#            authed + unauthed, against a local Supabase started on the runner.
+# All checks are blocking — a red check here blocks merge.
 # (DB migrations are owned by a separate workflow: supabase-migrations.yml.)
 name: CI
 
@@ -47,3 +49,58 @@ jobs:
         env:
           NEXT_PUBLIC_SUPABASE_URL: http://localhost:54321
           NEXT_PUBLIC_SUPABASE_ANON_KEY: ci-build-placeholder
+
+  # Full E2E: every Playwright project — hand-written (chromium, setup,
+  # chromium-auth) and sungen-compiled (sungen, sungen-setup, sungen-auth).
+  # A local Supabase stack runs on the runner (Docker is preinstalled on
+  # ubuntu-latest); its keys are well-known local-dev demo values, not secrets.
+  e2e:
+    runs-on: ubuntu-latest
+    env:
+      # Loads dev users + deterministic kudos when the stack starts
+      # (config.toml resolves env(SUPABASE_EXTRA_SEEDS) into seed sql_paths).
+      SUPABASE_EXTRA_SEEDS: ./seeds/dev/*.sql
+      # Enables the /auto-login backdoor + the authed Playwright projects.
+      # CI-only value for the throwaway local stack — never used in production.
+      AUTO_LOGIN_TOKEN: ci-e2e-secret
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: pnpm/action-setup@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version-file: ".nvmrc"
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Install Playwright Chromium
+        run: pnpm exec playwright install --with-deps chromium
+
+      # Applies migrations and seeds (common + SUPABASE_EXTRA_SEEDS) on first boot.
+      - name: Start local Supabase
+        run: pnpm db:start
+
+      - name: Export Supabase env for the app
+        run: |
+          eval "$(pnpm exec supabase status -o env 2>/dev/null | grep -E '^(API_URL|PUBLISHABLE_KEY|SECRET_KEY)=')"
+          {
+            echo "NEXT_PUBLIC_SUPABASE_URL=$API_URL"
+            echo "NEXT_PUBLIC_SUPABASE_ANON_KEY=$PUBLISHABLE_KEY"
+            echo "SUPABASE_SECRET_KEY=$SECRET_KEY"
+          } >> "$GITHUB_ENV"
+
+      # Playwright builds and starts the app itself (webServer block), then runs
+      # all projects: with AUTO_LOGIN_TOKEN set the authed ones are included.
+      - name: Run Playwright (all projects)
+        run: pnpm test:e2e
+
+      - name: Upload traces on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-traces
+          path: test-results/
+          retention-days: 7
