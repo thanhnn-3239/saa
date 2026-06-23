@@ -11,6 +11,7 @@
 
 import { NextResponse } from "next/server";
 import { getHighlightKudos } from "@/lib/kudos/queries";
+import { getSessionUser } from "@/lib/auth/get-session-user";
 import type { KudosFilter } from "@/lib/kudos/types";
 import type { NextRequest } from "next/server";
 
@@ -28,7 +29,8 @@ export async function GET(request: NextRequest) {
   const filter: KudosFilter = { hashtag, departmentId };
 
   try {
-    const cards = await getHighlightKudos(filter);
+    const user = await getSessionUser();
+    const cards = await getHighlightKudos(filter, user?.id ?? null);
     return NextResponse.json(cards);
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";

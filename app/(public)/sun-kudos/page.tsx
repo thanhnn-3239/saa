@@ -44,18 +44,27 @@ export default async function SunKudosPage() {
   // ── Server prefetch ────────────────────────────────────────────────────────
   const queryClient = makeQueryClient();
 
+  // Filter-dropdown lists are independent of the prefetch batch — kick them off
+  // here so they run concurrently instead of in a serial waterfall afterwards.
+  const filterOptionsPromise = Promise.allSettled([
+    getHashtags(),
+    getDepartments(),
+  ]);
+
+  const currentUserId = user?.id ?? null;
+
   // Run all prefetches in parallel — individual failures are isolated.
   await Promise.allSettled([
     // Highlight carousel (top-5 by hearts)
     queryClient.prefetchQuery({
       queryKey: highlightKudosKey(DEFAULT_FILTER),
-      queryFn: () => getHighlightKudos(DEFAULT_FILTER),
+      queryFn: () => getHighlightKudos(DEFAULT_FILTER, currentUserId),
     }),
 
     // Feed first page
     queryClient.prefetchInfiniteQuery({
       queryKey: kudosFeedKey(DEFAULT_FILTER),
-      queryFn: () => getKudosPage({ filter: DEFAULT_FILTER }),
+      queryFn: () => getKudosPage({ filter: DEFAULT_FILTER, currentUserId }),
       initialPageParam: null,
     }),
 
@@ -88,10 +97,8 @@ export default async function SunKudosPage() {
   ]);
 
   // ── Filter dropdown lists (used to populate selects) ─────────────────────
-  const [hashtags, departments] = await Promise.allSettled([
-    getHashtags(),
-    getDepartments(),
-  ]).then(([h, d]) => [
+  // Kicked off above, awaited here — already resolved alongside the prefetch.
+  const [hashtags, departments] = await filterOptionsPromise.then(([h, d]) => [
     h.status === "fulfilled" ? h.value : [],
     d.status === "fulfilled" ? d.value : [],
   ] as const);
