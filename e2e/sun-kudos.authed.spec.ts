@@ -167,9 +167,12 @@ test("clicking the heart on your own kudo does nothing", async ({ page }) => {
   await expect(heart).toBeVisible();
   const before = (await heart.textContent()) ?? "0";
 
-  await heart.click();
+  // The self-like guard disables the heart on your own kudo, so it can't be
+  // clicked at all. Force the click past the disabled state to prove the guard
+  // holds — no optimistic bump, no request.
+  await expect(heart).toBeDisabled();
+  await heart.click({ force: true });
 
-  // The self-like guard swallows the click — no optimistic bump, no request.
   await expect(heart).toHaveAttribute("aria-pressed", "false");
   await expect(heart).toHaveText(before);
 });
