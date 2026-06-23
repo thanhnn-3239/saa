@@ -3,6 +3,7 @@ import { getTranslations } from "next-intl/server";
 import { AppHeader } from "./_components/app-header";
 import { AppFooter } from "./_components/app-footer";
 import { FloatingWidgetButton } from "./_components/floating-widget-button";
+import { SendKudoProvider } from "./_components/send-kudo-provider";
 import { NotificationBell } from "@/components/header/notification-bell";
 import { AccountMenu } from "@/components/header/account-menu";
 import { LanguageSwitcher } from "@/components/language-switcher";
@@ -48,18 +49,23 @@ export default async function PublicLayout({
           awardInformation: t("nav.awardInformation"),
           kudos: t("nav.kudos"),
         }}
+        menuToggleLabel={t("nav.menuToggle")}
       />
 
-      {/* Page content — padded top to clear fixed header */}
-      <div className="flex-1" style={{ paddingTop: "80px" }}>
-        {children}
-      </div>
+      {/* Send-kudo dialog provider — lets the FAB, Thể lệ panel, and board
+          banner all open the single shared "Viết Kudo" modal. */}
+      <SendKudoProvider>
+        {/* Page content — padded top to clear fixed header */}
+        <div className="flex-1" style={{ paddingTop: "80px" }}>
+          {children}
+        </div>
 
-      {/* Footer */}
-      <AppFooter />
+        {/* Footer */}
+        <AppFooter />
 
-      {/* Fixed floating widget button */}
-      <FloatingWidgetButton />
+        {/* Fixed floating widget button */}
+        <FloatingWidgetButton />
+      </SendKudoProvider>
     </div>
   );
 }

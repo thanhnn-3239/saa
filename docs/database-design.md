@@ -1,7 +1,7 @@
 # Database Design — SAA Kudos
 
-**Status:** v2 — `kudo_likes` migration applied (2026-06-06) · **DB:** PostgreSQL 17 (Supabase)
-**Migrations:** `supabase/migrations/20260604070000_schema.sql`, `…070100_rls_policies.sql`, `…070200_functions_triggers_views.sql`, `20260606000000_kudo_likes.sql`; seed `supabase/seeds/common/seed.sql`.
+**Status:** v3 — `kudo_title_anonymous_name` migration applied (2026-06-11) · **DB:** PostgreSQL 17 (Supabase)
+**Migrations:** `supabase/migrations/20260604070000_schema.sql`, `…070100_rls_policies.sql`, `…070200_functions_triggers_views.sql`, `20260606000000_kudo_likes.sql`, `20260611070000_kudo_title_anonymous_name.sql`; seed `supabase/seeds/common/seed.sql`.
 **Resolved defaults:** secret-box grant via `grant_secret_box()` (admin/system; auto-grant rule TBD) · added `profiles.active_badge_id` (showcase title) · leaderboard ranks by `kudos_received` · single recipient · catalog single-language.
 **Source:** MoMorph design (fileKey `9ypp4enmFmdK3YAFJLIu6C`) → analysis
 `plans/reports/researcher-260604-1059-saa-kudos-design-analysis.md`
@@ -102,12 +102,16 @@ erDiagram
 | id | uuid | PK default gen_random_uuid() |
 | sender_id | uuid | NOT NULL, FK→profiles(id) |
 | recipient_id | uuid | NOT NULL, FK→profiles(id) |
-| body | text | NOT NULL (rich text w/ @mentions) |
+| title | text | nullable, max 100 chars (added 2026-06-11) |
+| body | text | NOT NULL (HTML from Tiptap; max 10 000 chars raw) |
 | is_anonymous | boolean | NOT NULL default false |
+| anonymous_name | text | nullable — alias shown in place of sender name when `is_anonymous=true` (added 2026-06-11) |
 | status | text | NOT NULL default `'published'`, CHECK in (`published`,`hidden`,`spam`) |
 | campaign_id | bigint | FK→campaigns(id), nullable |
 | created_at | timestamptz | NOT NULL default now() |
 | | | CHECK (sender_id <> recipient_id) |
+
+**Anonymous privacy rule:** `hydrateKudoCard` (server-side, `lib/kudos/`) replaces `sender_id` / `full_name` with `anonymous_name` for rows where `is_anonymous=true`, so the real sender is never leaked to the client.
 
 **`kudo_hashtags`** (M:N) — `PK (kudo_id, hashtag_id)`; kudo_id FK ON DELETE CASCADE.
 **`kudo_images`** — id PK · kudo_id FK CASCADE · storage_path text NOT NULL (≤5 enforced in `create_kudo`).
@@ -210,7 +214,7 @@ only through `SECURITY DEFINER` functions. This makes the random reward tamper-p
 
 | Object | Type | Purpose |
 |--------|------|---------|
-| `create_kudo(recipient, body, is_anonymous, hashtag_ids[], image_paths[], links jsonb)` | function (invoker) | Atomic insert of kudo + hashtags + images + links; validates 1–5 hashtags, ≤5 images. |
+| `create_kudo(p_recipient_id uuid, p_title text, p_body text, p_is_anonymous bool, p_hashtag_ids bigint[], p_image_paths text[], p_links jsonb, p_anonymous_name text)` | function (invoker) | Atomic insert of kudo + hashtags + images + links; validates 1–5 hashtags, ≤5 images, title ≤100 chars, body ≤10 000 chars. Grant: `authenticated`. Old 6-param signature removed (2026-06-11). |
 | `open_secret_box(box_id)` 🔴 | function (definer) | Locks box (`FOR UPDATE`), weighted-random badge pick in SQL, awards `user_badges`, marks opened — one transaction. Server-authoritative, anti-cheat. |
 | `notify_on_kudo` | trigger AFTER INSERT on kudos | Inserts a `kudo_received` notification for the recipient. |
 | `is_admin()` | function (definer) | Role check used by RLS policies. |
@@ -244,6 +248,7 @@ Allowed mime: `image/png`, `image/jpeg`. (Local bucket `images` already defined 
 8. Realtime publication + storage buckets
 9. Seeds (dev): departments, hashtags, badges, awards, sample profiles/kudos
 10. `kudo_likes` table, indexes, RLS, views (`kudo_heart_counts`, `profile_kudo_stats`), replica identity, realtime publication (`20260606000000_kudo_likes.sql`)
+11. `kudos.title` + `kudos.anonymous_name` columns; `create_kudo` re-created with 8-param signature; grant to `authenticated` (`20260611070000_kudo_title_anonymous_name.sql`)
 
 ---
 

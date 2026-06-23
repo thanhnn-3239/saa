@@ -46,6 +46,7 @@ function makeCard(overrides: Partial<KudoCard> = {}): KudoCard {
     heartTotal: 5,
     likeCount: 3,
     liked: false,
+    ownedByViewer: false,
     hashtags: [],
     images: [],
     ...overrides,
@@ -74,7 +75,7 @@ describe("KudoCardBase — feed variant", () => {
   it("shows all hashtags with no overflow chip when maxHashtags is unset", () => {
     renderWithIntl(
       <KudoCardBase
-        card={makeCard({ hashtags: ["#a", "#b", "#c", "#d", "#e", "#f"] })}
+        card={makeCard({ hashtags: ["a", "b", "c", "d", "e", "f"] })}
         baseUrl={BASE_URL}
         showImages
         bodyClamp={5}
@@ -115,7 +116,7 @@ describe("KudoCardBase — highlight variant", () => {
   it("caps hashtags at maxHashtags and shows a '+N' overflow chip", () => {
     renderWithIntl(
       <KudoCardBase
-        card={makeCard({ hashtags: ["#1", "#2", "#3", "#4", "#5", "#6", "#7"] })}
+        card={makeCard({ hashtags: ["1", "2", "3", "4", "5", "6", "7"] })}
         baseUrl={BASE_URL}
         showViewDetail
         bodyClamp={3}
@@ -141,6 +142,33 @@ describe("KudoCardBase — highlight variant", () => {
     const article = screen.getByRole("article");
     expect(article.className).toMatch(/scale-95/);
     expect(article).not.toHaveAttribute("aria-current");
+  });
+
+  // Self-like guard at the UI layer: the heart is disabled for the viewer's own
+  // kudo (ownedByViewer). This prevents the "count goes up then resets" flicker
+  // caused by the server rejecting a self-like — including anonymous own kudos.
+  it("disables the heart button when ownedByViewer is true", () => {
+    renderWithIntl(
+      <KudoCardBase
+        card={makeCard({ ownedByViewer: true })}
+        baseUrl={BASE_URL}
+        showImages
+        bodyClamp={5}
+      />
+    );
+    expect(screen.getByRole("button", { name: "Like" })).toBeDisabled();
+  });
+
+  it("keeps the heart button enabled for someone else's kudo (ownedByViewer false)", () => {
+    renderWithIntl(
+      <KudoCardBase
+        card={makeCard({ ownedByViewer: false })}
+        baseUrl={BASE_URL}
+        showImages
+        bodyClamp={5}
+      />
+    );
+    expect(screen.getByRole("button", { name: "Like" })).toBeEnabled();
   });
 });
 

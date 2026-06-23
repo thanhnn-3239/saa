@@ -24,10 +24,12 @@ import { useTranslations } from "next-intl";
 import { Avatar } from "./avatar";
 import { HeartButton } from "./heart-button";
 import { HashtagChip } from "./hashtag-chip";
+import { kudoImageUrl } from "@/lib/kudos/kudo-image-url";
 import { StarsIndicator } from "./stars-indicator";
 import { CopyLinkButton } from "./copy-link-button";
 import { HeroTitlePill } from "./hero-title-pill";
 import { getHeroTier } from "@/lib/kudos/hero-title";
+import { sanitizeKudoHtml } from "@/lib/kudos/sanitize-html";
 import type { KudoCard } from "@/lib/kudos/types";
 
 interface KudoCardBaseProps {
@@ -104,7 +106,9 @@ export function KudoCardBase({
     .filter(Boolean)
     .join(" ");
 
-  const senderName = card.isAnonymous ? t("card.anonymous") : card.sender.fullName;
+  const senderName = card.isAnonymous
+    ? (card.anonymousName?.trim() || t("card.anonymous"))
+    : card.sender.fullName;
 
   return (
     <article
@@ -116,11 +120,14 @@ export function KudoCardBase({
       <div className="flex items-start gap-6 justify-between">
         <button
           type="button"
-          onClick={() => onOpenProfile?.(card.sender.id)}
+          onClick={() => {
+            // Do not open profile for anonymous senders (id is masked to "")
+            if (!card.isAnonymous && card.sender.id) onOpenProfile?.(card.sender.id);
+          }}
           className="flex items-center gap-3 text-left hover:opacity-80 transition-opacity min-w-0"
-          aria-label={t("leaderboard.profileAria", { name: card.sender.fullName })}
+          aria-label={t("leaderboard.profileAria", { name: senderName })}
         >
-          <Avatar src={card.sender.avatarUrl} alt={card.sender.fullName} size={62} />
+          <Avatar src={card.sender.avatarUrl} alt={senderName} size={62} />
           <div className="flex flex-col min-w-0">
             <span className="font-montserrat font-bold text-sm text-saa-navy-dark leading-5 truncate">
               {senderName}
@@ -224,14 +231,13 @@ export function KudoCardBase({
 
         {/* Body box — Frame 425 (gold-glass 40% on cream) */}
         <div className="rounded-[12px] border border-saa-gold-accent bg-[rgba(255,234,158,0.40)] px-6 py-4">
-          <p
+          <div
+            dangerouslySetInnerHTML={{ __html: sanitizeKudoHtml(card.body) }}
             className={[
-              "font-sans text-sm text-saa-navy-dark leading-6",
+              "kudo-body font-sans text-sm text-saa-navy-dark leading-6",
               bodyClamp === 5 ? "line-clamp-5" : "line-clamp-3",
             ].join(" ")}
-          >
-            {card.body}
-          </p>
+          />
         </div>
 
         {/* Image gallery — feed variant only (≤5 thumbnails) */}
@@ -245,10 +251,13 @@ export function KudoCardBase({
                 aria-label={`${t("card.imageAlt")} ${i + 1}`}
                 className="w-20 h-20 rounded-lg overflow-hidden bg-saa-navy-elevated hover:opacity-90 transition-opacity shrink-0"
               >
-                {/* Placeholder — real URLs provided via Supabase storage helper */}
-                <div className="w-full h-full bg-saa-navy-border flex items-center justify-center text-saa-text-muted text-xs">
-                  {i + 1}
-                </div>
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={kudoImageUrl(src)}
+                  alt={`${t("card.imageAlt")} ${i + 1}`}
+                  className="w-full h-full object-cover"
+                  loading="lazy"
+                />
               </button>
             ))}
           </div>
@@ -258,7 +267,7 @@ export function KudoCardBase({
         {visibleTags.length > 0 && (
           <div className="flex flex-wrap gap-1.5">
             {visibleTags.map((tag) => (
-              <HashtagChip key={tag} tag={tag} />
+              <HashtagChip key={tag} tag={`#${tag}`} />
             ))}
             {extraTags > 0 && (
               <span className="text-xs text-gray-400 self-center">+{extraTags}</span>
@@ -280,6 +289,7 @@ export function KudoCardBase({
               <HeartButton
                 liked={card.liked}
                 count={card.heartTotal}
+                disabled={card.ownedByViewer}
                 onClick={() => onLike?.(card.id)}
               />
               <CopyLinkButton url={`${baseUrl}/sun-kudos?kudo=${card.id}`} />
@@ -297,6 +307,7 @@ export function KudoCardBase({
             <HeartButton
               liked={card.liked}
               count={card.heartTotal}
+              disabled={card.ownedByViewer}
               onClick={() => onLike?.(card.id)}
             />
             <CopyLinkButton url={`${baseUrl}/sun-kudos?kudo=${card.id}`} />

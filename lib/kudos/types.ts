@@ -35,14 +35,19 @@ export interface KudoCard {
   sender: ProfileBrief;
   recipient: ProfileBrief;
   /**
-   * Award/category title shown centered above the body (design "IDOL GIỎI TRẺ").
-   * Optional and currently dormant: `kudos` has no title/category column and no
-   * FK to `awards`, so nothing populates it yet. Render-ready for when a data
-   * source (e.g. `kudos.award_id` → `awards.category`) is added.
+   * Sender-written title ("Danh hiệu") shown centered above the body
+   * (design "IDOL GIỎI TRẺ"). Backed by `kudos.title`; nullable in the DB so
+   * rows created before the send-dialog feature have none.
    */
-  title?: string;
+  title?: string | null;
+  /** Sanitized-on-render HTML from the send-dialog rich editor (plain text for legacy rows). */
   body: string;
   isAnonymous: boolean;
+  /**
+   * Sender-chosen alias for anonymous kudos. Only meaningful when isAnonymous;
+   * null/absent → UI shows the generic "Ẩn danh" label.
+   */
+  anonymousName?: string | null;
   /** ISO timestamp string from Postgres. */
   createdAt: string;
   /** Σ hearts across all likes on this kudo. */
@@ -51,9 +56,31 @@ export interface KudoCard {
   likeCount: number;
   /** Whether the current viewer has liked this kudo. */
   liked: boolean;
+  /**
+   * Whether the current viewer is the sender of this kudo. Computed server-side
+   * so it stays correct even for anonymous kudos (where `sender` is masked to
+   * protect identity). Drives the self-like guard — you cannot like your own
+   * kudo — without leaking who an anonymous sender is.
+   */
+  ownedByViewer: boolean;
   hashtags: string[];
   /** Storage paths (use Supabase storage URL helper to render). */
   images: string[];
+}
+
+/** Input for the create-kudo mutation (send dialog → use-create-kudo). */
+export interface CreateKudoInput {
+  recipientId: string;
+  title: string;
+  /** HTML emitted by the Tiptap editor (sanitized again on render). */
+  bodyHtml: string;
+  /** 1..5 ids from the `hashtags` table. */
+  hashtagIds: number[];
+  /** Up to 5 images; uploaded to storage before the RPC call. */
+  imageFiles: File[];
+  isAnonymous: boolean;
+  /** Optional alias, only sent when isAnonymous. */
+  anonymousName: string;
 }
 
 // ---------------------------------------------------------------------------

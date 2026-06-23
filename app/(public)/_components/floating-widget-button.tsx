@@ -4,9 +4,11 @@ import Image from "next/image";
 import { useEffect, useRef, useState } from "react";
 import { useTranslations } from "next-intl";
 import { TheLePanel } from "./the-le-panel";
+import { useSendKudo } from "./send-kudo-provider";
 
 export function FloatingWidgetButton() {
   const t = useTranslations("Home.fab");
+  const { openSendKudo } = useSendKudo();
   const [expanded, setExpanded] = useState(false);
   const [theleOpen, setTheleOpen] = useState(false);
   const triggerRef = useRef<HTMLButtonElement>(null);
@@ -47,7 +49,10 @@ export function FloatingWidgetButton() {
   };
 
   const handleWriteKudos = () => {
-    // TODO(kudos): wire write-kudos flow once that screen exists. No-op for now.
+    // Collapse the speed-dial / close the Thể lệ panel, then open the modal.
+    setExpanded(false);
+    setTheleOpen(false);
+    openSendKudo();
   };
 
   const handleTheleClose = () => {

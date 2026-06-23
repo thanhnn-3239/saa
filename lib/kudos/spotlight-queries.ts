@@ -116,7 +116,11 @@ export async function getSpotlightNodes(
  * Embedding via !fkey hint causes PGRST200. Fix: fetch profiles, collect ids,
  * fetch stats separately, merge kudos_received in JS.
  */
-export async function searchSunners(term: string): Promise<ProfileBrief[]> {
+export async function searchSunners(
+  term: string,
+  /** When set, this profile id is excluded from results (e.g. recipient search excludes the sender). */
+  excludeUserId?: string,
+): Promise<ProfileBrief[]> {
   const trimmed = term.trim();
 
   if (trimmed.length === 0) {
@@ -130,11 +134,17 @@ export async function searchSunners(term: string): Promise<ProfileBrief[]> {
 
   // Step 1: find matching profiles.
   // ilike is parameterised by the supabase-js client — no SQL injection risk.
-  const { data: profileData, error: profileError } = await supabase
+  let profileQuery = supabase
     .from("profiles")
     .select("id, full_name, avatar_url, department_id")
     .ilike("full_name", `%${trimmed}%`)
     .limit(20);
+
+  if (excludeUserId) {
+    profileQuery = profileQuery.neq("id", excludeUserId);
+  }
+
+  const { data: profileData, error: profileError } = await profileQuery;
 
   if (profileError) {
     throw new Error(`searchSunners profiles: ${profileError.message}`);

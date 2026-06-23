@@ -14,6 +14,7 @@
 
 import { NextResponse } from "next/server";
 import { getKudosPage } from "@/lib/kudos/queries";
+import { getSessionUser } from "@/lib/auth/get-session-user";
 import type { PageCursor } from "@/lib/kudos/queries";
 import type { KudosFilter } from "@/lib/kudos/types";
 import type { NextRequest } from "next/server";
@@ -55,7 +56,8 @@ export async function GET(request: NextRequest) {
     cursorCreatedAt && cursorId ? { createdAt: cursorCreatedAt, id: cursorId } : null;
 
   try {
-    const page = await getKudosPage({ cursor, limit, filter });
+    const user = await getSessionUser();
+    const page = await getKudosPage({ cursor, limit, filter, currentUserId: user?.id ?? null });
     return NextResponse.json(page);
   } catch (err) {
     const message = err instanceof Error ? err.message : "Unknown error";
