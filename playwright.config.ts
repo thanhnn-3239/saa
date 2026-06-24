@@ -44,7 +44,7 @@ const authProjects = authEnabled
  * base `sungen` project always skips those dirs, so an unauthenticated run
  * (e.g. CI without Supabase) stays green.
  */
-const SUNGEN_AUTHED_SCREENS = ["sun-kudos", "awards-information", "profile"];
+const SUNGEN_AUTHED_SCREENS = ["sun-kudos", "awards-information", "profile", "notifications"];
 const sungenAuthedDir = new RegExp(
   `specs/generated/(${SUNGEN_AUTHED_SCREENS.join("|")})/`,
 );

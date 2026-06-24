@@ -4,6 +4,28 @@ Significant changes, features, and fixes in reverse-chronological order.
 
 ---
 
+## [Unreleased] — 2026-06-24 (feat/notifications)
+
+### Added
+- **Live notification bell** (`components/header/notification-bell.tsx`): always-mounted header bell with a red unread-count badge. Opens a dropdown preview showing the 5 most-recent notifications (bold + red dot for unread), "Mark all as read" action, and "View all" link. Realtime unread count via Supabase Realtime channel subscription (no page refresh required).
+- **`/notifications` paginated page** (`app/(public)/notifications/`): full notification list with cursor-based "Load more" pagination (single bigint cursor). Each row is clickable — marks the item read and navigates to the relevant resource.
+- **Kudo detail modal** (`app/(public)/sun-kudos/`): opened via `?kudo=<id>` query param. Clicking a kudo notification on the bell dropdown or notifications page navigates to `/sun-kudos?kudo=<id>` and the modal opens automatically.
+- **`notification_feed` DB view** (`supabase/migrations/`): joins `notifications` with sender profiles; anonymity masking applied server-side — anonymous kudo notifications surface the alias (or "Ẩn danh") rather than the real sender name/id; client never receives the real sender identity.
+- **Notifications API layer** (`lib/notifications/`, `app/api/notifications/`): `GET /api/notifications` (paginated feed, cursor pagination), `GET /api/notifications/unread-count`, `PATCH /api/notifications/[id]` (mark one read), `POST /api/notifications/mark-all-read` (mark all read). Full error handling: 401/400/404/500.
+- **`useMarkRead` hook** (`lib/notifications/use-mark-read.ts`): returns `{ markOne, markAll, isPending }`; on success invalidates both the feed and unread-count TanStack Query keys so the badge and list refetch (self-healing, not optimistic).
+- **`rank_up` notification type**: icon and label fully rendered in the UI and defined in the `NotificationItem` type; no database trigger generates `rank_up` rows yet — deferred to a future task.
+- **i18n** (`messages/vi.json`, `messages/en.json`): full vi/en translation coverage under `Home.notifications.*` namespace for all notification UI strings (bell tooltip, mark-all, view-all, empty state, notification type labels, pagination).
+
+### Changed
+- `ROUTES` (`lib/navigation/routes.ts`): `notifications` and `kudos` (with `?kudo=` param helper) entries added.
+- `TanStack Query` query-key registry extended with `notificationsKey` and `unreadCountKey`.
+
+### Deferred
+- `rank_up` trigger: the notification type is fully rendered but no database function/trigger emits `rank_up` rows yet.
+- Manual smoke test (live Supabase required): not executed in this sandbox.
+
+---
+
 ## [Unreleased] — 2026-06-11 (fix/ci-migrations-production-env + feat: send-kudos dialog)
 
 ### Added
