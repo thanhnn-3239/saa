@@ -13,6 +13,17 @@
       "generic": "Đăng nhập thất bại. Vui lòng thử lại."
     }
   },
+  "Notifications": {
+    "title": "Thông Báo",
+    "markAllRead": "Đánh dấu đọc tất cả",
+    "viewAll": "Xem tất cả",
+    "empty": "Chưa có thông báo mới.",
+    "bellAria": "Thông báo",
+    "panelAria": "Bảng thông báo",
+    "loadMore": "Tải thêm",
+    "kudoReceived": "{sender} vừa gửi đến bạn lời ghi nhận đầy yêu thương!",
+    "rankUp": "{sender} — bạn vừa được thăng hạng!"
+  },
   "Home": {
     "nav": {
       "aboutSaa": "About SAA 2025",

@@ -13,6 +13,17 @@
       "generic": "Sign-in failed. Please try again."
     }
   },
+  "Notifications": {
+    "title": "Notifications",
+    "markAllRead": "Mark all as read",
+    "viewAll": "View all",
+    "empty": "No new notifications.",
+    "bellAria": "Notifications",
+    "panelAria": "Notifications panel",
+    "loadMore": "Load more",
+    "kudoReceived": "{sender} just sent you a kudo!",
+    "rankUp": "{sender} — you've been promoted!"
+  },
   "Home": {
     "nav": {
       "aboutSaa": "About SAA 2025",
