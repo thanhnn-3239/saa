@@ -1,20 +1,37 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import { useRouter } from "next/navigation";
+import { useTranslations } from "next-intl";
+import { ROUTES } from "@/lib/navigation/routes";
+import { useUnreadCount } from "@/lib/notifications/use-unread-count";
+import { useNotifications } from "@/lib/notifications/use-notifications";
+import { useMarkRead } from "@/lib/notifications/use-mark-read";
+import { useNotificationsRealtime } from "@/lib/notifications/use-notifications-realtime";
+import { NotificationListItem } from "@/components/notifications/notification-list-item";
+import type { NotificationItem } from "@/lib/notifications/types";
+
+const PREVIEW_LIMIT = 5;
 
 /**
  * Notification bell — authenticated-only header control.
- * Clicking the bell toggles a placeholder panel. The red badge slot is
- * rendered but hidden by default (no real notification source exists yet).
- *
- * Keyboard: Enter/Space open the panel; Escape closes it.
- * Outside-click: closes the panel via a backdrop overlay.
+ * Badge shows the live unread count; opening shows a preview of recent
+ * notifications with "mark all read" and a "view all" link to /notifications.
  */
 export function NotificationBell() {
+  const t = useTranslations("Notifications");
+  const router = useRouter();
   const [open, setOpen] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
 
-  // Close on Escape key.
+  useNotificationsRealtime();
+  const { data: unread } = useUnreadCount();
+  const { data } = useNotifications(PREVIEW_LIMIT);
+  const { markOne, markAll } = useMarkRead();
+
+  const items: NotificationItem[] = data?.pages?.[0]?.items ?? [];
+  const unreadCount = unread ?? 0;
+
   useEffect(() => {
     if (!open) return;
     function onKey(e: KeyboardEvent) {
@@ -27,58 +44,77 @@ export function NotificationBell() {
     return () => document.removeEventListener("keydown", onKey);
   }, [open]);
 
+  function handleSelect(item: NotificationItem) {
+    markOne(item.id);
+    setOpen(false);
+    if (item.kudoId) {
+      router.push(`${ROUTES.kudos}?kudo=${item.kudoId}`);
+    }
+  }
+
   return (
     <div className="relative">
-      {/* Bell trigger button */}
       <button
         ref={buttonRef}
         type="button"
-        aria-label="Notifications"
+        aria-label={t("bellAria")}
         aria-expanded={open}
         aria-haspopup="dialog"
         onClick={() => setOpen((v) => !v)}
         className="relative flex h-10 w-10 cursor-pointer items-center justify-center rounded-full transition-colors hover:bg-white/10 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/60"
       >
         <BellIcon />
-        {/* Badge slot — hidden until a real notification count exists */}
-        <span
-          aria-hidden="true"
-          className="absolute right-1.5 top-1.5 hidden h-2 w-2 rounded-full bg-red-500"
-        />
+        {unreadCount > 0 && (
+          <span className="absolute -right-0.5 -top-0.5 flex h-4 min-w-4 items-center justify-center rounded-full bg-red-500 px-1 text-[10px] font-semibold leading-none text-white">
+            {unreadCount > 99 ? "99+" : unreadCount}
+          </span>
+        )}
       </button>
 
-      {/* Outside-click backdrop */}
       {open && (
-        <div
-          className="fixed inset-0 z-10"
-          onClick={() => setOpen(false)}
-          aria-hidden="true"
-        />
+        <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} aria-hidden="true" />
       )}
 
-      {/* Placeholder notification panel */}
       {open && (
         <div
           role="dialog"
-          aria-label="Notifications panel"
-          className="absolute right-0 top-full z-20 mt-2 w-72 rounded-xl shadow-2xl"
-          style={{
-            backgroundColor: "#1a2a35",
-            border: "1px solid rgba(46, 57, 64, 1)",
-          }}
+          aria-label={t("panelAria")}
+          className="absolute right-0 top-full z-20 mt-2 w-80 overflow-hidden rounded-xl shadow-2xl"
+          style={{ backgroundColor: "#1a2a35", border: "1px solid rgba(46, 57, 64, 1)" }}
         >
-          {/* TODO(i18n): stub — localize when feature is built */}
-          <div className="px-4 py-3 text-sm font-semibold text-white/80"
-            style={{ fontFamily: "Montserrat, sans-serif" }}
-          >
-            Thông báo
+          <div className="flex items-center justify-between px-4 py-3">
+            <span className="font-montserrat text-sm font-semibold text-white">
+              {t("title")}
+            </span>
+            <button
+              type="button"
+              onClick={() => markAll()}
+              className="text-xs text-white/60 transition-colors hover:text-white"
+            >
+              {t("markAllRead")}
+            </button>
           </div>
-          <div
-            className="px-4 py-6 text-center text-sm text-white/45"
-            style={{ fontFamily: "Montserrat, sans-serif" }}
+
+          {items.length === 0 ? (
+            <div className="font-montserrat px-4 py-6 text-center text-sm text-white/45">
+              {t("empty")}
+            </div>
+          ) : (
+            <ul className="max-h-96 divide-y divide-white/5 overflow-y-auto">
+              {items.map((item) => (
+                <li key={item.id}>
+                  <NotificationListItem item={item} onSelect={handleSelect} />
+                </li>
+              ))}
+            </ul>
+          )}
+
+          <a
+            href={ROUTES.notifications}
+            className="block border-t border-white/5 px-4 py-3 text-center text-sm text-white/70 transition-colors hover:bg-white/5 hover:text-white"
           >
-            Chưa có thông báo mới.
-          </div>
+            {t("viewAll")}
+          </a>
         </div>
       )}
     </div>
@@ -87,14 +123,7 @@ export function NotificationBell() {
 
 function BellIcon() {
   return (
-    <svg
-      width="24"
-      height="24"
-      viewBox="0 0 24 24"
-      fill="none"
-      xmlns="http://www.w3.org/2000/svg"
-      aria-hidden="true"
-    >
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <path
         d="M12 22c1.1 0 2-.9 2-2h-4c0 1.1.9 2 2 2zm6-6v-5c0-3.07-1.64-5.64-4.5-6.32V4c0-.83-.67-1.5-1.5-1.5s-1.5.67-1.5 1.5v.68C7.63 5.36 6 7.92 6 11v5l-2 2v1h16v-1l-2-2z"
         fill="currentColor"
