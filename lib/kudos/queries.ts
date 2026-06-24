@@ -393,6 +393,46 @@ export async function getKudosPage({
   return { items, nextCursor };
 }
 
+const EMPTY_FILTER: KudosFilter = { hashtag: null, departmentId: null };
+
+/**
+ * Fetch a single published kudo by id as a fully-hydrated KudoCard, or null if
+ * not found / not visible. Reuses the same select + enrichment as getKudosPage.
+ */
+export async function getKudoById(
+  id: string,
+  currentUserId: string | null = null,
+): Promise<KudoCard | null> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("kudos")
+    .select(buildKudoSelect(EMPTY_FILTER))
+    .eq("status", "published")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(`getKudoById: ${error.message}`);
+  }
+  if (!data) {
+    return null;
+  }
+
+  const raw = data as unknown as RawKudoRow;
+  const [heartMap, likedSet, statsMap] = await Promise.all([
+    fetchHeartCounts(supabase, [raw.id]),
+    fetchLikedSet(supabase, [raw.id], currentUserId),
+    fetchProfileStats(
+      supabase,
+      [raw.sender?.id, raw.recipient?.id].filter((v): v is string => Boolean(v)),
+    ),
+  ]);
+
+  const [merged] = injectProfileStats(mergeHeartCounts([raw], heartMap), statsMap);
+  return hydrateKudoCard(merged, likedSet.has(raw.id), currentUserId);
+}
+
 /**
  * All hashtags in the DB, ordered alphabetically.
  * Used to populate the filter dropdown.
