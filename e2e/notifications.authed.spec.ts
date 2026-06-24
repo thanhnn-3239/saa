@@ -1,17 +1,19 @@
 import { test, expect } from "@playwright/test";
 
 /**
- * Authenticated E2E for the notifications feature. Runs in the `chromium-auth`
- * project, which reuses the storage state saved by e2e/auth.setup.ts — so the
- * page starts already logged in as the seeded member-test user.
+ * Authenticated E2E for the notification bell (header dropdown interaction).
+ * Runs in the `chromium-auth` project, which reuses the storage state saved by
+ * e2e/auth.setup.ts — so the page starts already logged in as member-test.
  *
- * These checks are SEED-INDEPENDENT: they assert the notification UI is wired up
- * and reachable (bell renders, panel opens, /notifications page loads) without
- * depending on any specific notification rows existing for the seeded user.
+ * Two-tier split (see docs/sungen-pilot.md): the static /notifications PAGE is
+ * covered by sungen (qa/screens/notifications → specs/generated/). This
+ * hand-written spec owns the header bell's dynamic open/preview interaction,
+ * which the screen-oriented Gherkin doesn't express.
  *
- * Selectors: the bell is targeted by `aria-haspopup="dialog"` (locale-agnostic);
- * text assertions accept either locale (default is vi; see lib/i18n/config) via
- * regex, so the suite survives a locale-cookie change.
+ * SEED-INDEPENDENT: asserts the bell renders and its panel opens with the
+ * always-present controls, without depending on any notification rows existing.
+ * The bell is targeted by `aria-haspopup="dialog"` (locale-agnostic); text
+ * assertions accept either locale (default vi; see lib/i18n/config) via regex.
  */
 
 test("the notification bell renders and opens a panel for a logged-in user", async ({
@@ -36,21 +38,8 @@ test("the notification bell renders and opens a panel for a logged-in user", asy
     panel.getByRole("button", { name: /Đánh dấu đọc tất cả|Mark all as read/i }),
   ).toBeVisible();
 
-  // And a "view all" link to the full page.
+  // And a "view all" link to the full page (the page itself is sungen-covered).
   await expect(
     panel.getByRole("link", { name: /Xem tất cả|View all/i }),
   ).toHaveAttribute("href", "/notifications");
-});
-
-test("a logged-in member can reach the /notifications page", async ({ page }) => {
-  await page.goto("/notifications");
-
-  // Reached the page, not bounced to /login.
-  await expect(page).toHaveURL(/\/notifications$/);
-  await expect(page).not.toHaveURL(/\/login$/);
-
-  // The page renders its heading (vi "Thông Báo" / en "Notifications").
-  await expect(
-    page.getByRole("heading", { name: /Thông Báo|Notifications/i }),
-  ).toBeVisible();
 });
