@@ -10,6 +10,10 @@ This project has two test layers:
 > The two suites never overlap — Vitest only picks up tests under
 > `app/lib/i18n/messages`, Playwright only runs `e2e/`.
 
+> **Also evaluating:** [Sungen](./sungen-pilot.md) — a deterministic Gherkin →
+> Playwright compiler (`qa/` → `specs/generated/`, run via `pnpm test:sungen`).
+> Hand-written specs stay in `e2e/`; see the pilot doc for the two-tier split.
+
 Playwright **starts the app itself** (see the `webServer` block in
 `playwright.config.ts`): it runs `pnpm build && pnpm start` and waits for
 `http://localhost:3000` before running tests. It injects **dummy Supabase env
@@ -129,7 +133,9 @@ seed and enable the backdoor first:
 
 ```bash
 pnpm db:start
-SUPABASE_EXTRA_SEEDS=./seeds/dev/seed.sql pnpm db:reset   # seeds admin-test/member-test/member01..08
+# Loads seeds/dev/seed.sql (admin-test/member-test/member01..08) AND
+# seeds/dev/seed_e2e_kudos.sql (deterministic kudos for the sun-kudos specs).
+SUPABASE_EXTRA_SEEDS="./seeds/dev/*.sql" pnpm db:reset
 export AUTO_LOGIN_TOKEN=dev-e2e-secret
 export SUPABASE_SECRET_KEY=$(pnpm -s db:status | awk '/service_role key/ {print $NF}')
 export NEXT_PUBLIC_SUPABASE_URL=http://127.0.0.1:54321
@@ -140,6 +146,12 @@ pnpm exec playwright test --project=setup --project=chromium-auth
 > The `SUPABASE_EXTRA_SEEDS` path is relative to `supabase/` (per
 > `sql_paths` in `supabase/config.toml`). **Never set `AUTO_LOGIN_TOKEN` or
 > `SUPABASE_SECRET_KEY` in production** — the backdoor is dev-only.
+>
+> **Do not apply `supabase/seed/kudos-board-seed.sql` on this database** — it
+> wipes ALL profiles (including member-test, breaking `/auto-login`) and every
+> kudo the sun-kudos specs depend on. The board specs
+> (`e2e/sun-kudos.authed.spec.ts`) rely on `seeds/dev/seed_e2e_kudos.sql`,
+> whose `[e2e-kN]` body markers are the spec's card locators.
 
 Running these **in Docker** would also require the container to reach the host's
 Supabase — add `network_mode: host` (Linux) to the `e2e` service, or on
