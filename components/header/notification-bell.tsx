@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useTranslations } from "next-intl";
 import { ROUTES } from "@/lib/navigation/routes";
@@ -109,12 +110,12 @@ export function NotificationBell() {
             </ul>
           )}
 
-          <a
+          <Link
             href={ROUTES.notifications}
             className="block border-t border-white/5 px-4 py-3 text-center text-sm text-white/70 transition-colors hover:bg-white/5 hover:text-white"
           >
             {t("viewAll")}
-          </a>
+          </Link>
         </div>
       )}
     </div>
