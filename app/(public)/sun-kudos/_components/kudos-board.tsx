@@ -39,6 +39,7 @@ import { KudosFeed } from "./feed/kudos-feed";
 import { SidebarStatsBlock } from "./sidebar/sidebar-stats";
 import { LeaderboardList } from "./sidebar/leaderboard-list";
 import { useSendKudo } from "../../_components/send-kudo-provider";
+import { KudoDetailModal } from "./kudo-detail-modal";
 
 import type { KudoCard, KudosFilter } from "@/lib/kudos/types";
 import type { KudosPage } from "@/lib/kudos/queries";
@@ -248,6 +249,8 @@ export function KudosBoard({
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
     <main className="w-full min-h-screen bg-saa-navy-darkest flex flex-col gap-0">
+      {/* Kudo detail modal — opens when ?kudo=<id> is present in the URL */}
+      <KudoDetailModal baseUrl={baseUrl} />
       {/* Gift stub toast — replaces window.alert, auto-dismisses after 2.5 s */}
       {giftToast && (
         <div
