@@ -1,0 +1,102 @@
+# Reading the Material
+
+The craftsman examines what is brought to the workshop before choosing a discipline.
+This is the first act of mastery — understanding the work before touching it.
+
+## Detection Algorithm
+
+```
+FUNCTION readMaterial(input):
+  # Priority 1: Explicit discipline flags (override all)
+  IF input contains "--fast": RETURN "fast"
+  IF input contains "--parallel": RETURN "parallel"
+  IF input contains "--auto": RETURN "auto"
+  IF input contains "--no-test": RETURN "no-test"
+
+  # Priority 2: Blueprint path detection
+  IF input matches path pattern (./plans/*, plan.md, phase-*.md):
+    RETURN "code"
+
+  # Priority 3: Keyword detection (case-insensitive)
+  keywords = lowercase(input)
+
+  IF keywords contains ["fast", "quick", "rapidly", "asap"]:
+    RETURN "fast"
+
+  IF keywords contains ["trust me", "auto", "yolo", "just do it"]:
+    RETURN "auto"
+
+  IF keywords contains ["no test", "skip test", "without test"]:
+    RETURN "no-test"
+
+  # Priority 4: Complexity detection
+  features = extractFeatures(input)  # comma-separated or "and"-joined items
+  IF count(features) >= 3 OR keywords contains "parallel":
+    RETURN "parallel"
+
+  # Default: full craft, full control
+  RETURN "interactive"
+```
+
+## Feature Extraction
+
+Detect multiple distinct pieces from natural language:
+
+```
+"implement auth, payments, and notifications" → ["auth", "payments", "notifications"]
+"add login + signup + password reset"         → ["login", "signup", "password reset"]
+"create dashboard with charts and tables"     → single piece (dashboard)
+```
+
+**Parallel trigger:** 3+ distinct features = parallel discipline
+
+## Discipline Behaviors
+
+| Discipline | Skip Study | Skip Temper | Rest Points | Auto-Approve | Parallel Forge |
+|------------|------------|-------------|-------------|--------------|----------------|
+| interactive | ✗ | ✗ | **Yes (pauses)** | ✗ | ✗ |
+| auto | ✗ | ✗ | **No (continuous)** | ✓ (score≥9.5) | ✓ (all stages) |
+| fast | ✓ | ✗ | Yes (pauses) | ✗ | ✗ |
+| parallel | Optional | ✗ | Yes (pauses) | ✗ | ✓ |
+| no-test | ✗ | ✓ | Yes (pauses) | ✗ | ✗ |
+| code | ✓ | ✗ | Yes (pauses) | Per blueprint | Per blueprint |
+
+**Rest Points:** Human approval checkpoints between major stages (see `workflow-steps.md`).
+- All disciplines EXCEPT `auto` pause at rest points for human approval.
+- `auto` is the only discipline that runs continuously without stopping.
+
+## Examples
+
+```
+"/tkm:takumi implement user auth"
+→ Discipline: interactive (default, pauses at rest points)
+
+"/tkm:takumi plans/260120-auth/phase-02-api.md"
+→ Discipline: code (blueprint path detected, pauses at rest points)
+
+"/tkm:takumi quick fix for the login bug"
+→ Discipline: fast ("quick" keyword, pauses at rest points)
+
+"/tkm:takumi implement auth, payments, notifications, shipping"
+→ Discipline: parallel (4 features, pauses at rest points)
+
+"/tkm:takumi implement dashboard --fast"
+→ Discipline: fast (explicit flag, pauses at rest points)
+
+"/tkm:takumi implement everything --auto"
+→ Discipline: auto (NO PAUSES, all stages continuous)
+
+"/tkm:takumi implement dashboard trust me"
+→ Discipline: auto ("trust me" keyword, NO PAUSES)
+```
+
+**Note:** Only `--auto` flag or "trust me"/"auto"/"yolo" keywords enable continuous execution.
+
+## Conflict Resolution
+
+When multiple signals are detected, priority order:
+1. Explicit flags (`--fast`, `--auto`, etc.)
+2. Blueprint path detection
+3. Keywords in the input
+4. Feature count analysis
+5. Default (interactive)

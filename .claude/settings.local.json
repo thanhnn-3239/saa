@@ -1,0 +1,8 @@
+{
+  "permissions": {
+    "allow": [
+      "mcp__momorph__list_frames",
+      "mcp__momorph__get_overview"
+    ]
+  }
+}
