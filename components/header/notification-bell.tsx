@@ -24,6 +24,7 @@ export function NotificationBell() {
   const router = useRouter();
   const [open, setOpen] = useState(false);
   const buttonRef = useRef<HTMLButtonElement>(null);
+  const containerRef = useRef<HTMLDivElement>(null);
 
   useNotificationsRealtime();
   const { data: unread } = useUnreadCount();
@@ -41,8 +42,19 @@ export function NotificationBell() {
         buttonRef.current?.focus();
       }
     }
+    // Close when a pointer press lands outside the bell + panel. mousedown
+    // (not click) mirrors FilterDropdown and fires before focus/navigation.
+    function onPointerDown(e: MouseEvent) {
+      if (!containerRef.current?.contains(e.target as Node)) {
+        setOpen(false);
+      }
+    }
     document.addEventListener("keydown", onKey);
-    return () => document.removeEventListener("keydown", onKey);
+    document.addEventListener("mousedown", onPointerDown);
+    return () => {
+      document.removeEventListener("keydown", onKey);
+      document.removeEventListener("mousedown", onPointerDown);
+    };
   }, [open]);
 
   function handleSelect(item: NotificationItem) {
@@ -54,7 +66,7 @@ export function NotificationBell() {
   }
 
   return (
-    <div className="relative">
+    <div className="relative" ref={containerRef}>
       <button
         ref={buttonRef}
         type="button"
@@ -71,10 +83,6 @@ export function NotificationBell() {
           </span>
         )}
       </button>
-
-      {open && (
-        <div className="fixed inset-0 z-10" onClick={() => setOpen(false)} aria-hidden="true" />
-      )}
 
       {open && (
         <div
