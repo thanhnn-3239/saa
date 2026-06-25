@@ -9,7 +9,7 @@ interface AwardCardProps {
   description: string;
   /** Path to the award overlay image relative to /public. */
   imageSrc: string;
-  /** Full href for the card link (e.g. /he-thong-giai#top-talent). */
+  /** Full href for the card link (e.g. /awards-information#top-talent). */
   href: string;
   /** Resolved "Chi tiết" / "Details" CTA label (from i18n). */
   detailsCta: string;

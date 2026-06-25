@@ -1,13 +1,13 @@
 /**
  * Static SAA 2025 award categories dataset.
- * Each entry carries a slug (used as hash anchor on /he-thong-giai),
+ * Each entry carries a slug (used as hash anchor on /awards-information),
  * i18n key references (under the Home.awards namespace for title/desc, and
  * HeThongGiai.awards namespace for quantity/value), and the image path
  * relative to /public.
  */
 
 export interface AwardCategory {
-  /** URL-safe slug — used as hash anchor: /he-thong-giai#<slug> */
+  /** URL-safe slug — used as hash anchor: /awards-information#<slug> */
   slug: string;
   /** i18n key for the award title (under Home.awards namespace). */
   titleKey: string;

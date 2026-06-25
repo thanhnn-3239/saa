@@ -2,7 +2,7 @@
  * Hệ thống giải — page root (Server Component).
  *
  * Auth model:
- *   Primary gate: proxy.ts PUBLIC_PATHS allowlist — /he-thong-giai is NOT listed,
+ *   Primary gate: proxy.ts PUBLIC_PATHS allowlist — /awards-information is NOT listed,
  *   so every unauthenticated request is redirected to /login by the middleware.
  *   getSessionUser() below is defense-in-depth only (mirrors sun-kudos pattern).
  *

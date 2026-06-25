@@ -10,15 +10,15 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "lh3.googleusercontent.com" },
     ],
   },
-  // Permanent redirect from old route to new canonical path.
+  // Permanent redirect from the old Vietnamese route to the canonical English path.
   // Runs before any rendering — cheapest possible redirect mechanism.
-  // Source is intentionally kept even after deleting the stub dir: handles
-  // any bookmarks, external links, or cached redirects pointing to the old path.
+  // Kept so any bookmarks, external links, or cached redirects pointing to the
+  // previous /he-thong-giai path keep working.
   async redirects() {
     return [
       {
-        source: "/awards-information",
-        destination: "/he-thong-giai",
+        source: "/he-thong-giai",
+        destination: "/awards-information",
         permanent: true,
       },
     ];

@@ -198,7 +198,7 @@ describe("updateSession", () => {
     });
 
     it.each([
-      "/he-thong-giai",
+      "/awards-information",
       "/sun-kudos",
       "/tieu-chuan-chung",
       "/profile",

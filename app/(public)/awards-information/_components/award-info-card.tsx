@@ -1,4 +1,4 @@
-import Image from "next/image";
+import { AwardTrophy } from "./award-trophy";
 
 // mm:313:8467 — mms_D.1_Top talent (template for all 6 award info cards)
 // Layout: image left (or right for even cards) + content right, separated by dividers.
@@ -9,7 +9,7 @@ interface AwardInfoCardProps {
   title: string;
   /** Full description paragraph. */
   description: string;
-  /** Path to the 336×336 award card image (background + name overlay). */
+  /** Path to the gold award-name label PNG (e.g. /homepage-saa/Top_Talent.png). */
   imageSrc: string;
   /** Label for quantity row (e.g. "Số lượng giải thưởng:"). */
   quantityLabel: string;
@@ -39,25 +39,9 @@ export function AwardInfoCard({
   imageRight = false,
   id,
 }: AwardInfoCardProps) {
-  const imageBlock = (
-    // mm: Picture-Award instance — 336×336, mix-blend-mode: screen, gold glow
-    // On mobile, image fills full width (aspect-square). On desktop, fixed 336px.
-    <div
-      className={[
-        "relative w-full md:w-[336px] aspect-square md:h-[336px] shrink-0",
-        "rounded-3xl border-[0.955px] border-saa-gold-accent",
-        "shadow-saa-glow mix-blend-screen overflow-hidden",
-      ].join(" ")}
-    >
-      <Image
-        src={imageSrc}
-        alt={title}
-        fill
-        className="object-cover rounded-3xl"
-        sizes="(max-width: 768px) 100vw, 336px"
-      />
-    </div>
-  );
+  // mm:I313:8467;214:2525 — Picture-Award (336×336): CSS-rebuilt glowing ring +
+  // pedestal with the gold name label contained inside (see AwardTrophy).
+  const imageBlock = <AwardTrophy imageSrc={imageSrc} title={title} />;
 
   const contentBlock = (
     // mm: mms_D.1.2_Content — flex column with dividers

@@ -133,7 +133,7 @@ describe("AppHeader — active nav tab follows the current pathname", () => {
     expect(activeLink()?.className).toContain("text-saa-gold-accent");
   });
 
-  it("marks 'Hệ thống giải' active on the he-thong-giai page", () => {
+  it("marks 'Hệ thống giải' active on the awards-information page", () => {
     mockUsePathname.mockReturnValue(ROUTES.awardsInfo);
     renderHeader();
 

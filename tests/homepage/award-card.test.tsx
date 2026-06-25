@@ -18,7 +18,7 @@ describe("AwardCard (ID-47, ID-48, ID-49, ID-50, ID-52)", () => {
         title="Top Talent"
         description="Award for outstanding individuals"
         imageSrc="/homepage-saa/Top_Talent.png"
-        href="/he-thong-giai#top-talent"
+        href="/awards-information#top-talent"
         detailsCta="Details"
       />
     );
@@ -32,7 +32,7 @@ describe("AwardCard (ID-47, ID-48, ID-49, ID-50, ID-52)", () => {
         title="Top Talent"
         description="Award for outstanding individuals across all fields"
         imageSrc="/homepage-saa/Top_Talent.png"
-        href="/he-thong-giai#top-talent"
+        href="/awards-information#top-talent"
         detailsCta="Details"
       />
     );
@@ -47,7 +47,7 @@ describe("AwardCard (ID-47, ID-48, ID-49, ID-50, ID-52)", () => {
         title="Top Talent"
         description="Award for outstanding individuals"
         imageSrc="/homepage-saa/Top_Talent.png"
-        href="/he-thong-giai#top-talent"
+        href="/awards-information#top-talent"
         detailsCta="Details"
       />
     );
@@ -65,7 +65,7 @@ describe("AwardCard (ID-47, ID-48, ID-49, ID-50, ID-52)", () => {
         title="Top Talent"
         description="Award for outstanding individuals"
         imageSrc="/homepage-saa/Top_Talent.png"
-        href="/he-thong-giai#top-talent"
+        href="/awards-information#top-talent"
         detailsCta="Chi tiết"
       />
     );
@@ -79,13 +79,13 @@ describe("AwardCard (ID-47, ID-48, ID-49, ID-50, ID-52)", () => {
         title="Top Talent"
         description="Award for outstanding individuals"
         imageSrc="/homepage-saa/Top_Talent.png"
-        href="/he-thong-giai#top-talent"
+        href="/awards-information#top-talent"
         detailsCta="Details"
       />
     );
 
     const link = screen.getByRole("link");
-    expect(link).toHaveAttribute("href", "/he-thong-giai#top-talent");
+    expect(link).toHaveAttribute("href", "/awards-information#top-talent");
     // Verify that title and description are children of the link
     expect(link).toContainElement(screen.getByText("Top Talent"));
     expect(link).toContainElement(
@@ -99,7 +99,7 @@ describe("AwardCard (ID-47, ID-48, ID-49, ID-50, ID-52)", () => {
         title="Best Manager"
         description="Award for inspiring and effective managers"
         imageSrc="/homepage-saa/Best_Manager.png"
-        href="/he-thong-giai#best-manager"
+        href="/awards-information#best-manager"
         detailsCta="Chi tiết"
       />
     );
@@ -115,13 +115,13 @@ describe("AwardCard (ID-47, ID-48, ID-49, ID-50, ID-52)", () => {
         title: "Top Project",
         description: "Outstanding project of the year",
         imageSrc: "/homepage-saa/Top_Project.png",
-        href: "/he-thong-giai#top-project",
+        href: "/awards-information#top-project",
       },
       {
         title: "MVP",
         description: "Most valuable person",
         imageSrc: "/homepage-saa/MVP.png",
-        href: "/he-thong-giai#mvp",
+        href: "/awards-information#mvp",
       },
     ];
 
