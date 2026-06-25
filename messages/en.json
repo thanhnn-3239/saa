@@ -27,7 +27,7 @@
   "Home": {
     "nav": {
       "aboutSaa": "About SAA 2025",
-      "awardInformation": "Award System",
+      "awardInformation": "Award Information",
       "kudos": "Sun* Kudos",
       "standards": "General Standards",
       "langSelectAria": "Select language",
@@ -86,7 +86,7 @@
     "footer": {
       "copyright": "Copyright © 2025 Sun*",
       "aboutSaa": "About SAA 2025",
-      "awardInformation": "Award System",
+      "awardInformation": "Award Information",
       "kudos": "Sun* Kudos",
       "standards": "General Standards"
     },
