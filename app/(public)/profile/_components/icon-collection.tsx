@@ -60,7 +60,9 @@ export function IconCollection({ badges, className = "" }: IconCollectionProps) 
   if (!badges.length) return null;
 
   return (
-    <div className={`flex items-center gap-4 ${className}`}>
+    // flex-wrap + justify-center so the row reflows onto multiple lines on
+    // narrow (mobile) viewports instead of overflowing horizontally.
+    <div className={`flex flex-wrap items-center justify-center gap-4 ${className}`}>
       {badges.map((badge) => (
         <BadgeSlot key={badge.id} badge={badge} />
       ))}

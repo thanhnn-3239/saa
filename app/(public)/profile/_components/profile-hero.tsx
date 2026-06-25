@@ -128,16 +128,17 @@ export function ProfileHero({ header, badges }: ProfileHeroProps) {
           </div>
         </div>
 
-        {/* A.3 — Icon collection section */}
+        {/* A.3 — Icon collection section. w-full + px-4 bound the badge row to
+            the viewport so IconCollection's flex-wrap can reflow on mobile. */}
         {badges.length > 0 && (
-          <div className="flex flex-col items-center gap-4 mt-8">
+          <div className="flex flex-col items-center gap-4 mt-8 w-full px-4">
             <span
-              className="font-montserrat font-bold text-white"
+              className="font-montserrat font-bold text-white text-center"
               style={{ fontSize: 22, lineHeight: "28px" }}
             >
               {t("iconCollectionHeading")}
             </span>
-            <IconCollection badges={badges} />
+            <IconCollection badges={badges} className="w-full" />
           </div>
         )}
       </div>
