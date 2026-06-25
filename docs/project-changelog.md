@@ -20,6 +20,25 @@ Significant changes, features, and fixes in reverse-chronological order.
 - **`next.config.ts`**: permanent 308 redirect `/he-thong-giai` → `/awards-information`.
 
 ---
+
+## [Unreleased] — 2026-06-25 (feat/profile-page — SAA 2025 self-profile page)
+
+### Added
+- **`/profile` page** (login-gated): full self-profile page replacing the prior `<ComingSoon/>` stub. Ships:
+  - **Profile hero**: avatar, display name, hero tier.
+  - **Icon collection**: full catalog rendered in a grid — owned icons in colour, locked icons in gray.
+  - **Secret-Box stats card**: display-only stats panel.
+  - **Kudos feed**: infinite-scroll feed with Sent/Received toggle (default Sent); reuses Sun* Kudos board components.
+- **`lib/profile/queries.ts`**: `getProfileHeader` and `getIconCollection` server-side queries.
+- **`lib/profile/types.ts`**: shared profile type definitions.
+- **`lib/profile/use-profile-feed.ts`**: TanStack Query hook for the profile kudos feed.
+- **`app/api/kudos/feed` — `direction` param**: scopes the feed to sent or received kudos for the session user (`profileId` derived server-side; self-only).
+- **`KudosFilter` — `direction` + `profileId` props**: scopes filter state to a specific profile and direction.
+- **`FilterDropdown` — `showAll` prop** (optional): allows the dropdown to surface an "All" option.
+- **`Profile` i18n namespace** added to `messages/vi.json` + `messages/en.json`.
+
+---
+
 ## [Unreleased] — 2026-06-24 (feat/notifications)
 
 ### Added

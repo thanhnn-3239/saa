@@ -309,5 +309,13 @@
       "description": "A peer recognition and appreciation activity launched for all Sunners in SAA 2025. It encourages every Sun* person to share recognition and gratitude for colleagues on the system — material for the Heads Council to reference when selecting award recipients.",
       "cta": "Details"
     }
+  },
+  "Profile": {
+    "pageTitle": "My Profile",
+    "iconCollectionHeading": "My icon collection",
+    "sentLabel": "Sent",
+    "receivedLabel": "Received",
+    "emptyFeed": "No Kudos yet.",
+    "loadingMore": "Loading more..."
   }
 }

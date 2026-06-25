@@ -29,6 +29,9 @@ async function fetchKudosPage(
   if (filter.hashtag) params.set("hashtag", filter.hashtag);
   if (filter.departmentId !== null)
     params.set("departmentId", String(filter.departmentId));
+  // Profile feed: forward direction so the route handler derives profileId from session.
+  // Not sent for the global board (direction undefined), keeping board path unchanged.
+  if (filter.direction) params.set("direction", filter.direction);
   if (cursor) {
     params.set("cursorCreatedAt", cursor.createdAt);
     params.set("cursorId", cursor.id);

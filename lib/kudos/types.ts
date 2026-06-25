@@ -143,8 +143,19 @@ export interface SpotlightNode {
 /**
  * Active filter applied to both Highlight carousel and All Kudos feed.
  * A selected filter resets feed pagination to page 1 per clarification 2026-06-06.
+ *
+ * Profile-feed extensions (2026-06-25):
+ *   - `direction`: "sent" | "received" — scopes feed to kudos the subject sent or received.
+ *     Only meaningful when profileId is set. Defaults to "sent" if profileId set but
+ *     direction omitted (matches the /profile default).
+ *   - `profileId`: the subject user UUID. undefined = global board (existing behaviour).
+ *     On the /profile route this is always the session user (server-derived, never client-supplied).
  */
 export interface KudosFilter {
   hashtag: string | null;
   departmentId: number | null;
+  /** Profile feed only — "sent" | "received". undefined = global board. */
+  direction?: "sent" | "received";
+  /** Subject user UUID. undefined = global board. */
+  profileId?: string;
 }

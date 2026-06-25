@@ -1,15 +1,21 @@
 /**
  * GET /api/kudos/feed
- * Cursor-paginated All Kudos feed for the Live Board.
+ * Cursor-paginated All Kudos feed for the Live Board and profile page.
  *
  * Query params:
- *   limit         number   (default 20, max 50)
- *   hashtag       string   (filter by hashtag name)
- *   departmentId  number   (filter by recipient department)
- *   cursorCreatedAt string (ISO timestamp — exclusive cursor)
- *   cursorId        string (UUID — tie-breaker for cursor)
+ *   limit           number   (default 20, max 50)
+ *   hashtag         string   (filter by hashtag name)
+ *   departmentId    number   (filter by recipient department)
+ *   direction       string   "sent" | "received" — profile feed only.
+ *                            When present, profileId is derived from the session user
+ *                            server-side (self-only scope). Requires authentication.
+ *   cursorCreatedAt string   (ISO timestamp — exclusive cursor)
+ *   cursorId        string   (UUID — tie-breaker for cursor)
  *
  * Returns: KudosPage JSON (items: KudoCard[], nextCursor: PageCursor | null)
+ *
+ * Security: profileId is NEVER accepted from the client. It is always derived from
+ * the session user when `direction` is present, preventing cross-user data access.
  */
 
 import { NextResponse } from "next/server";
@@ -38,7 +44,12 @@ export async function GET(request: NextRequest) {
       ? Number(deptParam)
       : null;
 
-  const filter: KudosFilter = { hashtag, departmentId };
+  // Profile feed direction — when present, derive profileId from session (self-only).
+  const rawDirection = searchParams.get("direction");
+  const direction =
+    rawDirection === "sent" || rawDirection === "received"
+      ? rawDirection
+      : undefined;
 
   const cursorCreatedAt = searchParams.get("cursorCreatedAt");
   const cursorId = searchParams.get("cursorId");
@@ -57,6 +68,23 @@ export async function GET(request: NextRequest) {
 
   try {
     const user = await getSessionUser();
+
+    // When direction is present this is a profile feed request — requires auth.
+    // profileId is server-derived from the session; client cannot supply it.
+    if (direction !== undefined) {
+      if (!user) {
+        return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+      }
+    }
+
+    const filter: KudosFilter = {
+      hashtag,
+      departmentId,
+      ...(direction !== undefined && user
+        ? { direction, profileId: user.id }
+        : {}),
+    };
+
     const page = await getKudosPage({ cursor, limit, filter, currentUserId: user?.id ?? null });
     return NextResponse.json(page);
   } catch (err) {
