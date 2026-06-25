@@ -50,6 +50,7 @@ export default async function HeThongGiaiPage() {
     quantityValue: t(c.quantityKey as Parameters<typeof t>[0]),
     prizeLabel: t("fields.valueLabel"),
     prizeValue: t(c.valueKey as Parameters<typeof t>[0]),
+    prizeNote: c.noteKey ? t(c.noteKey as Parameters<typeof t>[0]) : undefined,
     imageRight: c.imageRight,
   }));
 

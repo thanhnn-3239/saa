@@ -26,6 +26,12 @@ export interface AwardCategory {
    */
   valueKey: string;
   /**
+   * Optional i18n key for the small note under the prize value (under
+   * HeThongGiai namespace), e.g. "awards.top-talent.note". Omitted when the
+   * award has no note.
+   */
+  noteKey?: string;
+  /**
    * i18n key for the nav label (under HeThongGiai.nav namespace).
    * e.g. "topTalent" → t("nav.topTalent")
    */
@@ -42,6 +48,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     imageSrc: "/homepage-saa/Top_Talent.png",
     quantityKey: "awards.top-talent.quantity",
     valueKey: "awards.top-talent.value",
+    noteKey: "awards.top-talent.note",
     navKey: "topTalent",
     imageRight: false,
   },
@@ -52,6 +59,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     imageSrc: "/homepage-saa/Top_Project.png",
     quantityKey: "awards.top-project.quantity",
     valueKey: "awards.top-project.value",
+    noteKey: "awards.top-project.note",
     navKey: "topProject",
     imageRight: true,
   },
@@ -62,6 +70,7 @@ export const AWARD_CATEGORIES: AwardCategory[] = [
     imageSrc: "/homepage-saa/Top_Project_Leader.png",
     quantityKey: "awards.top-project-leader.quantity",
     valueKey: "awards.top-project-leader.value",
+    noteKey: "awards.top-project-leader.note",
     navKey: "topProjectLeader",
     imageRight: false,
   },

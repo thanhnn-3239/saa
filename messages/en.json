@@ -218,27 +218,30 @@
     },
     "awards": {
       "top-talent": {
-        "quantity": "10 Units",
-        "value": "7.000.000 VNĐ/award"
+        "quantity": "10 Individuals",
+        "value": "7.000.000 VNĐ",
+        "note": "per award"
       },
       "top-project": {
         "quantity": "02 Teams",
-        "value": "15.000.000 VNĐ/award"
+        "value": "15.000.000 VNĐ",
+        "note": "per award"
       },
       "top-project-leader": {
         "quantity": "03 Individuals",
-        "value": "7.000.000 VNĐ"
+        "value": "7.000.000 VNĐ",
+        "note": "per award"
       },
       "best-manager": {
         "quantity": "01 Individual",
         "value": "10.000.000 VNĐ"
       },
       "signature-2025-creator": {
-        "quantity": "01",
+        "quantity": "01 Individual or team",
         "value": "5.000.000 VNĐ (individual) / 8.000.000 VNĐ (team)"
       },
       "mvp": {
-        "quantity": "01",
+        "quantity": "01 Individual",
         "value": "15.000.000 VNĐ"
       }
     },

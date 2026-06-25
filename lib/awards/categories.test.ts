@@ -39,12 +39,12 @@ describe("lib/awards/categories", () => {
     const expectedValues: Record<string, { quantity: string; value: string }> =
       {
         "top-talent": {
-          quantity: "10 Đơn vị",
-          value: "7.000.000 VNĐ/giải",
+          quantity: "10 Cá nhân",
+          value: "7.000.000 VNĐ",
         },
         "top-project": {
           quantity: "02 Tập thể",
-          value: "15.000.000 VNĐ/giải",
+          value: "15.000.000 VNĐ",
         },
         "top-project-leader": {
           quantity: "03 Cá nhân",
@@ -55,11 +55,11 @@ describe("lib/awards/categories", () => {
           value: "10.000.000 VNĐ",
         },
         "signature-2025-creator": {
-          quantity: "01",
+          quantity: "01 Cá nhân hoặc tập thể",
           value: "5.000.000 VNĐ (cá nhân) / 8.000.000 VNĐ (tập thể)",
         },
         mvp: {
-          quantity: "01",
+          quantity: "01 Cá nhân",
           value: "15.000.000 VNĐ",
         },
       };
