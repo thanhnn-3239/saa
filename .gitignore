@@ -75,3 +75,4 @@ specs/.auth/
 .claude/skills/clio-artifact/*
 .claude/skills/devops/*
 .claude/skills/estimate/*
+.claude/hooks/.logs/*
