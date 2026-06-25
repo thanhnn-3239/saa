@@ -15,7 +15,7 @@ export const ROUTES = {
 
 /**
  * Returns the URL for a specific award category anchor on the
- * Awards Information page (e.g. "/awards-information#top-talent").
+ * Hệ thống giải page (e.g. "/awards-information#top-talent").
  * If slug is empty, falls back to the base awards-information path.
  */
 export function awardAnchor(slug: string): string {

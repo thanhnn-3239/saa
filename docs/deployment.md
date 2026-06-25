@@ -145,7 +145,7 @@ GitHub → Settings → **Secrets and variables → Actions**, add:
 - [ ] `https://<app>.vercel.app` unauthenticated → redirects to `/login`.
 - [ ] Login with `@sun-asterisk.com` account → redirected to `/` (homepage with countdown).
 - [ ] Countdown on homepage ticks (confirms `NEXT_PUBLIC_EVENT_DATETIME` is set).
-- [ ] `/`, `/awards-information`, `/sun-kudos`, `/tieu-chuan-chung`, `/profile` all redirect unauthenticated visitors to `/login`.
+- [ ] `/`, `/he-thong-giai`, `/sun-kudos`, `/tieu-chuan-chung`, `/profile` all redirect unauthenticated visitors to `/login`. (Note: `/awards-information` now 308-redirects to `/he-thong-giai`.)
 - [ ] Google login: `@sun-asterisk.com` → in; other domain → `/login?error=domain` (signed out).
 - [ ] i18n: vi ↔ en switch persists via `NEXT_LOCALE` cookie.
 - [ ] Authenticated read returns rows under RLS.

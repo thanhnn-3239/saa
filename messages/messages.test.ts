@@ -96,4 +96,40 @@ describe("message files parity", () => {
     const extraInEn = Array.from(enKeys).filter((k) => !viKeys.has(k));
     expect(extraInEn).toHaveLength(0);
   });
+
+  it("vi.json and en.json have the same HeThongGiai keys", () => {
+    const viKeys = getAllKeys(messagesVi.HeThongGiai);
+    const enKeys = getAllKeys(messagesEn.HeThongGiai);
+
+    expect(viKeys).toEqual(enKeys);
+  });
+
+  it("HeThongGiai namespace exists in both files", () => {
+    expect(messagesVi.HeThongGiai).toBeDefined();
+    expect(messagesEn.HeThongGiai).toBeDefined();
+  });
+
+  it("HeThongGiai.nav has all 6 menu items", () => {
+    const viNavKeys = Object.keys(messagesVi.HeThongGiai.nav).sort();
+
+    expect(viNavKeys).toEqual([
+      "bestManager",
+      "mvp",
+      "signature2025Creator",
+      "topProject",
+      "topProjectLeader",
+      "topTalent",
+    ]);
+  });
+
+  it("HeThongGiai.awards has data for all 6 categories", () => {
+    const viAwardsKeys = Object.keys(messagesVi.HeThongGiai.awards).sort();
+
+    expect(viAwardsKeys).toContain("best-manager");
+    expect(viAwardsKeys).toContain("mvp");
+    expect(viAwardsKeys).toContain("signature-2025-creator");
+    expect(viAwardsKeys).toContain("top-project");
+    expect(viAwardsKeys).toContain("top-project-leader");
+    expect(viAwardsKeys).toContain("top-talent");
+  });
 });

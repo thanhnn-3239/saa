@@ -4,6 +4,22 @@ Significant changes, features, and fixes in reverse-chronological order.
 
 ---
 
+## [Unreleased] — 2026-06-25 (feat/awards-information — SAA 2025 awards system page)
+
+### Added
+- **`/awards-information` page** (login-gated): full-bleed colourful key-visual hero → title block → two-column layout (sticky scroll-spy left nav + 6 award info cards) → Sun* Kudos promo banner (CTA → `/sun-kudos`).
+- **New components** under `app/(public)/awards-information/_components/`: `hero-banner.tsx`, `title-block.tsx`, `section-nav.tsx`, `award-info-card.tsx`, `award-trophy.tsx`, `kudos-promo-banner.tsx`, `he-thong-giai-screen.tsx`, `use-scroll-spy.ts` (IntersectionObserver hook).
+- **Award trophy** (`award-trophy.tsx`): the design's glowing gold ring + pedestal tile (`public/homepage-saa/Award_BG.png`) with the per-award gold name label overlaid.
+- **`HeThongGiai` i18n namespace** added to `messages/vi.json` + `messages/en.json` (page chrome, nav labels, card content incl. quantity/value/note, kudos promo).
+- **`awardAnchor(slug)` helper** in `lib/navigation/routes.ts`: builds `/awards-information#<slug>` anchor links.
+
+### Changed
+- **`ROUTES.awardsInfo`** value is `/awards-information` (canonical English path, consistent with `/sun-kudos`, `/profile`).
+- **`lib/awards/categories.ts`** extended with `quantityKey`, `valueKey`, optional `noteKey`, `navKey`, `imageRight` per Figma spec.
+- **Nav + footer label** `Home.nav.awardInformation`: vi → "Hệ thống giải", en → "Award System".
+- **`next.config.ts`**: permanent 308 redirect `/he-thong-giai` → `/awards-information`.
+
+---
 ## [Unreleased] — 2026-06-24 (feat/notifications)
 
 ### Added

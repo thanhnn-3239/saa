@@ -203,9 +203,8 @@ describe("updateSession", () => {
       "/tieu-chuan-chung",
       "/profile",
     ])(
-      "redirects unauthenticated users from formerly-public route %s to /login",
+      "redirects unauthenticated users from protected route %s to /login",
       async (pathname) => {
-        // These paths were in the OLD PUBLIC_PATHS; the app is now login-required.
         mockCreateServerClient.mockReturnValue({
           auth: { getClaims: vi.fn().mockResolvedValue({ data: null }) },
         });
