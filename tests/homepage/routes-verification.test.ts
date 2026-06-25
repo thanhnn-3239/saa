@@ -9,6 +9,7 @@ describe("ROUTES verification (ID-59)", () => {
       kudos: "/sun-kudos",
       standards: "/tieu-chuan-chung",
       profile: "/profile",
+      notifications: "/notifications",
     });
   });
 

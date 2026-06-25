@@ -120,6 +120,74 @@ describe("hydrateKudoCard", () => {
     const card = hydrateKudoCard({ ...baseRawRow, heart_total: null });
     expect(card.heartTotal).toBe(0);
   });
+
+  // ---------------------------------------------------------------------------
+  // Anonymous masking — C1 fix: real sender must NOT reach the client
+  // ---------------------------------------------------------------------------
+
+  it("masks sender identity when is_anonymous=true (id becomes empty string)", () => {
+    const card = hydrateKudoCard({ ...baseRawRow, is_anonymous: true, anonymous_name: "Secret" });
+    // The real sender id must not be present
+    expect(card.sender.id).toBe("");
+  });
+
+  it("uses anonymous_name as sender fullName when is_anonymous=true and alias provided", () => {
+    const card = hydrateKudoCard({ ...baseRawRow, is_anonymous: true, anonymous_name: "Mystery User" });
+    expect(card.sender.fullName).toBe("Mystery User");
+    // Real sender name from baseRawRow is "Alice" — must not appear
+    expect(card.sender.fullName).not.toBe("Alice");
+  });
+
+  it("falls back to 'Ẩn danh' when is_anonymous=true but anonymous_name is null", () => {
+    const card = hydrateKudoCard({ ...baseRawRow, is_anonymous: true, anonymous_name: null });
+    expect(card.sender.fullName).toBe("Ẩn danh");
+  });
+
+  it("falls back to 'Ẩn danh' when is_anonymous=true but anonymous_name is empty/whitespace", () => {
+    const card = hydrateKudoCard({ ...baseRawRow, is_anonymous: true, anonymous_name: "   " });
+    expect(card.sender.fullName).toBe("Ẩn danh");
+  });
+
+  it("masks sender avatarUrl to null when is_anonymous=true", () => {
+    const card = hydrateKudoCard({ ...baseRawRow, is_anonymous: true, anonymous_name: "X" });
+    expect(card.sender.avatarUrl).toBeNull();
+  });
+
+  it("does NOT mask sender when is_anonymous=false (real profile exposed as usual)", () => {
+    const card = hydrateKudoCard({ ...baseRawRow, is_anonymous: false });
+    expect(card.sender.id).toBe("sender-1");
+    expect(card.sender.fullName).toBe("Alice");
+  });
+
+  // ownedByViewer — server-computed self-like guard. Must use the REAL sender id
+  // even when anonymous, so the viewer can never like their own (anonymous) kudo.
+  it("sets ownedByViewer=true when the viewer is the real sender", () => {
+    const card = hydrateKudoCard(baseRawRow, false, "sender-1");
+    expect(card.ownedByViewer).toBe(true);
+  });
+
+  it("sets ownedByViewer=false when the viewer is someone else", () => {
+    const card = hydrateKudoCard(baseRawRow, false, "viewer-2");
+    expect(card.ownedByViewer).toBe(false);
+  });
+
+  it("sets ownedByViewer=false when there is no viewer (unauthenticated)", () => {
+    expect(hydrateKudoCard(baseRawRow, false, null).ownedByViewer).toBe(false);
+    expect(hydrateKudoCard(baseRawRow).ownedByViewer).toBe(false);
+  });
+
+  it("REGRESSION: ownedByViewer=true for an anonymous kudo the viewer authored, even though sender.id is masked", () => {
+    const card = hydrateKudoCard(
+      { ...baseRawRow, is_anonymous: true, anonymous_name: "Secret" },
+      false,
+      "sender-1",
+    );
+    // Identity stays masked for display…
+    expect(card.sender.id).toBe("");
+    expect(card.sender.fullName).toBe("Secret");
+    // …but the self-like guard still knows it's the viewer's own kudo.
+    expect(card.ownedByViewer).toBe(true);
+  });
 });
 
 // ---------------------------------------------------------------------------

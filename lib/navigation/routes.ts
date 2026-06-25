@@ -10,6 +10,7 @@ export const ROUTES = {
   kudos: "/sun-kudos",
   standards: "/tieu-chuan-chung",
   profile: "/profile",
+  notifications: "/notifications",
 } as const;
 
 /**

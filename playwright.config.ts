@@ -34,6 +34,42 @@ const authProjects = authEnabled
     ]
   : [];
 
+/**
+ * Sungen-compiled specs (specs/generated/) — kept separate from the
+ * hand-written e2e/ suite but reusing the same webServer + baseURL.
+ *
+ * Screens whose Gherkin uses `@auth:member` compile to specs that load a real
+ * session from specs/.auth/member.json, so they only run when AUTO_LOGIN_TOKEN
+ * is set (via the `sungen-auth` project + its `sungen-setup` dependency). The
+ * base `sungen` project always skips those dirs, so an unauthenticated run
+ * (e.g. CI without Supabase) stays green.
+ */
+const SUNGEN_AUTHED_SCREENS = ["sun-kudos", "awards-information", "profile", "notifications"];
+const sungenAuthedDir = new RegExp(
+  `specs/generated/(${SUNGEN_AUTHED_SCREENS.join("|")})/`,
+);
+
+const sungenProjects = [
+  {
+    name: "sungen",
+    testDir: "./specs/generated",
+    testIgnore: [sungenAuthedDir],
+    use: { ...devices["Desktop Chrome"] },
+  },
+  ...(authEnabled
+    ? [
+        { name: "sungen-setup", testDir: "./specs", testMatch: /auth\.setup\.ts/ },
+        {
+          name: "sungen-auth",
+          testDir: "./specs/generated",
+          testMatch: [sungenAuthedDir],
+          dependencies: ["sungen-setup"],
+          use: { ...devices["Desktop Chrome"] },
+        },
+      ]
+    : []),
+];
+
 export default defineConfig({
   testDir: "./e2e",
   forbidOnly: !!process.env.CI,
@@ -51,6 +87,7 @@ export default defineConfig({
       testIgnore: [/.*\.setup\.ts/, /.*\.authed\.spec\.ts/],
       use: { ...devices["Desktop Chrome"] },
     },
+    ...sungenProjects,
     ...authProjects,
   ],
   webServer: {

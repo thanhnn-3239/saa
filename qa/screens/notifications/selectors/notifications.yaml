@@ -1,0 +1,24 @@
+# notifications Screen Selectors
+# Default locale is vi (see lib/i18n/config); names below are the rendered
+# Vietnamese strings. The page heading and the mark-all button live on the
+# /notifications page itself — distinct from the header bell (a button whose
+# accessible name is the lowercase "Thông báo", and whose own panel controls
+# only exist while the dropdown is open).
+
+notifications:
+  type: 'page'
+  value: '/notifications'
+
+# Page <h1> — role heading, exact text avoids matching the bell button.
+page heading:
+  type: 'role'
+  value: 'heading'
+  name: 'Thông Báo'
+  exact: true
+
+# The "mark all as read" action in the page header (always rendered).
+mark all read:
+  type: 'role'
+  value: 'button'
+  name: 'Đánh dấu đọc tất cả'
+  exact: true

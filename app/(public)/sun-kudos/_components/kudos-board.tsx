@@ -26,7 +26,7 @@ import { useQueryClient } from "@tanstack/react-query";
 import { useFilters } from "@/lib/kudos/use-filters";
 import { useHighlightKudos, highlightKudosKey } from "@/lib/kudos/use-highlight-kudos";
 import { useKudosFeed, kudosFeedKey } from "@/lib/kudos/use-kudos-feed";
-import { useToggleLike, isLikeDisabled } from "@/lib/kudos/use-toggle-like";
+import { useToggleLike } from "@/lib/kudos/use-toggle-like";
 import { useSpotlight } from "@/lib/kudos/use-spotlight";
 import { useSidebar } from "@/lib/kudos/use-sidebar";
 import { subscribeToTable } from "@/lib/supabase/realtime";
@@ -38,6 +38,8 @@ import { SpotlightCloud } from "./spotlight/spotlight-cloud";
 import { KudosFeed } from "./feed/kudos-feed";
 import { SidebarStatsBlock } from "./sidebar/sidebar-stats";
 import { LeaderboardList } from "./sidebar/leaderboard-list";
+import { useSendKudo } from "../../_components/send-kudo-provider";
+import { KudoDetailModal } from "./kudo-detail-modal";
 
 import type { KudoCard, KudosFilter } from "@/lib/kudos/types";
 import type { KudosPage } from "@/lib/kudos/queries";
@@ -59,6 +61,10 @@ export function KudosBoard({
 }: KudosBoardProps) {
   const t = useTranslations("Home.kudosPage");
   const queryClient = useQueryClient();
+
+  // ── Send-kudo dialog — owned by the app-level provider (also opened by the
+  //    floating widget button + Thể lệ panel). The banner just triggers it. ──
+  const { openSendKudo } = useSendKudo();
 
   // ── Spotlight search state (shared between Banner pill + SpotlightCloud) ──
   const [spotlightSearchTerm, setSpotlightSearchTerm] = useState("");
@@ -91,7 +97,9 @@ export function KudosBoard({
 
   const handleLike = useCallback(
     (card: KudoCard) => {
-      if (isLikeDisabled(card.sender.id, currentUserId)) return;
+      // Self-like guard via ownedByViewer (server-computed) — correct even for
+      // anonymous kudos, where card.sender.id is masked. Also skip when logged out.
+      if (currentUserId === null || card.ownedByViewer) return;
       toggleLike.mutate({
         kudoId: card.id,
         currentlyLiked: card.liked,
@@ -241,6 +249,8 @@ export function KudosBoard({
   // ── Render ─────────────────────────────────────────────────────────────────
   return (
     <main className="w-full min-h-screen bg-saa-navy-darkest flex flex-col gap-0">
+      {/* Kudo detail modal — opens when ?kudo=<id> is present in the URL */}
+      <KudoDetailModal baseUrl={baseUrl} />
       {/* Gift stub toast — replaces window.alert, auto-dismisses after 2.5 s */}
       {giftToast && (
         <div
@@ -253,7 +263,7 @@ export function KudosBoard({
       )}
       {/* ── A: Banner KV ─────────────────────────────────────────────────── */}
       <Banner
-        onOpenSendDialog={noop}
+        onOpenSendDialog={openSendKudo}
         spotlightSearch={spotlightSearchTerm}
         onSpotlightSearchChange={handleSpotlightSearchChange}
         spotlightRef={spotlightSectionRef}

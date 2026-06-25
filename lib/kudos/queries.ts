@@ -37,8 +37,10 @@ function buildKudoSelect(filter: KudosFilter): string {
     : "kudo_hashtags ( hashtags ( name ) )";
   return `
     id,
+    title,
     body,
     is_anonymous,
+    anonymous_name,
     created_at,
     sender:profiles!kudos_sender_id_fkey (
       id, full_name, avatar_url, department_id, departments ( name )
@@ -138,22 +140,22 @@ function mergeHeartCounts(
  * Which of the given kudo IDs the CURRENT user has liked.
  * Powers the heart's active state + enables unlike. Returns empty set when
  * unauthenticated. (kudo_likes RLS allows authenticated users to read like rows.)
+ *
+ * `currentUserId` is resolved once by the caller (page server prefetch or the
+ * API route) and passed in — this avoids a redundant network round-trip to the
+ * Auth server (supabase.auth.getUser()) on every feed/highlight fetch.
  */
 async function fetchLikedSet(
   supabase: Awaited<ReturnType<typeof createClient>>,
   kudoIds: string[],
+  currentUserId: string | null,
 ): Promise<Set<string>> {
-  if (kudoIds.length === 0) return new Set();
-
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-  if (!user) return new Set();
+  if (kudoIds.length === 0 || !currentUserId) return new Set();
 
   const { data, error } = await supabase
     .from("kudo_likes")
     .select("kudo_id")
-    .eq("user_id", user.id)
+    .eq("user_id", currentUserId)
     .in("kudo_id", kudoIds);
 
   if (error) throw new Error(`fetchLikedSet: ${error.message}`);
@@ -207,7 +209,10 @@ function injectProfileStats(rows: any[], statsMap: Map<string, number>): any[] {
  * Strategy: scan up to 200 candidate published kudos (event scale), fetch their
  * heart counts, sort by heart_total desc, take top 5, then fetch full details.
  */
-export async function getHighlightKudos(filter: KudosFilter): Promise<KudoCard[]> {
+export async function getHighlightKudos(
+  filter: KudosFilter,
+  currentUserId: string | null = null,
+): Promise<KudoCard[]> {
   const supabase = await createClient();
 
   // Step 1: fetch candidate ids + created_at for the filter subset (cap 200).
@@ -262,21 +267,23 @@ export async function getHighlightKudos(filter: KudosFilter): Promise<KudoCard[]
 
   const top5Ids = sorted.map((r) => r.id);
 
-  // Step 4: fetch full details for the top 5 (plain embeds — ids already chosen).
-  const { data: detailData, error: detailError } = await supabase
-    .from("kudos")
-    .select(buildKudoSelect({ hashtag: null, departmentId: null }))
-    .in("id", top5Ids);
+  // Step 4: fetch full details for the top 5 (plain embeds — ids already chosen)
+  // and the per-user liked state in parallel — both depend only on top5Ids and
+  // are independent of each other.
+  const [detailRes, likedSet] = await Promise.all([
+    supabase
+      .from("kudos")
+      .select(buildKudoSelect({ hashtag: null, departmentId: null }))
+      .in("id", top5Ids),
+    fetchLikedSet(supabase, top5Ids, currentUserId),
+  ]);
 
-  if (detailError) {
-    throw new Error(`getHighlightKudos details: ${detailError.message}`);
+  if (detailRes.error) {
+    throw new Error(`getHighlightKudos details: ${detailRes.error.message}`);
   }
 
-  // Per-user liked state so the heart renders active + unlike works.
-  const likedSet = await fetchLikedSet(supabase, top5Ids);
-
   // Stars + hero-title pill: kudos_received for each sender + recipient.
-  const details = (detailData ?? []) as unknown as RawKudoRow[];
+  const details = (detailRes.data ?? []) as unknown as RawKudoRow[];
   const profileIds = details
     .flatMap((r) => [r.sender?.id, r.recipient?.id])
     .filter((id): id is string => Boolean(id));
@@ -293,7 +300,7 @@ export async function getHighlightKudos(filter: KudosFilter): Promise<KudoCard[]
     .map((row) => {
       const counts = heartMap.get(row.id) ?? { heart_total: 0, like_count: 0 };
       const merged = injectProfileStats([{ ...row, ...counts }], statsMap)[0];
-      return hydrateKudoCard(merged, likedSet.has(row.id));
+      return hydrateKudoCard(merged, likedSet.has(row.id), currentUserId);
     });
 }
 
@@ -311,10 +318,12 @@ export async function getKudosPage({
   cursor = null,
   limit = 20,
   filter,
+  currentUserId = null,
 }: {
   cursor?: PageCursor | null;
   limit?: number;
   filter: KudosFilter;
+  currentUserId?: string | null;
 }): Promise<KudosPage> {
   const supabase = await createClient();
 
@@ -354,20 +363,26 @@ export async function getKudosPage({
   const hasMore = rawRows.length > limit;
   const pageRows = hasMore ? rawRows.slice(0, limit) : rawRows;
 
-  // Fetch heart counts for this page separately (kudo_heart_counts is a view with no FK).
+  // Heart counts, per-user liked state and profile stats all depend only on the
+  // page rows and are independent of each other — fetch them in parallel rather
+  // than in a serial waterfall. (kudo_heart_counts / profile_kudo_stats are views
+  // with no FK, so they are queried separately from the main kudos select.)
   const pageIds = pageRows.map((r) => r.id);
-  const heartMap = await fetchHeartCounts(supabase, pageIds);
-  const likedSet = await fetchLikedSet(supabase, pageIds);
-
-  // Stars + hero-title pill: fetch kudos_received for every sender + recipient.
   const profileIds = pageRows
     .flatMap((r) => [r.sender?.id, r.recipient?.id])
     .filter((id): id is string => Boolean(id));
-  const statsMap = await fetchProfileStats(supabase, profileIds);
+
+  const [heartMap, likedSet, statsMap] = await Promise.all([
+    fetchHeartCounts(supabase, pageIds),
+    fetchLikedSet(supabase, pageIds, currentUserId),
+    fetchProfileStats(supabase, profileIds),
+  ]);
 
   const mergedRows = injectProfileStats(mergeHeartCounts(pageRows, heartMap), statsMap);
 
-  const items = mergedRows.map((row) => hydrateKudoCard(row, likedSet.has(row.id)));
+  const items = mergedRows.map((row) =>
+    hydrateKudoCard(row, likedSet.has(row.id), currentUserId),
+  );
 
   let nextCursor: PageCursor | null = null;
   if (hasMore) {
@@ -376,6 +391,46 @@ export async function getKudosPage({
   }
 
   return { items, nextCursor };
+}
+
+const EMPTY_FILTER: KudosFilter = { hashtag: null, departmentId: null };
+
+/**
+ * Fetch a single published kudo by id as a fully-hydrated KudoCard, or null if
+ * not found / not visible. Reuses the same select + enrichment as getKudosPage.
+ */
+export async function getKudoById(
+  id: string,
+  currentUserId: string | null = null,
+): Promise<KudoCard | null> {
+  const supabase = await createClient();
+
+  const { data, error } = await supabase
+    .from("kudos")
+    .select(buildKudoSelect(EMPTY_FILTER))
+    .eq("status", "published")
+    .eq("id", id)
+    .maybeSingle();
+
+  if (error) {
+    throw new Error(`getKudoById: ${error.message}`);
+  }
+  if (!data) {
+    return null;
+  }
+
+  const raw = data as unknown as RawKudoRow;
+  const [heartMap, likedSet, statsMap] = await Promise.all([
+    fetchHeartCounts(supabase, [raw.id]),
+    fetchLikedSet(supabase, [raw.id], currentUserId),
+    fetchProfileStats(
+      supabase,
+      [raw.sender?.id, raw.recipient?.id].filter((v): v is string => Boolean(v)),
+    ),
+  ]);
+
+  const [merged] = injectProfileStats(mergeHeartCounts([raw], heartMap), statsMap);
+  return hydrateKudoCard(merged, likedSet.has(raw.id), currentUserId);
 }
 
 /**

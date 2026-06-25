@@ -4,19 +4,58 @@ Significant changes, features, and fixes in reverse-chronological order.
 
 ---
 
-## [Unreleased] — 2026-06-11 (feat/he-thong-giai — SAA 2025 awards system page)
+## [Unreleased] — 2026-06-25 (feat/awards-information — SAA 2025 awards system page)
 
 ### Added
-- **`/he-thong-giai` page** (login-gated): keyvisual hero → title block → two-column layout (sticky scroll-spy left nav + 6 award info cards) → Sun* Kudos promo banner (CTA → `/sun-kudos`).
-- **New components** under `app/(public)/he-thong-giai/_components/`: `hero-banner.tsx`, `title-block.tsx`, `section-nav.tsx`, `award-info-card.tsx`, `kudos-promo-banner.tsx`, `he-thong-giai-screen.tsx`, `use-scroll-spy.ts` (IntersectionObserver hook).
-- **`HeThongGiai` i18n namespace** added to `messages/vi.json` + `messages/en.json` (page chrome, nav labels, card content, kudos promo).
-- **`awardAnchor(slug)` helper** in `lib/navigation/routes.ts`: builds `/he-thong-giai#<slug>` anchor links.
+- **`/awards-information` page** (login-gated): full-bleed colourful key-visual hero → title block → two-column layout (sticky scroll-spy left nav + 6 award info cards) → Sun* Kudos promo banner (CTA → `/sun-kudos`).
+- **New components** under `app/(public)/awards-information/_components/`: `hero-banner.tsx`, `title-block.tsx`, `section-nav.tsx`, `award-info-card.tsx`, `award-trophy.tsx`, `kudos-promo-banner.tsx`, `he-thong-giai-screen.tsx`, `use-scroll-spy.ts` (IntersectionObserver hook).
+- **Award trophy** (`award-trophy.tsx`): the design's glowing gold ring + pedestal tile (`public/homepage-saa/Award_BG.png`) with the per-award gold name label overlaid.
+- **`HeThongGiai` i18n namespace** added to `messages/vi.json` + `messages/en.json` (page chrome, nav labels, card content incl. quantity/value/note, kudos promo).
+- **`awardAnchor(slug)` helper** in `lib/navigation/routes.ts`: builds `/awards-information#<slug>` anchor links.
 
 ### Changed
-- **`ROUTES.awardsInfo`** value changed from `/awards-information` to `/he-thong-giai`.
-- **`lib/awards/categories.ts`** extended with `quantityKey`, `valueKey`, `navKey`, `imageRight` fields per Figma spec.
-- **Nav + footer label** `Home.nav.awardInformation` updated: vi → "Hệ thống giải", en → "Award System".
-- **`next.config.ts`**: permanent 308 redirect `/awards-information` → `/he-thong-giai` (old stub directory deleted).
+- **`ROUTES.awardsInfo`** value is `/awards-information` (canonical English path, consistent with `/sun-kudos`, `/profile`).
+- **`lib/awards/categories.ts`** extended with `quantityKey`, `valueKey`, optional `noteKey`, `navKey`, `imageRight` per Figma spec.
+- **Nav + footer label** `Home.nav.awardInformation`: vi → "Hệ thống giải", en → "Award System".
+- **`next.config.ts`**: permanent 308 redirect `/he-thong-giai` → `/awards-information`.
+
+---
+## [Unreleased] — 2026-06-24 (feat/notifications)
+
+### Added
+- **Live notification bell** (`components/header/notification-bell.tsx`): always-mounted header bell with a red unread-count badge. Opens a dropdown preview showing the 5 most-recent notifications (bold + red dot for unread), "Mark all as read" action, and "View all" link. Realtime unread count via Supabase Realtime channel subscription (no page refresh required).
+- **`/notifications` paginated page** (`app/(public)/notifications/`): full notification list with cursor-based "Load more" pagination (single bigint cursor). Each row is clickable — marks the item read and navigates to the relevant resource.
+- **Kudo detail modal** (`app/(public)/sun-kudos/`): opened via `?kudo=<id>` query param. Clicking a kudo notification on the bell dropdown or notifications page navigates to `/sun-kudos?kudo=<id>` and the modal opens automatically.
+- **`notification_feed` DB view** (`supabase/migrations/`): joins `notifications` with sender profiles; anonymity masking applied server-side — anonymous kudo notifications surface the alias (or "Ẩn danh") rather than the real sender name/id; client never receives the real sender identity.
+- **Notifications API layer** (`lib/notifications/`, `app/api/notifications/`): `GET /api/notifications` (paginated feed, cursor pagination), `GET /api/notifications/unread-count`, `PATCH /api/notifications/[id]` (mark one read), `POST /api/notifications/mark-all-read` (mark all read). Full error handling: 401/400/404/500.
+- **`useMarkRead` hook** (`lib/notifications/use-mark-read.ts`): returns `{ markOne, markAll, isPending }`; on success invalidates both the feed and unread-count TanStack Query keys so the badge and list refetch (self-healing, not optimistic).
+- **`rank_up` notification type**: icon and label fully rendered in the UI and defined in the `NotificationItem` type; no database trigger generates `rank_up` rows yet — deferred to a future task.
+- **i18n** (`messages/vi.json`, `messages/en.json`): full vi/en translation coverage under `Home.notifications.*` namespace for all notification UI strings (bell tooltip, mark-all, view-all, empty state, notification type labels, pagination).
+
+### Changed
+- `ROUTES` (`lib/navigation/routes.ts`): `notifications` and `kudos` (with `?kudo=` param helper) entries added.
+- `TanStack Query` query-key registry extended with `notificationsKey` and `unreadCountKey`.
+
+### Deferred
+- `rank_up` trigger: the notification type is fully rendered but no database function/trigger emits `rank_up` rows yet.
+- Manual smoke test (live Supabase required): not executed in this sandbox.
+
+---
+
+## [Unreleased] — 2026-06-11 (fix/ci-migrations-production-env + feat: send-kudos dialog)
+
+### Added
+- **Send-kudo dialog** (`app/(public)/sun-kudos/_components/send-dialog/`): full kudo-creation flow. Tiptap rich-text editor (HTML stored in `kudos.body`; rendered via `lib/kudos/sanitize-html.ts` with DOMPurify allowlist — XSS-safe). Image upload to `kudo-images` bucket (`{uid}/{uuid}.{ext}`, max 5 × 5 MB, jpg/png/webp). Hashtag picker (1–5 existing hashtags). Optional title (≤100 chars). Optional anonymous mode with alias display.
+- **`POST /api/kudos`**: creates a kudo (401/400/422/500); validates `imagePaths` ownership against the authenticated user's storage prefix.
+- **`GET /api/kudos/spotlight`**: extended with `excludeSelf=1` query param.
+- **DB migration `20260611070000_kudo_title_anonymous_name.sql`**: adds `kudos.title` (text, nullable) and `kudos.anonymous_name` (text, nullable); re-creates `create_kudo` with new 8-param signature (adds `p_title`, `p_anonymous_name`); drops old 6-param overload; grants `EXECUTE` to `authenticated`.
+- **Anonymous privacy:** `hydrateKudoCard` (server-side) masks real sender name/id with `anonymous_name` for anonymous rows — client never sees `sender_id`.
+- **New deps:** `@tiptap/*` suite (rich text editor), `isomorphic-dompurify` (server-side HTML sanitization).
+- **CI fix:** Supabase migration job bound to `Production` environment so `SUPABASE_*` secrets are available in the workflow.
+
+### Changed
+- Board kudo cards now render `title` (when present) and sanitized HTML `body`.
+- Anonymous kudos display `anonymous_name` alias on cards (replacing sender name).
 
 ---
 
@@ -30,8 +69,8 @@ Significant changes, features, and fixes in reverse-chronological order.
 - **Filter dropdown trigger** (`ui/filter-dropdown.tsx`): restyled to a single `rounded-[4px]` pill; trigger label shows selected filter label, falling back to category name. Open panel behavior and accessibility attributes unchanged.
 - **Sidebar stats flame badge** (`sidebar-stats.tsx`): "x2" badge added on the hearts row; gift icon repositioned to after button text (filled variant).
 
-### Deferred
-- Kudo card title / category ("IDOL GIỎI TRẺ"): omitted — `kudos` table has no `title`/`category` column. Tracked as open question in `plans/260610-1011-kudos-ui-fidelity/`.
+### Deferred (resolved in 2026-06-11 entry)
+- Kudo card title ("IDOL GIỎI TRẺ"): was omitted here — `kudos.title` column added by `20260611070000_kudo_title_anonymous_name.sql` and cards now render it.
 
 ---
 

@@ -175,3 +175,72 @@ button:disabled,
     animation-delay: var(--cloud-delay, 0s);
   }
 }
+
+/* ── Kudo card body — rich HTML prose styles ─────────────────────────────── */
+/* Applied to .kudo-body (dangerouslySetInnerHTML) and .prose-editor (Tiptap). */
+.kudo-body ol,
+.prose-editor ol {
+  list-style-type: decimal;
+  padding-left: 1.25rem;
+  margin: 0.25rem 0;
+}
+.kudo-body li,
+.prose-editor li {
+  margin: 0.125rem 0;
+}
+.kudo-body blockquote,
+.prose-editor blockquote {
+  border-left: 3px solid #998C5F;
+  margin: 0.25rem 0;
+  padding-left: 0.75rem;
+  color: #555;
+  font-style: italic;
+}
+.kudo-body a,
+.prose-editor a {
+  color: #1a6fb5;
+  text-decoration: underline;
+  word-break: break-word;
+}
+.kudo-body strong,
+.prose-editor strong {
+  font-weight: 700;
+}
+.kudo-body em,
+.prose-editor em {
+  font-style: italic;
+}
+.kudo-body s,
+.prose-editor s {
+  text-decoration: line-through;
+}
+/* Tiptap editor fills its bordered box; the contenteditable must own the full
+   height so the whole area is clickable and the box doesn't grow from one line
+   as you type. outline:none kills the browser's default (blue) focus ring —
+   the gold box border is the only frame, matching the production editor. */
+.prose-editor {
+  display: flex;
+  flex-direction: column;
+  flex: 1 1 auto;
+}
+.prose-editor .ProseMirror {
+  flex: 1 1 auto;
+  outline: none;
+}
+/* Mention chip inside editor */
+.prose-editor .mention {
+  background: rgba(153, 140, 95, 0.15);
+  border-radius: 4px;
+  padding: 0 3px;
+  font-weight: 700;
+  color: #00101A;
+}
+/* Tiptap placeholder */
+.prose-editor .tiptap p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: #999999;
+  pointer-events: none;
+  height: 0;
+  font-weight: 400;
+}

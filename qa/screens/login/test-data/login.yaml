@@ -1,0 +1,5 @@
+# Login screen test data — referenced as {{variable}} in login.feature.
+
+# Distinctive fragment of the "domain" OAuth error message (messages/vi.json
+# → Login.error.domain). Used by the toContainText assertion on the banner.
+domain_error_fragment: '@sun-asterisk.com'
