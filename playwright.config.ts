@@ -44,10 +44,11 @@ const authProjects = authEnabled
  * base `sungen` project always skips those dirs, so an unauthenticated run
  * (e.g. CI without Supabase) stays green.
  */
-// awards-information is excluded: its sungen spec asserted a "coming soon"
-// placeholder, but /awards-information is now a real page (this PR). Real-page
-// navigation is covered by e2e/homepage.authed.spec.ts.
-const SUNGEN_AUTHED_SCREENS = ["sun-kudos", "profile", "notifications"];
+// awards-information and profile are excluded: their sungen specs asserted a
+// "coming soon" placeholder, but both are now real pages. Real-page coverage:
+// /awards-information via e2e/homepage.authed.spec.ts, /profile via
+// e2e/profile.authed.spec.ts. The stale specs/generated/profile spec was removed.
+const SUNGEN_AUTHED_SCREENS = ["sun-kudos", "notifications"];
 const sungenAuthedDir = new RegExp(
   `specs/generated/(${SUNGEN_AUTHED_SCREENS.join("|")})/`,
 );
