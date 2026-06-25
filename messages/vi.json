@@ -309,5 +309,13 @@
       "description": "Hoạt động ghi nhận và cảm ơn đồng nghiệp lần đầu tiên được triển khai cho toàn bộ Sunner trong SAA 2025. Khuyến khích mỗi người Sun* chia sẻ lời ghi nhận và cảm ơn đồng nghiệp trên hệ thống — đây là chất liệu để Hội đồng Heads tham khảo khi lựa chọn người đạt giải.",
       "cta": "Chi tiết"
     }
+  },
+  "Profile": {
+    "pageTitle": "Hồ sơ của tôi",
+    "iconCollectionHeading": "Bộ sưu tập icon của tôi",
+    "sentLabel": "Đã gửi",
+    "receivedLabel": "Đã nhận",
+    "emptyFeed": "Chưa có Kudos nào.",
+    "loadingMore": "Đang tải thêm..."
   }
 }

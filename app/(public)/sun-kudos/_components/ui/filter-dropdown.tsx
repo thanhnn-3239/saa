@@ -33,6 +33,12 @@ interface FilterDropdownProps {
   value: string | null;
   onChange: (value: string | null) => void;
   className?: string;
+  /**
+   * Whether to prepend an "All" (clear) option to the list.
+   * Defaults to true (existing board behavior is unchanged).
+   * Pass false for binary toggles like the profile Sent/Received picker.
+   */
+  showAll?: boolean;
 }
 
 export function FilterDropdown({
@@ -41,6 +47,7 @@ export function FilterDropdown({
   value,
   onChange,
   className = "",
+  showAll = true,
 }: FilterDropdownProps) {
   const t = useTranslations("Home.kudosPage.filter");
   const [open, setOpen] = useState(false);
@@ -50,11 +57,11 @@ export function FilterDropdown({
   const containerRef = useRef<HTMLDivElement>(null);
   const listboxId = useId();
 
-  // All items: "All" first, then provided options
-  const allOptions: FilterOption[] = [
-    { value: "", label: t("all") },
-    ...options,
-  ];
+  // All items: optionally prepend "All" (clear) option, then provided options.
+  // showAll=false: used for binary toggles where there is no "clear" state.
+  const allOptions: FilterOption[] = showAll
+    ? [{ value: "", label: t("all") }, ...options]
+    : options;
 
   const activeIndex = allOptions.findIndex(
     (opt) => opt.value === (value ?? ""),

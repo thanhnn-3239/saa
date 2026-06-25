@@ -89,4 +89,23 @@ describe("NotificationBell", () => {
     await user.click(await screen.findByRole("button", { name: /Mark all as read/i }));
     expect(state.markAll).toHaveBeenCalled();
   });
+
+  it("closes the panel when a pointer press lands outside the bell", async () => {
+    const user = userEvent.setup();
+    render(
+      <NextIntlClientProvider locale="en" messages={messages}>
+        <div>
+          <button type="button">outside</button>
+          <NotificationBell />
+        </div>
+      </NextIntlClientProvider>,
+    );
+    await user.click(screen.getByRole("button", { name: /Notifications/i }));
+    expect(await screen.findByText("No new notifications.")).toBeInTheDocument();
+
+    await user.click(screen.getByRole("button", { name: "outside" }));
+    await waitFor(() => {
+      expect(screen.queryByText("No new notifications.")).not.toBeInTheDocument();
+    });
+  });
 });

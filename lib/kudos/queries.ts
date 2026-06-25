@@ -72,7 +72,7 @@ export interface KudosPage {
 // Internal helpers
 // ---------------------------------------------------------------------------
 
-/** Apply hashtag + department filters to a Supabase query. */
+/** Apply hashtag + department + profile direction filters to a Supabase query. */
 function applyFilters<T>(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any -- supabase builder has no public generic
   query: any,
@@ -86,6 +86,17 @@ function applyFilters<T>(
   if (filter.departmentId !== null) {
     // Recipient's department — nested eq on the join alias.
     query = query.eq("recipient.department_id", filter.departmentId);
+  }
+  if (filter.profileId) {
+    // Profile feed: scope to sender (sent) or recipient (received).
+    // Default to "sent" when profileId is set but direction is omitted
+    // (matches the /profile default — see clarifications 2026-06-25).
+    const dir = filter.direction ?? "sent";
+    if (dir === "sent") {
+      query = query.eq("sender_id", filter.profileId);
+    } else {
+      query = query.eq("recipient_id", filter.profileId);
+    }
   }
   return query as T;
 }
